@@ -1,13 +1,13 @@
 import json
+import os
 
-fileLocationRoot = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
-filePathRoot = "Content/ProjectRadiance/Data/"
+file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
+file_path_root = "Content/ProjectRadiance/Data/"
+border = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
 
 def main():
-    print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-          "   Welcome To Project Radiance's Beatmap Dev Tool <3" +
-          "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    print(border + "   ✨ Welcome To Project Radiance's Beatmap Dev Tool ✨" + border)
     get_user_purpose()
 
 
@@ -16,7 +16,7 @@ def get_user_purpose():
     if create_or_edit.lower() == "create" or create_or_edit.lower() == "c":
         get_user_input()
     elif create_or_edit.lower() == "edit" or create_or_edit.lower() == "e":
-        print("Editing an existing beatmap is not yet a feature. Please restart and select 'create' or come back later")
+        get_beatmap()
     else:
         print("Please only enter 'create' or 'edit'")
         get_user_purpose()
@@ -49,27 +49,32 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre, d
     template["songName"] = song_name
     template["album"] = album_name
     template["artist"] = artist_name
-    template["fileLocation"] = fileLocationRoot + song_name_pascal
+    template["fileLocation"] = file_location_root + song_name_pascal
     template["bpm"] = bpm
     template["length"] = length
     template["genre"] = genre
 
     difficulty_data = []
+
+    os.makedirs('beatmaps/' + song_name_pascal)
+
     for difficulty in difficulties:
         data = {
             "tier": difficulty,
-            "filePath": filePathRoot
-            + song_name_pascal + "_" + string_to_pascal_case(difficulty) + ".json"
+            "filePath": file_path_root
+                        + song_name_pascal + "_" + string_to_pascal_case(difficulty) + ".json"
         }
         difficulty_data.append(data)
-        with open('beatmaps/' + song_name_pascal + "_" + string_to_pascal_case(difficulty) + ".json",
-                  "w") as difficulty_file:
+
+        with open('beatmaps/' + song_name_pascal + "/"
+                  + song_name_pascal + "_" + string_to_pascal_case(difficulty) + ".json",
+                  "x") as difficulty_file:
             json.dump({}, difficulty_file, indent=4)
         difficulty_file.close()
 
     template["difficulty"] = difficulty_data
 
-    with open('beatmaps/' + song_name_pascal + "Data.json", "w") as data_file:
+    with open('beatmaps/' + song_name_pascal + "/" + song_name_pascal + "Data.json", "x") as data_file:
         json.dump(template, data_file, indent=4)
     data_file.close()
 
@@ -80,6 +85,42 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre, d
           + " has been created in the \"beatmaps/\" directory along with empty files for your "
           + str(len(difficulties))
           + " difficulties.")
+
+
+def get_beatmap():
+    beatmap = (get_stored_difficulties(get_stored_songs()))
+    beatmap_file_name = beatmap.split("_")
+    beatmap_song_name = beatmap_file_name[0]
+    beatmap_song_difficulty = beatmap_file_name[1].split(".json")[0]
+    print(border + "\t\t✨ Editing " + beatmap_song_name + " on " + beatmap_song_difficulty + " difficulty ✨" + border)
+
+
+def get_stored_songs():
+    song_directories = os.listdir('beatmaps/')
+    song_directories.remove("EMPTY_BEATMAP_DO_NOT_DELETE.json")
+    song_directory_index = 1
+
+    for directory in song_directories:
+        print(str(song_directory_index) + ") " + directory)
+        song_directory_index += 1
+
+    directory_input = int(input("\nEnter the number of the song you would like to beatmap: "))
+    song_name = song_directories[directory_input - 1]
+    return song_name
+
+
+def get_stored_difficulties(song_name):
+    difficulty_beatmaps = os.listdir('beatmaps/' + song_name + "/")
+    difficulty_beatmaps = [element for element in difficulty_beatmaps if "Data.json" not in element]
+    difficulty_directory_index = 1
+
+    for directory in difficulty_beatmaps:
+        print(str(difficulty_directory_index) + ") " + directory)
+        difficulty_directory_index += 1
+
+    directory_input = int(input("\nEnter the number of the difficulty you would like to beatmap: "))
+    difficulty_name = difficulty_beatmaps[directory_input - 1]
+    return difficulty_name
 
 
 def string_to_pascal_case(string_to_convert):
