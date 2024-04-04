@@ -5,6 +5,37 @@ file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 file_path_root = "Content/ProjectRadiance/Data/"
 border = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
+two_lane_swap_types = [
+    "Two Lanes Left to Right",
+    "Two Lanes Right to Left",
+]
+
+three_lane_swap_types = [
+
+]
+
+four_lane_swap_types = [
+    "Four Lanes Top to Bottom",
+    "Four Lanes Bottom to Top",
+    "Four Corners",
+    "Four Lanes Left to Right",
+    "Four Lanes Right to Left"
+]
+
+five_lane_swap_types = [
+    "Five Lanes Top to Bottom",
+    "Five Lanes Right to Left",
+    "Five Lanes Left to Right",
+    "Four Corners and Middle Top to Bottom",
+]
+
+lane_swap_types = [
+    two_lane_swap_types,
+    three_lane_swap_types,
+    four_lane_swap_types,
+    five_lane_swap_types
+]
+
 
 def main():
     print(border + "   ✨ Welcome To Project Radiance's Beatmap Dev Tool ✨" + border)
@@ -16,7 +47,8 @@ def get_user_purpose():
     if create_or_edit.lower() == "create" or create_or_edit.lower() == "c":
         get_user_input()
     elif create_or_edit.lower() == "edit" or create_or_edit.lower() == "e":
-        get_beatmap()
+        name, difficulty = get_beatmap()
+        edit_beatmap(name, difficulty)
     else:
         print("Please only enter 'create' or 'edit'")
         get_user_purpose()
@@ -69,7 +101,7 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre, d
         with open('beatmaps/' + song_name_pascal + "/"
                   + song_name_pascal + "_" + string_to_pascal_case(difficulty) + ".json",
                   "x") as difficulty_file:
-            json.dump({}, difficulty_file, indent=4)
+            json.dump({"notes": [], "laneEvents": []}, difficulty_file, indent=4)
         difficulty_file.close()
 
     template["difficulty"] = difficulty_data
@@ -93,6 +125,43 @@ def get_beatmap():
     beatmap_song_name = beatmap_file_name[0]
     beatmap_song_difficulty = beatmap_file_name[1].split(".json")[0]
     print(border + "\t\t✨ Editing " + beatmap_song_name + " on " + beatmap_song_difficulty + " difficulty ✨" + border)
+    return beatmap_song_name, beatmap_song_difficulty
+
+
+def edit_beatmap(song_name, song_difficulty):
+    with open('beatmaps/' + song_name + "/"
+              + song_name + "_" + song_difficulty + ".json",
+              "r") as beatmap_read:
+        jsonData = json.loads(beatmap_read.read())
+        notes = jsonData["notes"]
+        laneEvents = jsonData["laneEvents"]
+    beatmap_read.close()
+
+    notes_filled = edit_beatmap_input(notes)
+
+    with open('beatmaps/' + song_name + "/"
+              + song_name + "_" + song_difficulty + ".json",
+              "w") as beatmap_write:
+        json.dump({"notes": notes_filled, "laneEvents": laneEvents}, beatmap_write, indent=4)
+    beatmap_write.close()
+    print(border + "\t\t✨ " + song_name + " on " + song_difficulty + " difficulty updated! ✨" + border)
+
+
+def edit_beatmap_input(notes):
+    beat = input("What is the beat for the note you want to add? (type 'exit' to leave editor) ")
+    if beat.lower() == "exit":
+        return
+    else:
+        try:
+            beat = float(beat)
+        except ValueError:
+            print("Either enter a number or 'exit'!")
+            edit_beatmap_input(notes)
+
+        notes.append({beat: beat})
+
+        edit_beatmap_input(notes)
+    return notes
 
 
 def get_stored_songs():
