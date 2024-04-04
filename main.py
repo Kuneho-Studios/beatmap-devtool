@@ -138,7 +138,7 @@ def edit_beatmap(song_name, song_difficulty):
     beatmap_read.close()
 
     notes_filled = edit_beatmap_input(notes)
-    sorted_notes_filled = sorted(notes_filled, key=lambda note: note['startBeat'])
+    sorted_notes_filled = sorted(notes_filled, key=lambda note: (note['startBeat'], note['lane']))
 
     with open('beatmaps/' + song_name + "/"
               + song_name + "_" + song_difficulty + ".json",
@@ -158,11 +158,26 @@ def edit_beatmap_input(notes):
         except ValueError:
             print("Either enter a number or 'exit'!")
             edit_beatmap_input(notes)
-
-        notes.append({"startBeat": beat})
+        lane = set_lane(beat)
+        print("BEAT", beat, " LANE", lane)
+        note_json_object = {"startBeat": beat, "lane": lane}
+        print("JSON OBJECT", note_json_object)
+        notes.append(note_json_object)
+        print("NOTES ", notes)
 
         edit_beatmap_input(notes)
     return notes
+
+
+def set_lane(beat):
+    lane = input("What lane is beat " + str(beat) + " on? ")
+    try:
+        lane = int(lane)
+    except ValueError:
+        print("Enter a number!")
+        set_lane(beat)
+    print("RETURNING ", lane)
+    return lane
 
 
 def get_stored_songs():
