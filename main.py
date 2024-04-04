@@ -5,16 +5,22 @@ file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 file_path_root = "Content/ProjectRadiance/Data/"
 border = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
-two_lane_swap_types = [
+note_types_list = [
+    "Tap",
+    "Hold",
+    "LaneSwap"
+]
+
+two_lane_swap_types_list = [
     "Two Lanes Left to Right",
     "Two Lanes Right to Left",
 ]
 
-three_lane_swap_types = [
+three_lane_swap_types_list = [
 
 ]
 
-four_lane_swap_types = [
+four_lane_swap_types_list = [
     "Four Lanes Top to Bottom",
     "Four Lanes Bottom to Top",
     "Four Corners",
@@ -22,19 +28,19 @@ four_lane_swap_types = [
     "Four Lanes Right to Left"
 ]
 
-five_lane_swap_types = [
+five_lane_swap_types_list = [
     "Five Lanes Top to Bottom",
     "Five Lanes Right to Left",
     "Five Lanes Left to Right",
     "Four Corners and Middle Top to Bottom",
 ]
 
-lane_swap_types = [
-    two_lane_swap_types,
-    three_lane_swap_types,
-    four_lane_swap_types,
-    five_lane_swap_types
-]
+lane_swap_types_dict = {
+    2: two_lane_swap_types_list,
+    3: three_lane_swap_types_list,
+    4: four_lane_swap_types_list,
+    5: five_lane_swap_types_list
+}
 
 
 def main():
@@ -159,7 +165,8 @@ def edit_beatmap_input(notes):
             print("Either enter a number or 'exit'!")
             edit_beatmap_input(notes)
         lane = set_lane(beat)
-        note_json_object = {"startBeat": beat, "lane": lane}
+        note_data = set_note_data(beat, lane)
+        note_json_object = {"startBeat": beat, "lane": lane, "noteData": note_data}
         notes.append(note_json_object)
 
         edit_beatmap_input(notes)
@@ -175,6 +182,88 @@ def set_lane(beat):
         set_lane(beat)
     return lane
 
+
+def set_note_data(beat, lane):
+    note_types_list_index = 1
+
+    for note_type in note_types_list:
+        print(str(note_types_list_index) + ") " + note_type)
+        note_types_list_index += 1
+
+    note_type_input = int(input("\nEnter the number of beat " + str(beat) + " lane " + str(lane) + "'s note type: "))
+
+    if note_type_input < 1 or note_type_input > len(note_types_list) + 1:
+        print(note_type_input + " is not included in the above range. Please enter again.")
+        set_note_data(beat, lane)
+
+    if note_types_list[note_type_input - 1] == "LaneSwap":
+        return {"noteType": "LaneSwap", "laneChanges": set_lane_swap()}
+
+    return {"noteType": note_types_list[note_type_input - 1]}
+
+
+def set_lane_swap():
+    lane_swap_lane_count = input("How many lanes for the new lane configuration? ")
+    try:
+        lane_swap_lane_count = int(lane_swap_lane_count)
+    except ValueError:
+        print("Enter a number!")
+        set_lane_swap()
+    if lane_swap_lane_count not in lane_swap_types_dict.keys():
+        print(lane_swap_lane_count + " is not a valid lane size configuration." +
+              " Your options are: " + str(lane_swap_types_dict.keys()))
+        set_lane_swap()
+    set_lane_variation(lane_swap_lane_count)
+
+
+def set_lane_variation(lane_swap_lane_count):
+    lane_type_list = lane_swap_types_dict.get(lane_swap_lane_count)
+
+    lane_type_list_index = 1
+    for lane_swap in lane_type_list:
+        print(str(lane_type_list_index) + ") " + lane_swap)
+        lane_type_list_index += 1
+
+    lane_type_input = int(input("\nEnter the " + str(lane_swap_lane_count) + "-lane variation: "))
+
+    if lane_type_input > len(lane_type_list):
+        print(lane_type_input + " is not included in the above range. Please enter again.")
+        set_lane_variation(lane_swap_lane_count)
+
+    set_lane_changes(lane_type_list[lane_type_input - 1])
+
+
+def set_lane_changes(lane_variation):
+    print("setting lane changes for", lane_variation)
+    # {
+    #     "startBeat": 39.5,
+    #     "lane": 4,
+    #     "noteData": {
+    #         "noteType": "LaneSwap",
+    #         "laneChanges": [
+    #             {
+    #                 "lane": 0,
+    #                 "newLanePosition": "FourLaneTB_0"
+    #             },
+    #             {
+    #                 "lane": 1,
+    #                 "newLanePosition": "FourLaneTB_1"
+    #             },
+    #             {
+    #                 "lane": 2,
+    #                 "newLanePosition": "None"
+    #             },
+    #             {
+    #                 "lane": 3,
+    #                 "newLanePosition": "FourLaneTB_2"
+    #             },
+    #             {
+    #                 "lane": 4,
+    #                 "newLanePosition": "FourLaneTB_3"
+    #             }
+    #         ]
+    #     }
+    # },
 
 def get_stored_songs():
     song_directories = os.listdir('beatmaps/')
