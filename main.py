@@ -138,11 +138,12 @@ def edit_beatmap(song_name, song_difficulty):
     beatmap_read.close()
 
     notes_filled = edit_beatmap_input(notes)
+    sorted_notes_filled = sorted(notes_filled, key=lambda note: note['startBeat'])
 
     with open('beatmaps/' + song_name + "/"
               + song_name + "_" + song_difficulty + ".json",
               "w") as beatmap_write:
-        json.dump({"notes": notes_filled, "laneEvents": laneEvents}, beatmap_write, indent=4)
+        json.dump({"notes": sorted_notes_filled, "laneEvents": laneEvents}, beatmap_write, indent=4)
     beatmap_write.close()
     print(border + "\t\t✨ " + song_name + " on " + song_difficulty + " difficulty updated! ✨" + border)
 
@@ -158,7 +159,7 @@ def edit_beatmap_input(notes):
             print("Either enter a number or 'exit'!")
             edit_beatmap_input(notes)
 
-        notes.append({beat: beat})
+        notes.append({"startBeat": beat})
 
         edit_beatmap_input(notes)
     return notes
