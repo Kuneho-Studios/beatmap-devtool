@@ -159,11 +159,8 @@ def edit_beatmap_input(notes):
             print("Either enter a number or 'exit'!")
             edit_beatmap_input(notes)
         lane = set_lane(beat)
-        print("BEAT", beat, " LANE", lane)
         note_json_object = {"startBeat": beat, "lane": lane}
-        print("JSON OBJECT", note_json_object)
         notes.append(note_json_object)
-        print("NOTES ", notes)
 
         edit_beatmap_input(notes)
     return notes
@@ -176,7 +173,6 @@ def set_lane(beat):
     except ValueError:
         print("Enter a number!")
         set_lane(beat)
-    print("RETURNING ", lane)
     return lane
 
 
