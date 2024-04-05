@@ -55,7 +55,7 @@ two_lanes_right_left = [
     ║            ---- x  ║
     ║            ---- x  ║
     ╚════════════════════╝
-    """, [ "None", "TwoLaneRL_0", "TwoLaneRL_1", "None", "None"]),
+    """, ["None", "TwoLaneRL_0", "TwoLaneRL_1", "None", "None"]),
     ("""
     ╔════════════════════╗
     ║            ---- x  ║

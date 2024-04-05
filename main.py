@@ -5,13 +5,14 @@ import laneArt
 file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 file_path_root = "Content/ProjectRadiance/Data/"
 border = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-current_lane_count = 5
 
 note_types_list = [
     "Tap",
     "Hold",
     "LaneSwap"
 ]
+
+one_lane_swap_types_dict = {}
 
 two_lane_swap_types_dict = {
     "Two Lanes Left to Right": laneArt.two_lanes_left_right,
@@ -36,11 +37,16 @@ five_lane_swap_types_dict = {
 }
 
 lane_swap_types_dict = {
+    1: one_lane_swap_types_dict,
     2: two_lane_swap_types_dict,
     3: three_lane_swap_types_dict,
     4: four_lane_swap_types_dict,
     5: five_lane_swap_types_dict
 }
+
+current_lane_count = 2
+current_lane_configuration = "Two Lanes Left to Right"
+current_lane_configuration_art = laneArt.two_lanes_left_right[0][0]
 
 
 def main():
@@ -174,12 +180,21 @@ def edit_beatmap_input(notes):
 
 
 def set_lane(beat):
+    print("\nCurrent Lane Configuration: " + current_lane_configuration)
+    print(current_lane_configuration_art)
+    for i in range(current_lane_count):
+        print(str(i + 1) + ") Lane " + str(i + 1))
     lane = input("What lane is beat " + str(beat) + " on? ")
     try:
         lane = int(lane)
     except ValueError:
         print("Enter a number!")
         set_lane(beat)
+
+    if lane < 1 or lane > current_lane_count:
+        print(str(lane) + " is not included in the above range. Please enter again.\n")
+        set_lane(beat)
+
     return lane
 
 
@@ -199,7 +214,9 @@ def set_note_data(beat, lane):
 
 
 def set_lane_swap():
-    lane_swap_lane_count = input("How many lanes for the new lane configuration? ")
+    print("\nAvailable Lane Sizes:")
+    dropdown_for_user_input(lane_swap_types_dict.keys())
+    lane_swap_lane_count = input("Enter the number of lanes in the new lane configuration? ")
     try:
         lane_swap_lane_count = int(lane_swap_lane_count)
     except ValueError:
@@ -223,7 +240,11 @@ def set_lane_variation(lane_swap_lane_count):
         print(lane_type_input + " is not included in the above range. Please enter again.")
         set_lane_variation(lane_swap_lane_count)
 
-    lane_configuration = lane_swap_types_dict.get(lane_swap_lane_count).get(list(lane_type_keys)[lane_type_input - 1])
+    global current_lane_configuration
+    current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
+
+    lane_configuration = lane_swap_types_dict.get(lane_swap_lane_count).get(current_lane_configuration)
+
     return set_lane_changes(lane_configuration)
 
 
@@ -240,6 +261,9 @@ def set_lane_changes(lane_configuration_list):
     lane_changes_list = []
     for i in range(5):
         lane_changes_list.append({"lane": i, "newLanePosition": selected_lane_list[i]})
+
+    global current_lane_configuration_art
+    current_lane_configuration_art = lane_configuration_list[lane_configuration_input - 1][0]
 
     return lane_changes_list
 
@@ -277,7 +301,7 @@ def dropdown_for_user_input(list_to_print):
     display_index = 1
 
     for item in list_to_print:
-        print(str(display_index) + ") " + item)
+        print(str(display_index) + ") " + str(item))
         display_index += 1
 
 
