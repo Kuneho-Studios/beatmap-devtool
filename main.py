@@ -1,9 +1,11 @@
 import json
 import os
+import laneArt
 
 file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 file_path_root = "Content/ProjectRadiance/Data/"
 border = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+current_lane_count = 5
 
 note_types_list = [
     "Tap",
@@ -11,35 +13,33 @@ note_types_list = [
     "LaneSwap"
 ]
 
-two_lane_swap_types_list = [
-    "Two Lanes Left to Right",
-    "Two Lanes Right to Left",
-]
+two_lane_swap_types_dict = {
+    "Two Lanes Left to Right": laneArt.two_lanes_left_right,
+    "Two Lanes Right to Left": laneArt.two_lanes_right_left
+}
 
-three_lane_swap_types_list = [
+three_lane_swap_types_dict = {}
 
-]
+four_lane_swap_types_dict = {
+    "Four Lanes Top to Bottom": ["FourLaneTB_0", "FourLaneTB_1", "FourLaneTB_2", "FourLaneTB_3"],
+    "Four Lanes Bottom to Top": ["FourLaneBT_0", "FourLaneBT_1", "FourLaneBT_2", "FourLaneBT_3"],
+    "Four Corners": ["CornersTL", "CornersBL", "CornersBR", "CornersTR"],
+    "Four Lanes Left to Right": ["FourLaneLR_0", "FourLaneLR_1", "FourLaneLR_2", "FourLaneLR_3"],
+    "Four Lanes Right to Left": ["FourLaneRL_0", "FourLaneRL_1", "FourLaneRL_2", "FourLaneRL_3"]
+}
 
-four_lane_swap_types_list = [
-    "Four Lanes Top to Bottom",
-    "Four Lanes Bottom to Top",
-    "Four Corners",
-    "Four Lanes Left to Right",
-    "Four Lanes Right to Left"
-]
-
-five_lane_swap_types_list = [
-    "Five Lanes Top to Bottom",
-    "Five Lanes Right to Left",
-    "Five Lanes Left to Right",
-    "Four Corners and Middle Top to Bottom",
-]
+five_lane_swap_types_dict = {
+    "Five Lanes Top to Bottom": ["FiveLaneTB_0", "FiveLaneTB_1", "FiveLaneTB_2", "FiveLaneTB_3", "FiveLaneTB_4"],
+    "Five Lanes Right to Left": ["FiveLaneRL_0", "FiveLaneRL_1", "FiveLaneRL_2", "FiveLaneRL_3", "FiveLaneRL_4"],
+    "Five Lanes Left to Right": ["FiveLaneLR_0", "FiveLaneLR_1", "FiveLaneLR_2", "FiveLaneLR_3", "FiveLaneLR_4"],
+    "Four Corners and Middle Top to Bottom": ["CornersTL", "CornersBL", "FiveLaneTB_2", "CornersBR", "CornersTR"]
+}
 
 lane_swap_types_dict = {
-    2: two_lane_swap_types_list,
-    3: three_lane_swap_types_list,
-    4: four_lane_swap_types_list,
-    5: five_lane_swap_types_list
+    2: two_lane_swap_types_dict,
+    3: three_lane_swap_types_dict,
+    4: four_lane_swap_types_dict,
+    5: five_lane_swap_types_dict
 }
 
 
@@ -184,13 +184,9 @@ def set_lane(beat):
 
 
 def set_note_data(beat, lane):
-    note_types_list_index = 1
-
-    for note_type in note_types_list:
-        print(str(note_types_list_index) + ") " + note_type)
-        note_types_list_index += 1
-
-    note_type_input = int(input("\nEnter the number of beat " + str(beat) + " lane " + str(lane) + "'s note type: "))
+    print("\nAvailable Note Types:")
+    dropdown_for_user_input(note_types_list)
+    note_type_input = int(input("Enter the number of beat " + str(beat) + " lane " + str(lane) + "'s note type: "))
 
     if note_type_input < 1 or note_type_input > len(note_types_list) + 1:
         print(note_type_input + " is not included in the above range. Please enter again.")
@@ -213,68 +209,48 @@ def set_lane_swap():
         print(lane_swap_lane_count + " is not a valid lane size configuration." +
               " Your options are: " + str(lane_swap_types_dict.keys()))
         set_lane_swap()
-    set_lane_variation(lane_swap_lane_count)
+    return set_lane_variation(lane_swap_lane_count)
 
 
 def set_lane_variation(lane_swap_lane_count):
-    lane_type_list = lane_swap_types_dict.get(lane_swap_lane_count)
+    lane_type_keys = lane_swap_types_dict.get(lane_swap_lane_count).keys()
 
-    lane_type_list_index = 1
-    for lane_swap in lane_type_list:
-        print(str(lane_type_list_index) + ") " + lane_swap)
-        lane_type_list_index += 1
+    print("\nAvailable Lane Variations:")
+    dropdown_for_user_input(lane_type_keys)
+    lane_type_input = int(input("Enter the " + str(lane_swap_lane_count) + "-lane variation: "))
 
-    lane_type_input = int(input("\nEnter the " + str(lane_swap_lane_count) + "-lane variation: "))
-
-    if lane_type_input > len(lane_type_list):
+    if lane_type_input > len(lane_type_keys):
         print(lane_type_input + " is not included in the above range. Please enter again.")
         set_lane_variation(lane_swap_lane_count)
 
-    set_lane_changes(lane_type_list[lane_type_input - 1])
+    lane_configuration = lane_swap_types_dict.get(lane_swap_lane_count).get(list(lane_type_keys)[lane_type_input - 1])
+    return set_lane_changes(lane_configuration)
 
 
-def set_lane_changes(lane_variation):
-    print("setting lane changes for", lane_variation)
-    # {
-    #     "startBeat": 39.5,
-    #     "lane": 4,
-    #     "noteData": {
-    #         "noteType": "LaneSwap",
-    #         "laneChanges": [
-    #             {
-    #                 "lane": 0,
-    #                 "newLanePosition": "FourLaneTB_0"
-    #             },
-    #             {
-    #                 "lane": 1,
-    #                 "newLanePosition": "FourLaneTB_1"
-    #             },
-    #             {
-    #                 "lane": 2,
-    #                 "newLanePosition": "None"
-    #             },
-    #             {
-    #                 "lane": 3,
-    #                 "newLanePosition": "FourLaneTB_2"
-    #             },
-    #             {
-    #                 "lane": 4,
-    #                 "newLanePosition": "FourLaneTB_3"
-    #             }
-    #         ]
-    #     }
-    # },
+def set_lane_changes(lane_configuration_list):
+    lane_configuration_art_list = []
+    for lane_configuration in lane_configuration_list:
+        lane_configuration_art_list.append(lane_configuration[0])
+
+    print("\nAvailable Lane Positions:")
+    dropdown_for_user_input(lane_configuration_art_list)
+    lane_configuration_input = int(input("Enter the number of the lane configuration you want the swap to be: "))
+    selected_lane_list = lane_configuration_list[lane_configuration_input - 1][1]
+
+    lane_changes_list = []
+    for i in range(5):
+        lane_changes_list.append({"lane": i, "newLanePosition": selected_lane_list[i]})
+
+    return lane_changes_list
+
 
 def get_stored_songs():
     song_directories = os.listdir('beatmaps/')
     song_directories.remove("EMPTY_BEATMAP_DO_NOT_DELETE.json")
-    song_directory_index = 1
 
-    for directory in song_directories:
-        print(str(song_directory_index) + ") " + directory)
-        song_directory_index += 1
-
-    directory_input = int(input("\nEnter the number of the song you would like to beatmap: "))
+    print("\nAvailable Songs:")
+    dropdown_for_user_input(song_directories)
+    directory_input = int(input("Enter the number of the song you would like to beatmap: "))
     song_name = song_directories[directory_input - 1]
     return song_name
 
@@ -282,13 +258,11 @@ def get_stored_songs():
 def get_stored_difficulties(song_name):
     difficulty_beatmaps = os.listdir('beatmaps/' + song_name + "/")
     difficulty_beatmaps = [element for element in difficulty_beatmaps if "Data.json" not in element]
-    difficulty_directory_index = 1
 
-    for directory in difficulty_beatmaps:
-        print(str(difficulty_directory_index) + ") " + directory)
-        difficulty_directory_index += 1
+    print("\nAvailable Difficulties:")
+    dropdown_for_user_input(difficulty_beatmaps)
+    directory_input = int(input("Enter the number of the difficulty you would like to beatmap: "))
 
-    directory_input = int(input("\nEnter the number of the difficulty you would like to beatmap: "))
     difficulty_name = difficulty_beatmaps[directory_input - 1]
     return difficulty_name
 
@@ -297,6 +271,14 @@ def string_to_pascal_case(string_to_convert):
     words = string_to_convert.split()
     pascal_case_words = [word.capitalize() for word in words]
     return ''.join(pascal_case_words)
+
+
+def dropdown_for_user_input(list_to_print):
+    display_index = 1
+
+    for item in list_to_print:
+        print(str(display_index) + ") " + item)
+        display_index += 1
 
 
 main()
