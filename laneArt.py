@@ -1,13 +1,3 @@
-# ↖
-# ↗
-# ↘
-# ↙
-
-# ↑
-# →
-# ↓
-# ←
-
 two_lanes_left_right = [
     ("""
     ╔═══════════════════╗
@@ -180,4 +170,16 @@ four_lanes_bottom_top = [
     ║                   ║
     ╚═══════════════════╝
     """, ["FourLaneBT_0", "FourLaneBT_1", "FourLaneBT_2", "FourLaneBT_3", "None"])
+]
+
+four_lanes_corners = [
+    ("""
+    ╔═══════════════════╗
+    ║  1             4  ║
+    ║   ↖           ↗   ║
+    ║                   ║
+    ║   ↙           ↘   ║
+    ║  2             3  ║
+    ╚═══════════════════╝
+    """, ["CornersTL", "CornersBL", "None", "CornersBR", "CornersTR"])
 ]
