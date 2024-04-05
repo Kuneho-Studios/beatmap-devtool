@@ -25,8 +25,8 @@ four_lane_swap_types_dict = {
     "Four Lanes Top to Bottom": laneArt.four_lanes_top_bottom,
     "Four Lanes Bottom to Top": laneArt.four_lanes_bottom_top,
     "Four Corners": laneArt.four_lanes_corners,
-    "Four Lanes Left to Right": ["FourLaneLR_0", "FourLaneLR_1", "FourLaneLR_2", "FourLaneLR_3"],
-    "Four Lanes Right to Left": ["FourLaneRL_0", "FourLaneRL_1", "FourLaneRL_2", "FourLaneRL_3"]
+    "Four Lanes Left to Right": laneArt.four_lanes_left_right,
+    "Four Lanes Right to Left": laneArt.four_lanes_right_left
 }
 
 five_lane_swap_types_dict = {
