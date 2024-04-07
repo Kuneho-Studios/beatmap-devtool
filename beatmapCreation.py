@@ -79,6 +79,6 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre,
         + song_name
         + "\" by "
         + artist_name
-        + " has been created in the \"beatmaps/\" directory along with empty files for your "
+        + " has been created with "
         + str(len(difficulties))
         + " difficulties.")
