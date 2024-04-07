@@ -3,8 +3,10 @@ import os
 
 import util
 
-file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
-file_path_root = "Content/ProjectRadiance/Data/"
+BEATMAPS_DIRECTORY = 'beatmaps/'
+
+FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
+FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
 
 
 def get_user_input():
@@ -37,25 +39,28 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre,
   template["songName"] = song_name
   template["album"] = album_name
   template["artist"] = artist_name
-  template["fileLocation"] = file_location_root + song_name_pascal
+  template["fileLocation"] = FILE_LOCATION_ROOT + song_name_pascal
   template["bpm"] = bpm
   template["length"] = length
   template["genre"] = genre
 
   difficulty_data = []
 
-  os.makedirs('beatmaps/' + song_name_pascal)
+  if not os.path.exists(BEATMAPS_DIRECTORY):
+    os.makedirs(BEATMAPS_DIRECTORY)
+
+  os.makedirs(BEATMAPS_DIRECTORY + song_name_pascal)
 
   for difficulty in difficulties:
     data = {
       "tier": difficulty,
-      "filePath": file_path_root
+      "filePath": FILE_PATH_ROOT
                   + song_name_pascal + "_" + util.string_to_pascal_case(
           difficulty) + ".json"
     }
     difficulty_data.append(data)
 
-    with open('beatmaps/' + song_name_pascal + "/"
+    with open(BEATMAPS_DIRECTORY + song_name_pascal + "/"
               + song_name_pascal + "_" + util.string_to_pascal_case(
         difficulty) + ".json",
               "x") as difficulty_file:
@@ -65,7 +70,7 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre,
   template["difficulty"] = difficulty_data
 
   with open(
-      'beatmaps/' + song_name_pascal + "/" + song_name_pascal + "Data.json",
+      BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json",
       "x") as data_file:
     json.dump(template, data_file, indent=4)
   data_file.close()
