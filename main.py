@@ -30,10 +30,12 @@ four_lane_swap_types_dict = {
 }
 
 five_lane_swap_types_dict = {
-    "Five Lanes Top to Bottom": ["FiveLaneTB_0", "FiveLaneTB_1", "FiveLaneTB_2", "FiveLaneTB_3", "FiveLaneTB_4"],
-    "Five Lanes Right to Left": ["FiveLaneRL_0", "FiveLaneRL_1", "FiveLaneRL_2", "FiveLaneRL_3", "FiveLaneRL_4"],
-    "Five Lanes Left to Right": ["FiveLaneLR_0", "FiveLaneLR_1", "FiveLaneLR_2", "FiveLaneLR_3", "FiveLaneLR_4"],
-    "Four Corners and Middle Top to Bottom": ["CornersTL", "CornersBL", "FiveLaneTB_2", "CornersBR", "CornersTR"]
+    "Five Lanes Top to Bottom": laneArt.five_lanes_top_bottom,
+    "Five Lanes Bottom to Top": laneArt.five_lanes_bottom_top,
+    "Five Lanes Right to Left": laneArt.five_lanes_right_left,
+    "Five Lanes Left to Right": laneArt.five_lanes_left_right,
+    "Four Corners and Middle Top to Bottom": laneArt.five_lanes_corner_middle_top_bottom,
+    "Four Corners and Middle Bottom to Top": laneArt.five_lanes_corner_middle_bottom_top,
 }
 
 lane_swap_types_dict = {

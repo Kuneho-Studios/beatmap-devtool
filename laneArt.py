@@ -177,7 +177,7 @@ four_lanes_corners = [
     ╔═══════════════════╗
     ║  1             4  ║
     ║   ↖           ↗   ║
-    ║                   ║
+    ║     >       <     ║
     ║   ↙           ↘   ║
     ║  2             3  ║
     ╚═══════════════════╝
@@ -278,4 +278,77 @@ four_lanes_right_left = [
     ║  x ----           ║
     ╚═══════════════════╝
     """, ["FourLaneRL_0", "FourLaneRL_1", "FourLaneRL_2", "FourLaneRL_3", "None"])
+]
+
+five_lanes_top_bottom = [
+    ("""
+    ╔═══════════════════╗
+    ║                   ║
+    ║   |  |  |  |  |   ║
+    ║   |  |  |  |  |   ║
+    ║   ↓  ↓  ↓  ↓  ↓   ║
+    ║   1  2  3  4  5   ║
+    ╚═══════════════════╝
+    """, ["FiveLaneTB_0", "FiveLaneTB_1", "FiveLaneTB_2", "FiveLaneTB_3", "FiveLaneTB_4"])
+]
+
+five_lanes_bottom_top = [
+    ("""
+    ╔═══════════════════╗
+    ║   1  2  3  4  x   ║
+    ║   ↑  ↑  ↑  ↑  |   ║
+    ║   |  |  |  |  |   ║
+    ║   |  |  |  |  |   ║
+    ║                   ║
+    ╚═══════════════════╝
+    """, ["FiveLaneBT_0", "FiveLaneBT_1", "FiveLaneBT_2", "FiveLaneBT_3", "FiveLaneBT_4"])
+
+]
+
+five_lanes_right_left = [
+    ("""
+    ╔═══════════════════╗
+    ║  1 ←---           ║
+    ║  2 ←---           ║
+    ║  3 ←---           ║
+    ║  4 ←---           ║
+    ║  5 ←---           ║
+    ╚═══════════════════╝
+    """, ["FiveLaneRL_0", "FiveLaneRL_1", "FiveLaneRL_2", "FiveLaneRL_3", "FiveLaneRL_4"])
+]
+
+five_lanes_left_right = [
+    ("""
+    ╔═══════════════════╗
+    ║           ---→ 1  ║
+    ║           ---→ 2  ║
+    ║           ---→ 3  ║
+    ║           ---→ 4  ║
+    ║           ---→ 5  ║
+    ╚═══════════════════╝
+    """, ["FiveLaneLR_0", "FiveLaneLR_1", "FiveLaneLR_2", "FiveLaneLR_3", "FiveLaneLR_4"])
+]
+
+five_lanes_corner_middle_top_bottom = [
+    ("""
+    ╔═══════════════════╗
+    ║  1             4  ║
+    ║   ↖     |     ↗   ║
+    ║     >   |   <     ║
+    ║   ↙     ↓     ↘   ║
+    ║  2      5      3  ║
+    ╚═══════════════════╝
+    """, ["CornersTL", "CornersBL", "FiveLaneTB_2", "CornersBR", "CornersTR"])
+]
+
+five_lanes_corner_middle_bottom_top = [
+    ("""
+    ╔═══════════════════╗
+    ║  1      5      4  ║
+    ║   ↖     ↑     ↗   ║
+    ║     >   |   <     ║
+    ║   ↙     |     ↘   ║
+    ║  2             3  ║
+    ╚═══════════════════╝
+    """, ["CornersTL", "CornersBL", "FiveLaneBT_2", "CornersBR", "CornersTR"])
 ]
