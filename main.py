@@ -9,12 +9,14 @@ import beatmapEdit
 import util
 
 
+# display the starting message and call the entry method to determine if editing or creating a beatmap
 def main():
     print(
         util.border + "   ✨ Welcome To Project Radiance's Beatmap Dev Tool ✨" + util.border)
     get_user_purpose()
 
 
+# gets initial user input. if create, then create a new beatmap. if edit, then identify what to edit.
 def get_user_purpose():
     create_or_edit = input(
         "Would you like to create a new beatmap or edit an existing one? (create/edit) ")
@@ -29,6 +31,7 @@ def get_user_purpose():
     get_user_purpose()
 
 
+# gets the specified beatmap that the user would like to edit
 def get_beatmap():
     song_list = util.get_stored_songs()
 

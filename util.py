@@ -51,12 +51,15 @@ lane_swap_types_dict = {
 }
 
 
+# converts a string to PascalCase
 def string_to_pascal_case(string_to_convert):
     words = string_to_convert.split()
     pascal_case_words = [word.capitalize() for word in words]
     return ''.join(pascal_case_words)
 
 
+# helper method that given a list.
+# creates the prompt menu which displays all elements in the list for the user to pick from
 def dropdown_for_user_input(list_to_print):
     display_index = 1
 
@@ -65,14 +68,16 @@ def dropdown_for_user_input(list_to_print):
         display_index += 1
 
 
+# reads from the beatmaps directory to return all the saved songs
+# if directory does not exist, return an empty list
 def get_stored_songs():
     if not os.path.exists('beatmaps/'):
         return []
     song_directories = os.listdir('beatmaps/')
-    song_directories.remove("EMPTY_BEATMAP_DO_NOT_DELETE.json")
     return song_directories
 
 
+# given a list of songs, display them for the user to input which they would like to edit
 def input_stored_songs(song_directories):
     print("\nAvailable Songs:")
     dropdown_for_user_input(song_directories)
@@ -81,12 +86,15 @@ def input_stored_songs(song_directories):
     return song_directories[directory_input - 1]
 
 
+# reads from the given song name directory to return all the saved difficulties
+# doesn't display the ...Data.json file that is present for every song
 def get_stored_difficulties(song_name):
     difficulty_beatmaps = os.listdir('beatmaps/' + song_name + "/")
     return [element for element in difficulty_beatmaps if
             "Data.json" not in element]
 
 
+# given a list of difficulties for a select song, display them for the user to input which they would like to edit
 def input_stored_difficulties(difficulty_beatmaps):
     print("\nAvailable Difficulties:")
     dropdown_for_user_input(difficulty_beatmaps)

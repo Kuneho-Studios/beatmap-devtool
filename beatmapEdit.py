@@ -11,6 +11,9 @@ CURRENT_LANE_CONFIGURATION = "Two Lanes Left to Right"
 CURRENT_LANE_CONFIGURATION_ART = laneArt.TWO_LANES_RIGHT_LEFT[0][0]
 
 
+# open the existing beatmap for editing. then calls method edit_beatmap_input to loop through the editing/adding process
+# obtain the laneEvents since it will not be changed here.
+# paste it at the end of the editing process to ensure it remains.
 def edit_beatmap(song_name, song_difficulty):
     with open('beatmaps/' + song_name + "/"
               + song_name + "_" + song_difficulty + ".json",
@@ -34,6 +37,7 @@ def edit_beatmap(song_name, song_difficulty):
         util.border + "\t\t✨ " + song_name + " on " + song_difficulty + " difficulty updated! ✨" + util.border)
 
 
+# obtain the beat for the current note to be added to the beatmap
 def edit_beatmap_input(notes):
     beat = input(
         "What is the beat for the note you want to add? (type 'exit' to leave editor) ")
@@ -54,6 +58,7 @@ def edit_beatmap_input(notes):
     return notes
 
 
+# set the lane that the current beat will reside on
 def set_lane(beat):
     print("\nCurrent Lane Configuration: " + CURRENT_LANE_CONFIGURATION)
     print(CURRENT_LANE_CONFIGURATION_ART)
@@ -75,6 +80,7 @@ def set_lane(beat):
     return lane
 
 
+# set the note type. if is a "laneSwap" then call methods to determine what to swap to
 def set_note_data(beat, lane):
     print("\nAvailable Note Types:")
     util.dropdown_for_user_input(util.note_types_list)
@@ -93,6 +99,7 @@ def set_note_data(beat, lane):
     return {"noteType": util.note_types_list[note_type_input - 1]}
 
 
+# given the desire to perform a lane swap, prompt and gather how many lanes the user would like the swap to have
 def set_lane_swap():
     print("\nAvailable Lane Sizes:")
     util.dropdown_for_user_input(util.lane_swap_types_dict.keys())
@@ -110,6 +117,7 @@ def set_lane_swap():
     return set_lane_variation(lane_swap_lane_count)
 
 
+# given the desired lane swap count, display the art for the different variations and allow the user to select which one
 def set_lane_variation(lane_swap_lane_count):
     lane_type_keys = util.lane_swap_types_dict.get(lane_swap_lane_count).keys()
 
@@ -132,6 +140,7 @@ def set_lane_variation(lane_swap_lane_count):
     return set_lane_changes(lane_configuration)
 
 
+# given the desired lane format, display the art for the different changes and allow the user to select which one
 def set_lane_changes(lane_configuration_list):
     lane_configuration_art_list = []
     for lane_configuration in lane_configuration_list:

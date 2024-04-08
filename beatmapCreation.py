@@ -14,6 +14,7 @@ FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
 
 
+# gather all user data about the basic song info
 def get_user_input():
     song_name = input("What's the song name? ").strip()
     album_name = input("What's the album name? ").strip()
@@ -29,55 +30,31 @@ def get_user_input():
             "What's difficulty " + str(count + 1) + "? ").strip()
         difficulties.append(new_difficultly)
         count += 1
-    fill_data_template(song_name, album_name, artist_name, bpm, length, genre,
-                       difficulties)
+    create_root_data_file(song_name, album_name, artist_name, bpm, length, genre, difficulties)
 
 
-def fill_data_template(song_name, album_name, artist_name, bpm, length, genre,
-                       difficulties):
-    with open('template/data_json_template.json', 'r') as template_file:
-        template = json.load(template_file)
-    template_file.close()
-
+# creates the ...Data.json file containing all the basic information that is requested for the song
+def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre, difficulties):
     song_name_pascal = util.string_to_pascal_case(song_name)
 
-    template["songName"] = song_name
-    template["album"] = album_name
-    template["artist"] = artist_name
-    template["fileLocation"] = FILE_LOCATION_ROOT + song_name_pascal
-    template["bpm"] = bpm
-    template["length"] = length
-    template["genre"] = genre
+    create_directories(song_name_pascal)
 
-    difficulty_data = []
-
-    if not os.path.exists(BEATMAPS_DIRECTORY):
-        os.makedirs(BEATMAPS_DIRECTORY)
-
-    os.makedirs(BEATMAPS_DIRECTORY + song_name_pascal)
-
-    for difficulty in difficulties:
-        data = {
-            "tier": difficulty,
-            "filePath": FILE_PATH_ROOT
-                        + song_name_pascal + "_" + util.string_to_pascal_case(
-                difficulty) + ".json"
-        }
-        difficulty_data.append(data)
-
-        with open(BEATMAPS_DIRECTORY + song_name_pascal + "/"
-                  + song_name_pascal + "_" + util.string_to_pascal_case(difficulty) + ".json",
-                  "x") as difficulty_file:
-            json.dump({"notes": [], "laneEvents": []}, difficulty_file, indent=4)
-        difficulty_file.close()
-
-    template["difficulty"] = difficulty_data
+    data_file = {
+        "songName": song_name,
+        "album": album_name,
+        "artist": artist_name,
+        "fileLocation": FILE_LOCATION_ROOT + song_name_pascal,
+        "bpm": bpm,
+        "length": length,
+        "genre": genre,
+        "difficulty": create_difficulty_files()
+    }
 
     with open(
             BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json",
-            "x") as data_file:
-        json.dump(template, data_file, indent=4)
-    data_file.close()
+            "x") as root_data_file:
+        json.dump(data_file, root_data_file, indent=4)
+    root_data_file.close()
 
     print("\nYour beatmap's root file for \""
           + song_name
@@ -86,3 +63,30 @@ def fill_data_template(song_name, album_name, artist_name, bpm, length, genre,
           + " has been created with "
           + str(len(difficulties))
           + " difficulties.")
+
+
+# creates the empty beatmap files for each of the difficulties the user plans on having for the given song
+def create_difficulty_files(input_difficulties, song_name):
+    difficulty_data = []
+    for difficulty in input_difficulties:
+        data = {
+            "tier": difficulty,
+            "filePath": FILE_PATH_ROOT + song_name + "_" + util.string_to_pascal_case(difficulty) + ".json"
+        }
+        difficulty_data.append(data)
+
+        with open(BEATMAPS_DIRECTORY + song_name + "/"
+                  + song_name + "_" + util.string_to_pascal_case(difficulty) + ".json",
+                  "x") as difficulty_file:
+            json.dump({"notes": [], "laneEvents": []}, difficulty_file, indent=4)
+        difficulty_file.close()
+    return difficulty_data
+
+
+# creates 'beatmaps/` directory if not already existing.
+# then creates the directory named after the song to hold all the beatmap files
+def create_directories(song_name_pascal):
+    if not os.path.exists(BEATMAPS_DIRECTORY):
+        os.makedirs(BEATMAPS_DIRECTORY)
+
+    os.makedirs(BEATMAPS_DIRECTORY + song_name_pascal)
