@@ -4,7 +4,7 @@
 
 import os
 
-import laneArt
+import LaneArt
 
 file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 file_path_root = "Content/ProjectRadiance/Data/"
@@ -19,27 +19,27 @@ note_types_list = [
 one_lane_swap_types_dict = {}
 
 two_lane_swap_types_dict = {
-    "Two Lanes Left to Right": laneArt.TWO_LANES_RIGHT_LEFT,
-    "Two Lanes Right to Left": laneArt.TWO_LANES_LEFT_RIGHT
+    "Two Lanes Left to Right": LaneArt.TWO_LANES_RIGHT_LEFT,
+    "Two Lanes Right to Left": LaneArt.TWO_LANES_LEFT_RIGHT
 }
 
 three_lane_swap_types_dict = {}
 
 four_lane_swap_types_dict = {
-    "Four Lanes Top to Bottom": laneArt.FOUR_LANES_TOP_BOTTOM,
-    "Four Lanes Bottom to Top": laneArt.FOUR_LANES_BOTTOM_TOP,
-    "Four Corners": laneArt.FOUR_LANES_CORNERS,
-    "Four Lanes Left to Right": laneArt.FOUR_LANES_LEFT_RIGHT,
-    "Four Lanes Right to Left": laneArt.FOUR_LANES_RIGHT_LEFT
+    "Four Lanes Top to Bottom": LaneArt.FOUR_LANES_TOP_BOTTOM,
+    "Four Lanes Bottom to Top": LaneArt.FOUR_LANES_BOTTOM_TOP,
+    "Four Corners": LaneArt.FOUR_LANES_CORNERS,
+    "Four Lanes Left to Right": LaneArt.FOUR_LANES_LEFT_RIGHT,
+    "Four Lanes Right to Left": LaneArt.FOUR_LANES_RIGHT_LEFT
 }
 
 five_lane_swap_types_dict = {
-    "Five Lanes Top to Bottom": laneArt.FIVE_LANES_TOP_BOTTOM,
-    "Five Lanes Bottom to Top": laneArt.FIVE_LANES_BOTTOM_TOP,
-    "Five Lanes Right to Left": laneArt.FIVE_LANES_RIGHT_LEFT,
-    "Five Lanes Left to Right": laneArt.FIVE_LANES_LEFT_RIGHT,
-    "Four Corners and Middle Top to Bottom": laneArt.FIVE_LANES_CORNER_MIDDLE_TOP_BOTTOM,
-    "Four Corners and Middle Bottom to Top": laneArt.FIVE_LANES_CORNER_MIDDLE_BOTTOM_TOP,
+    "Five Lanes Top to Bottom": LaneArt.FIVE_LANES_TOP_BOTTOM,
+    "Five Lanes Bottom to Top": LaneArt.FIVE_LANES_BOTTOM_TOP,
+    "Five Lanes Right to Left": LaneArt.FIVE_LANES_RIGHT_LEFT,
+    "Five Lanes Left to Right": LaneArt.FIVE_LANES_LEFT_RIGHT,
+    "Four Corners and Middle Top to Bottom": LaneArt.FIVE_LANES_CORNER_MIDDLE_TOP_BOTTOM,
+    "Four Corners and Middle Bottom to Top": LaneArt.FIVE_LANES_CORNER_MIDDLE_BOTTOM_TOP,
 }
 
 lane_swap_types_dict = {

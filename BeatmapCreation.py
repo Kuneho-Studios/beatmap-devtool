@@ -6,7 +6,7 @@
 import json
 import os
 
-import util
+import Util
 
 BEATMAPS_DIRECTORY = 'beatmaps/'
 
@@ -35,7 +35,7 @@ def get_user_input():
 
 # creates the ...Data.json file containing all the basic information that is requested for the song
 def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre, difficulties):
-    song_name_pascal = util.string_to_pascal_case(song_name)
+    song_name_pascal = Util.string_to_pascal_case(song_name)
 
     create_directories(song_name_pascal)
 
@@ -71,12 +71,12 @@ def create_difficulty_files(input_difficulties, song_name):
     for difficulty in input_difficulties:
         data = {
             "tier": difficulty,
-            "filePath": FILE_PATH_ROOT + song_name + "_" + util.string_to_pascal_case(difficulty) + ".json"
+            "filePath": FILE_PATH_ROOT + song_name + "_" + Util.string_to_pascal_case(difficulty) + ".json"
         }
         difficulty_data.append(data)
 
         with open(BEATMAPS_DIRECTORY + song_name + "/"
-                  + song_name + "_" + util.string_to_pascal_case(difficulty) + ".json",
+                  + song_name + "_" + Util.string_to_pascal_case(difficulty) + ".json",
                   "x") as difficulty_file:
             json.dump({"notes": [], "laneEvents": []}, difficulty_file, indent=4)
         difficulty_file.close()
