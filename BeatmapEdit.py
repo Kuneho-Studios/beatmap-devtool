@@ -6,9 +6,9 @@ import json
 import LaneArt
 import Util
 
-CURRENT_LANE_COUNT = 2
-CURRENT_LANE_CONFIGURATION = "Two Lanes Left to Right"
-CURRENT_LANE_CONFIGURATION_ART = LaneArt.TWO_LANES_RIGHT_LEFT[0][0]
+current_lane_count = 2
+current_lane_configuration = "Two Lanes Left to Right"
+current_lane_configuration_art = LaneArt.TWO_LANES_RIGHT_LEFT[0][0]
 
 
 # open the existing beatmap for editing. then calls method edit_beatmap_input to loop through the editing/adding process
@@ -60,9 +60,9 @@ def edit_beatmap_input(notes):
 
 # set the lane that the current beat will reside on
 def set_lane(beat):
-    print("\nCurrent Lane Configuration: " + CURRENT_LANE_CONFIGURATION)
-    print(CURRENT_LANE_CONFIGURATION_ART)
-    for i in range(CURRENT_LANE_COUNT):
+    print("\nCurrent Lane Configuration: " + current_lane_configuration)
+    print(current_lane_configuration_art)
+    for i in range(current_lane_count):
         print(str(i + 1) + ") Lane " + str(i + 1))
     lane = input("What lane is beat " + str(beat) + " on? ")
     try:
@@ -71,7 +71,7 @@ def set_lane(beat):
         print("Enter a number!")
         set_lane(beat)
 
-    if lane < 1 or lane > CURRENT_LANE_COUNT:
+    if lane < 1 or lane > current_lane_count:
         print(
             str(
                 lane) + " is not included in the above range. Please enter again.\n")
@@ -131,11 +131,11 @@ def set_lane_variation(lane_swap_lane_count):
             lane_type_input + " is not included in the above range. Please enter again.")
         set_lane_variation(lane_swap_lane_count)
 
-    global CURRENT_LANE_CONFIGURATION
-    CURRENT_LANE_CONFIGURATION = list(lane_type_keys)[lane_type_input - 1]
+    global current_lane_configuration
+    current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
 
     lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count).get(
-        CURRENT_LANE_CONFIGURATION)
+        current_lane_configuration)
 
     return set_lane_changes(lane_configuration)
 
@@ -157,8 +157,8 @@ def set_lane_changes(lane_configuration_list):
         lane_changes_list.append(
             {"lane": i, "newLanePosition": selected_lane_list[i]})
 
-    global CURRENT_LANE_CONFIGURATION_ART
-    CURRENT_LANE_CONFIGURATION_ART = \
+    global current_lane_configuration_art
+    current_lane_configuration_art = \
         lane_configuration_list[lane_configuration_input - 1][0]
 
     return lane_changes_list
