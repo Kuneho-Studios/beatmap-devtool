@@ -1,3 +1,7 @@
+###
+# Contains the flow for when a user would like to update an existing beatmap. This does the bulk of that work.
+# Fetches the desired song and difficulty beatmap then provides prompts to the user to aid in editing the beatmap.
+###
 import json
 import laneArt
 import util

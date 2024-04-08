@@ -1,3 +1,8 @@
+###
+# Contains the flow for when a user would like to create a new beatmap. This does all that work and creates the root
+# ...Data.json file as well as a file for each beatmap difficulty.
+###
+
 import json
 import os
 

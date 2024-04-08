@@ -1,3 +1,7 @@
+###
+# Contains all the "art" for representing the different lane configurations that are currently supported.
+###
+
 TWO_LANES_RIGHT_LEFT = [
     ("""
     ╔═══════════════════╗

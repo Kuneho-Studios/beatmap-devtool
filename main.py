@@ -1,3 +1,9 @@
+###
+# Contains the main method. This is the file that is ran to initiate the script and get the initial user input to
+# determine which flow to take.
+###
+
+
 import beatmapCreation
 import beatmapEdit
 import util
