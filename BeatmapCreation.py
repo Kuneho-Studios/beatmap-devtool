@@ -19,18 +19,55 @@ def get_user_input():
     song_name = input("What's the song name? ").strip()
     album_name = input("What's the album name? ").strip()
     artist_name = input("What's the artist name? ").strip()
-    bpm = int(input("What's the song's beats per minute? "))
+    bpm = get_bpm_input()
     length = int(input("How many total beats in the song? "))
     genre = input("What's the song's genre? ").strip()
-    difficulty_count = int(input("How many difficulties are there? "))
+    difficulty_count = get_difficulty_count_input()
+    difficulties = get_difficulties_input(difficulty_count)
+    create_root_data_file(song_name, album_name, artist_name, bpm, length, genre, difficulties)
+
+
+def get_bpm_input():
+    bpm = input("What's the song's beats per minute? ")
+    try:
+        bpm = float(bpm)
+    except ValueError:
+        print("\"BPM\" must be a number. Please enter a number")
+        get_bpm_input()
+    return bpm
+
+
+def get_difficulty_count_input():
+    difficulty_count = input("How many difficulties are there? ")
+    try:
+        difficulty_count = int(difficulty_count)
+    except ValueError:
+        print("\"Difficulty Count\" must be a number. Please enter a number")
+        get_difficulty_count_input()
+    return difficulty_count
+
+
+def get_difficulties_input(difficulty_count):
     difficulties = []
     count = 0
+    print("Difficulty is a rating between 1 and 10 (inclusive)")
+    # todo add a cli command to explain how the rating system works - help the user accurately set the difficulty rating
     while count < difficulty_count:
         new_difficultly = input(
             "What's difficulty " + str(count + 1) + "? ").strip()
-        difficulties.append(new_difficultly)
-        count += 1
-    create_root_data_file(song_name, album_name, artist_name, bpm, length, genre, difficulties)
+
+        try:
+            new_difficultly = int(new_difficultly)
+
+            if 0 < new_difficultly < 11:
+                difficulties.append(new_difficultly)
+                count += 1
+            else:
+                print("\nDifficulty must be a whole number between 1 and 10 (inclusive). Please enter again.\n")
+        except ValueError:
+            print("\nDifficulty must be a whole number. Please enter a number.\n")
+
+    return difficulties
 
 
 # creates the ...Data.json file containing all the basic information that is requested for the song
@@ -71,12 +108,12 @@ def create_difficulty_files(input_difficulties, song_name):
     for difficulty in input_difficulties:
         data = {
             "tier": difficulty,
-            "filePath": FILE_PATH_ROOT + song_name + "_" + Util.string_to_pascal_case(difficulty) + ".json"
+            "filePath": FILE_PATH_ROOT + song_name + "_" + str(difficulty) + ".json"
         }
         difficulty_data.append(data)
 
         with open(BEATMAPS_DIRECTORY + song_name + "/"
-                  + song_name + "_" + Util.string_to_pascal_case(difficulty) + ".json",
+                  + song_name + "_" + str(difficulty) + ".json",
                   "x") as difficulty_file:
             json.dump({"notes": [], "laneEvents": []}, difficulty_file, indent=4)
         difficulty_file.close()

@@ -25,10 +25,12 @@ def get_user_purpose():
     elif create_or_edit.lower() == "edit" or create_or_edit.lower() == "e":
         name, difficulty = get_beatmap()
         BeatmapEdit.edit_beatmap(name, difficulty)
+    elif create_or_edit.lower() == "exit":
+        print(Util.border + "❤ Thanks for using Project Radiance's Beatmap Dev Tool ❤" + Util.border)
     else:
         print("Please only enter 'create' or 'edit'")
         get_user_purpose()
-    get_user_purpose()
+    # get_user_purpose()
 
 
 # gets the specified beatmap that the user would like to edit
@@ -40,13 +42,11 @@ def get_beatmap():
         get_user_purpose()
     else:
         song = Util.input_stored_songs(song_list)
-        beatmap = Util.input_stored_difficulties(Util.get_stored_difficulties(song))
-        beatmap_file_name = beatmap.split("_")
-        beatmap_song_name = beatmap_file_name[0]
-        beatmap_song_difficulty = beatmap_file_name[1].split(".json")[0]
+        difficulty_list = Util.extract_and_sort_difficulties(Util.get_stored_difficulties(song))
+        difficulty = str(Util.input_stored_difficulties(difficulty_list))
         print(
-            Util.border + "\t\t✨ Editing " + beatmap_song_name + " on " + beatmap_song_difficulty + " difficulty ✨" + Util.border)
-        return beatmap_song_name, beatmap_song_difficulty
+            Util.border + "\t\t✨ Editing " + str(song) + " on difficulty " + difficulty + " updated ✨" + Util.border)
+        return song, difficulty
 
 
 main()

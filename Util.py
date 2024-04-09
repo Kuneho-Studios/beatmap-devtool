@@ -81,9 +81,20 @@ def get_stored_songs():
 def input_stored_songs(song_directories):
     print("\nAvailable Songs:")
     dropdown_for_user_input(song_directories)
-    directory_input = int(
-        input("Enter the number of the song you would like to beatmap: "))
-    return song_directories[directory_input - 1]
+    directory_input = input("Enter the number of the song you would like to beatmap: ")
+
+    try:
+        directory_input = int(directory_input)
+
+        if 0 < directory_input < len(song_directories) + 1:
+            return song_directories[directory_input - 1]
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            input_stored_songs(song_directories)
+
+    except ValueError:
+        print("\nPlease enter a number from the dropdown list.")
+        input_stored_songs(song_directories)
 
 
 # reads from the given song name directory to return all the saved difficulties
@@ -98,8 +109,24 @@ def get_stored_difficulties(song_name):
 def input_stored_difficulties(difficulty_beatmaps):
     print("\nAvailable Difficulties:")
     dropdown_for_user_input(difficulty_beatmaps)
-    directory_input = int(
-        input("Enter the number of the difficulty you would like to beatmap: "))
+    directory_input = input("Enter the number of the difficulty you would like to beatmap: ")
 
-    difficulty_name = difficulty_beatmaps[directory_input - 1]
-    return difficulty_name
+    try:
+        directory_input = int(directory_input)
+
+        if 0 < directory_input < len(difficulty_beatmaps) + 1:
+            return difficulty_beatmaps[directory_input - 1]
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            input_stored_difficulties(difficulty_beatmaps)
+
+    except ValueError:
+        print("\nPlease enter a number from the dropdown list.")
+        input_stored_difficulties(difficulty_beatmaps)
+
+
+def extract_and_sort_difficulties(difficulty_list):
+    difficulty_list = [s[:-5] for s in difficulty_list]
+    difficulty_list = [s.rsplit('_', 1)[1] for s in difficulty_list]
+    difficulty_list = [int(difficulty) for difficulty in difficulty_list]
+    return sorted(difficulty_list)

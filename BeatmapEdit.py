@@ -44,15 +44,15 @@ def edit_beatmap_input(notes):
     else:
         try:
             beat = float(beat)
+            lane = set_lane(beat)
+            note_data = set_note_data(beat, lane)
+            note_json_object = {"startBeat": beat, "lane": lane, "noteData": note_data}
+            notes.append(note_json_object)
+
+            edit_beatmap_input(notes)
         except ValueError:
             print("Either enter a number or 'exit'!")
             edit_beatmap_input(notes)
-        lane = set_lane(beat)
-        note_data = set_note_data(beat, lane)
-        note_json_object = {"startBeat": beat, "lane": lane, "noteData": note_data}
-        notes.append(note_json_object)
-
-        edit_beatmap_input(notes)
 
     return notes
 
@@ -63,37 +63,45 @@ def set_lane(beat):
     print(current_lane_configuration_art)
     for i in range(current_lane_count):
         print(str(i + 1) + ") Lane " + str(i + 1))
-    lane = input("What lane is beat " + str(beat) + " on? ")
+
+    lane_input = input("What lane is beat " + str(beat) + " on? ")
+
     try:
-        lane = int(lane)
+        lane_input = int(lane_input)
+
+        if 0 < lane_input < current_lane_count + 1:
+            return lane_input
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            set_lane(beat)
+
     except ValueError:
-        print("Enter a number!")
+        print("\nPlease enter a number from the dropdown list.")
         set_lane(beat)
-
-    if lane < 1 or lane > current_lane_count:
-        print(str(lane) + " is not included in the above range. Please enter again.\n")
-        set_lane(beat)
-
-    return lane
 
 
 # set the note type. if is a "laneSwap" then call methods to determine what to swap to
 def set_note_data(beat, lane):
     print("\nAvailable Note Types:")
     Util.dropdown_for_user_input(Util.note_types_list)
-    note_type_input = int(input(
-        "Enter the number of beat " + str(beat) + " lane " + str(
-            lane) + "'s note type: "))
 
-    if note_type_input < 1 or note_type_input > len(Util.note_types_list) + 1:
-        print(
-            note_type_input + " is not included in the above range. Please enter again.")
+    note_type_input = input("Enter the number of beat " + str(beat) + " lane " + str(lane) + "'s note type: ")
+
+    try:
+        note_type_input = int(note_type_input)
+
+        if 0 < note_type_input < len(Util.note_types_list) + 1:
+            if Util.note_types_list[note_type_input - 1] == "LaneSwap":
+                return {"noteType": "LaneSwap", "laneChanges": set_lane_swap()}
+
+            return {"noteType": Util.note_types_list[note_type_input - 1]}
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            set_note_data(beat, lane)
+
+    except ValueError:
+        print("\nPlease enter a number from the dropdown list.")
         set_note_data(beat, lane)
-
-    if Util.note_types_list[note_type_input - 1] == "LaneSwap":
-        return {"noteType": "LaneSwap", "laneChanges": set_lane_swap()}
-
-    return {"noteType": Util.note_types_list[note_type_input - 1]}
 
 
 # given the desire to perform a lane swap, prompt and gather how many lanes the user would like the swap to have
@@ -101,18 +109,21 @@ def set_lane_swap():
     print("\nAvailable Lane Sizes:")
     lane_names = [value[0] for value in Util.lane_swap_types_dict.values()]
     Util.dropdown_for_user_input(lane_names)
-    lane_swap_lane_count = input(
-        "Enter the number of lanes in the new lane configuration? ")
+
+    lane_swap_lane_count = input("Enter the number of lanes in the new lane configuration? ")
+
     try:
         lane_swap_lane_count = int(lane_swap_lane_count)
+
+        if 0 < lane_swap_lane_count < len(lane_names) + 1:
+            return set_lane_style(lane_swap_lane_count)
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            set_lane_swap()
+
     except ValueError:
-        print("Enter a number!")
+        print("\nPlease enter a number from the dropdown list.")
         set_lane_swap()
-    if lane_swap_lane_count not in Util.lane_swap_types_dict.keys():
-        print(lane_swap_lane_count + " is not a valid lane size configuration." +
-              " Your options are: " + str(lane_names))
-        set_lane_swap()
-    return set_lane_style(lane_swap_lane_count)
 
 
 # given the desired lane swap count, display the art for the different styles and allow the user to select which one
@@ -121,21 +132,27 @@ def set_lane_style(lane_swap_lane_count):
 
     print("\nAvailable Lane Styles:")
     Util.dropdown_for_user_input(lane_type_keys)
-    lane_type_input = int(
-        input("Enter the " + str(lane_swap_lane_count) + "-lane style: "))
 
-    if lane_type_input > len(lane_type_keys):
-        print(
-            lane_type_input + " is not included in the above range. Please enter again.")
+    lane_type_input = input("Enter the " + str(lane_swap_lane_count) + "-lane style: ")
+
+    try:
+        lane_type_input = int(lane_type_input)
+
+        if 0 < lane_type_input < len(lane_type_keys) + 1:
+            global current_lane_configuration
+            current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
+
+            lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].get(
+                current_lane_configuration)
+
+            return set_lane_variation(lane_configuration)
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            set_lane_style(lane_swap_lane_count)
+
+    except ValueError:
+        print("\nPlease enter a number from the dropdown list.")
         set_lane_style(lane_swap_lane_count)
-
-    global current_lane_configuration
-    current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
-
-    lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].get(
-        current_lane_configuration)
-
-    return set_lane_variation(lane_configuration)
 
 
 # given the desired lane format, display the art for the different variations and allow the user to select which one
@@ -146,17 +163,30 @@ def set_lane_variation(lane_configuration_list):
 
     print("\nAvailable Lane Variations:")
     Util.dropdown_for_user_input(lane_configuration_art_list)
-    lane_configuration_input = int(input(
-        "Enter the number of the lane variations you want to swap to: "))
-    selected_lane_list = lane_configuration_list[lane_configuration_input - 1][1]
+    lane_configuration_input = input("Enter the number of the lane variations you want to swap to: ")
 
-    lane_changes_list = []
-    for i in range(5):
-        lane_changes_list.append(
-            {"lane": i, "newLanePosition": selected_lane_list[i]})
+    try:
+        lane_configuration_input = int(lane_configuration_input)
 
-    global current_lane_configuration_art
-    current_lane_configuration_art = \
-        lane_configuration_list[lane_configuration_input - 1][0]
+        if 0 < lane_configuration_input < len(lane_configuration_art_list) + 1:
+            selected_lane_list = lane_configuration_list[lane_configuration_input - 1][1]
 
-    return lane_changes_list
+            lane_changes_list = []
+            for i in range(5):
+                lane_changes_list.append(
+                    {"lane": i, "newLanePosition": selected_lane_list[i]})
+
+            global current_lane_configuration_art
+            current_lane_configuration_art = \
+                lane_configuration_list[lane_configuration_input - 1][0]
+
+            return lane_changes_list
+        else:
+            print("\nPlease enter a number from the dropdown list.")
+            set_lane_variation(lane_configuration_list)
+
+    except ValueError:
+        print("\nPlease enter a number from the dropdown list.")
+        set_lane_variation(lane_configuration_list)
+
+
