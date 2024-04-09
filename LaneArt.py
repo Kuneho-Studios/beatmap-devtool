@@ -1,70 +1,74 @@
-two_lanes_left_right = [
-    ("""
-    ╔═══════════════════╗
-    ║  1 ←---           ║
-    ║  2 ←---           ║
-    ║  x ----           ║
-    ║  x ----           ║
-    ║  x ----           ║
-    ╚═══════════════════╝
-    """, ["TwoLaneLR_0", "TwoLaneLR_1", "None", "None", "None"]),
-    ("""
-    ╔═══════════════════╗
-    ║  x ----           ║
-    ║  1 ←---           ║
-    ║  2 ←---           ║
-    ║  x ----           ║
-    ║  x ----           ║
-    ╚═══════════════════╝
-    """, ["None", "TwoLaneLR_0", "TwoLaneLR_1", "None", "None"]),
-    ("""
-    ╔═══════════════════╗
-    ║  x ----           ║
-    ║  x ----           ║
-    ║  1 ←---           ║
-    ║  2 ←---           ║
-    ║  x ----           ║
-    ╚═══════════════════╝
-    """, ["None", "None", "TwoLaneLR_0", "TwoLaneLR_1", "None"]),
-    ("""
-    ╔═══════════════════╗
-    ║  x ----           ║
-    ║  x ----           ║
-    ║  x ----           ║
-    ║  1 ←---           ║
-    ║  2 ←---           ║
-    ╚═══════════════════╝
-    """, ["None", "None", "None", "TwoLaneLR_0", "TwoLaneLR_1", ])
-]
+###
+# Contains all the "art" for representing the different lane configurations that are currently supported.
+###
 
-two_lanes_right_left = [
+TWO_LANES_RIGHT_LEFT = [
     ("""
     ╔═══════════════════╗
-    ║           ---→ 1  ║
-    ║           ---→ 2  ║
-    ║           ---- x  ║
-    ║           ---- x  ║
-    ║           ---- x  ║
+    ║  1 ←---           ║
+    ║  2 ←---           ║
+    ║  x ----           ║
+    ║  x ----           ║
+    ║  x ----           ║
     ╚═══════════════════╝
     """, ["TwoLaneRL_0", "TwoLaneRL_1", "None", "None", "None"]),
     ("""
     ╔═══════════════════╗
-    ║           ---- x  ║
-    ║           ---→ 1  ║
-    ║           ---→ 2  ║
-    ║           ---- x  ║
-    ║           ---- x  ║
+    ║  x ----           ║
+    ║  1 ←---           ║
+    ║  2 ←---           ║
+    ║  x ----           ║
+    ║  x ----           ║
     ╚═══════════════════╝
     """, ["None", "TwoLaneRL_0", "TwoLaneRL_1", "None", "None"]),
     ("""
     ╔═══════════════════╗
+    ║  x ----           ║
+    ║  x ----           ║
+    ║  1 ←---           ║
+    ║  2 ←---           ║
+    ║  x ----           ║
+    ╚═══════════════════╝
+    """, ["None", "None", "TwoLaneRL_0", "TwoLaneRL_1", "None"]),
+    ("""
+    ╔═══════════════════╗
+    ║  x ----           ║
+    ║  x ----           ║
+    ║  x ----           ║
+    ║  1 ←---           ║
+    ║  2 ←---           ║
+    ╚═══════════════════╝
+    """, ["None", "None", "None", "TwoLaneRL_0", "TwoLaneRL_1", ])
+]
+
+TWO_LANES_LEFT_RIGHT = [
+    ("""
+    ╔═══════════════════╗
+    ║           ---→ 1  ║
+    ║           ---→ 2  ║
+    ║           ---- x  ║
+    ║           ---- x  ║
+    ║           ---- x  ║
+    ╚═══════════════════╝
+    """, ["TwoLaneLR_0", "TwoLaneLR_1", "None", "None", "None"]),
+    ("""
+    ╔═══════════════════╗
+    ║           ---- x  ║
+    ║           ---→ 1  ║
+    ║           ---→ 2  ║
+    ║           ---- x  ║
+    ║           ---- x  ║
+    ╚═══════════════════╝
+    """, ["None", "TwoLaneLR_0", "TwoLaneLR_1", "None", "None"]),
+    ("""
+    ╔═══════════════════╗
     ║           ---- x  ║
     ║           ---- x  ║
     ║           ---→ 1  ║
     ║           ---→ 2  ║
     ║           ---- x  ║
     ╚═══════════════════╝
-    """, ["None", "None", "TwoLaneRL_0", "TwoLaneRL_1", "None"]),
+    """, ["None", "None", "TwoLaneLR_0", "TwoLaneLR_1", "None"]),
     ("""
     ╔═══════════════════╗
     ║           ---- x  ║
@@ -73,10 +77,10 @@ two_lanes_right_left = [
     ║           ---→ 1  ║
     ║           ---→ 2  ║
     ╚═══════════════════╝
-    """, ["None", "None", "None", "TwoLaneRL_0", "TwoLaneRL_1"])
+    """, ["None", "None", "None", "TwoLaneLR_0", "TwoLaneLR_1"])
 ]
 
-four_lanes_top_bottom = [
+FOUR_LANES_TOP_BOTTOM = [
     ("""
     ╔═══════════════════╗
     ║                   ║
@@ -124,7 +128,7 @@ four_lanes_top_bottom = [
     """, ["FourLaneTB_0", "FourLaneTB_1", "FourLaneTB_2", "FourLaneTB_3", "None"])
 ]
 
-four_lanes_bottom_top = [
+FOUR_LANES_BOTTOM_TOP = [
     ("""
     ╔═══════════════════╗
     ║   x  1  2  3  4   ║
@@ -172,7 +176,7 @@ four_lanes_bottom_top = [
     """, ["FourLaneBT_0", "FourLaneBT_1", "FourLaneBT_2", "FourLaneBT_3", "None"])
 ]
 
-four_lanes_corners = [
+FOUR_LANES_CORNERS = [
     ("""
     ╔═══════════════════╗
     ║  1             4  ║
@@ -184,7 +188,7 @@ four_lanes_corners = [
     """, ["CornersTL", "CornersBL", "None", "CornersBR", "CornersTR"])
 ]
 
-four_lanes_left_right = [
+FOUR_LANES_LEFT_RIGHT = [
     ("""
     ╔═══════════════════╗
     ║           ---- x  ║
@@ -232,7 +236,7 @@ four_lanes_left_right = [
     """, ["FourLaneLR_0", "FourLaneLR_1", "FourLaneLR_2", "FourLaneLR_3", "None"])
 ]
 
-four_lanes_right_left = [
+FOUR_LANES_RIGHT_LEFT = [
     ("""
     ╔═══════════════════╗
     ║  x ----           ║
@@ -280,7 +284,7 @@ four_lanes_right_left = [
     """, ["FourLaneRL_0", "FourLaneRL_1", "FourLaneRL_2", "FourLaneRL_3", "None"])
 ]
 
-five_lanes_top_bottom = [
+FIVE_LANES_TOP_BOTTOM = [
     ("""
     ╔═══════════════════╗
     ║                   ║
@@ -292,7 +296,7 @@ five_lanes_top_bottom = [
     """, ["FiveLaneTB_0", "FiveLaneTB_1", "FiveLaneTB_2", "FiveLaneTB_3", "FiveLaneTB_4"])
 ]
 
-five_lanes_bottom_top = [
+FIVE_LANES_BOTTOM_TOP = [
     ("""
     ╔═══════════════════╗
     ║   1  2  3  4  x   ║
@@ -305,7 +309,7 @@ five_lanes_bottom_top = [
 
 ]
 
-five_lanes_right_left = [
+FIVE_LANES_RIGHT_LEFT = [
     ("""
     ╔═══════════════════╗
     ║  1 ←---           ║
@@ -317,7 +321,7 @@ five_lanes_right_left = [
     """, ["FiveLaneRL_0", "FiveLaneRL_1", "FiveLaneRL_2", "FiveLaneRL_3", "FiveLaneRL_4"])
 ]
 
-five_lanes_left_right = [
+FIVE_LANES_LEFT_RIGHT = [
     ("""
     ╔═══════════════════╗
     ║           ---→ 1  ║
@@ -329,7 +333,7 @@ five_lanes_left_right = [
     """, ["FiveLaneLR_0", "FiveLaneLR_1", "FiveLaneLR_2", "FiveLaneLR_3", "FiveLaneLR_4"])
 ]
 
-five_lanes_corner_middle_top_bottom = [
+FIVE_LANES_CORNER_MIDDLE_TOP_BOTTOM = [
     ("""
     ╔═══════════════════╗
     ║  1             4  ║
@@ -341,7 +345,7 @@ five_lanes_corner_middle_top_bottom = [
     """, ["CornersTL", "CornersBL", "FiveLaneTB_2", "CornersBR", "CornersTR"])
 ]
 
-five_lanes_corner_middle_bottom_top = [
+FIVE_LANES_CORNER_MIDDLE_BOTTOM_TOP = [
     ("""
     ╔═══════════════════╗
     ║  1      5      4  ║
