@@ -99,7 +99,8 @@ def set_note_data(beat, lane):
 # given the desire to perform a lane swap, prompt and gather how many lanes the user would like the swap to have
 def set_lane_swap():
     print("\nAvailable Lane Sizes:")
-    Util.dropdown_for_user_input(Util.lane_swap_types_dict.keys())
+    lane_names = [value[0] for value in Util.lane_swap_types_dict.values()]
+    Util.dropdown_for_user_input(lane_names)
     lane_swap_lane_count = input(
         "Enter the number of lanes in the new lane configuration? ")
     try:
@@ -109,14 +110,14 @@ def set_lane_swap():
         set_lane_swap()
     if lane_swap_lane_count not in Util.lane_swap_types_dict.keys():
         print(lane_swap_lane_count + " is not a valid lane size configuration." +
-              " Your options are: " + str(Util.lane_swap_types_dict.keys()))
+              " Your options are: " + str(lane_names))
         set_lane_swap()
     return set_lane_style(lane_swap_lane_count)
 
 
 # given the desired lane swap count, display the art for the different styles and allow the user to select which one
 def set_lane_style(lane_swap_lane_count):
-    lane_type_keys = Util.lane_swap_types_dict.get(lane_swap_lane_count).keys()
+    lane_type_keys = list(Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].keys())
 
     print("\nAvailable Lane Styles:")
     Util.dropdown_for_user_input(lane_type_keys)
@@ -131,7 +132,7 @@ def set_lane_style(lane_swap_lane_count):
     global current_lane_configuration
     current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
 
-    lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count).get(
+    lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].get(
         current_lane_configuration)
 
     return set_lane_variation(lane_configuration)

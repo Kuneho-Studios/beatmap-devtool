@@ -43,11 +43,11 @@ five_lane_swap_types_dict = {
 }
 
 lane_swap_types_dict = {
-    1: one_lane_swap_types_dict,
-    2: two_lane_swap_types_dict,
-    3: three_lane_swap_types_dict,
-    4: four_lane_swap_types_dict,
-    5: five_lane_swap_types_dict
+    1: ("One Lane", one_lane_swap_types_dict),
+    2: ("Two Lanes", two_lane_swap_types_dict),
+    3: ("Three Lanes", three_lane_swap_types_dict),
+    4: ("Four Lanes", four_lane_swap_types_dict),
+    5: ("Five Lanes", five_lane_swap_types_dict)
 }
 
 
