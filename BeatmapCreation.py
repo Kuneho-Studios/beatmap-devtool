@@ -84,7 +84,7 @@ def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre
         "bpm": bpm,
         "length": length,
         "genre": genre,
-        "difficulty": create_difficulty_files(difficulties, song_name)
+        "difficulty": create_difficulty_files(difficulties, song_name_pascal)
     }
 
     with open(

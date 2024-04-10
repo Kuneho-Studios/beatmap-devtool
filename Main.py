@@ -27,10 +27,11 @@ def get_user_purpose():
         BeatmapEdit.edit_beatmap(name, difficulty)
     elif create_or_edit.lower() == "exit":
         print(Util.border + "❤ Thanks for using Project Radiance's Beatmap Dev Tool ❤" + Util.border)
+        return ""
     else:
         print("Please only enter 'create' or 'edit'")
         get_user_purpose()
-    # get_user_purpose()
+    get_user_purpose()
 
 
 # gets the specified beatmap that the user would like to edit
