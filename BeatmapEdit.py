@@ -66,7 +66,7 @@ def set_lane(beat):
 
     lane_input = input("What lane is beat " + str(beat) + " on? ")
 
-    lane_input = Util.validate_input(lane_input, current_lane_count)
+    lane_input = Util.validate_dropdown_input(lane_input, current_lane_count)
     if lane_input is None:
         return set_lane(beat)
     else:
@@ -80,7 +80,7 @@ def set_note_data(beat, lane):
 
     note_type_input = input("Enter the number of beat " + str(beat) + " lane " + str(lane) + "'s note type: ")
 
-    note_type_input = Util.validate_input(note_type_input, len(Util.note_types_list))
+    note_type_input = Util.validate_dropdown_input(note_type_input, len(Util.note_types_list))
     if note_type_input is None:
         return set_note_data(beat, lane)
     else:
@@ -98,7 +98,7 @@ def set_lane_swap():
 
     lane_swap_lane_count = input("Enter the number of lanes in the new lane configuration? ")
 
-    lane_swap_lane_count = Util.validate_input(lane_swap_lane_count, len(lane_names))
+    lane_swap_lane_count = Util.validate_dropdown_input(lane_swap_lane_count, len(lane_names))
     if lane_swap_lane_count is None:
         return set_lane_swap()
     else:
@@ -114,7 +114,7 @@ def set_lane_style(lane_swap_lane_count):
 
     lane_type_input = input("Enter the " + str(lane_swap_lane_count) + "-lane style: ")
 
-    lane_type_input = Util.validate_input(lane_type_input, len(lane_type_keys))
+    lane_type_input = Util.validate_dropdown_input(lane_type_input, len(lane_type_keys))
     if lane_type_input is None:
         return set_lane_style(lane_swap_lane_count)
     else:
@@ -137,7 +137,7 @@ def set_lane_variation(lane_configuration_list):
     Util.dropdown_for_user_input(lane_configuration_art_list)
     lane_configuration_input = input("Enter the number of the lane variations you want to swap to: ")
 
-    lane_configuration_input = Util.validate_input(lane_configuration_input, len(lane_configuration_art_list))
+    lane_configuration_input = Util.validate_dropdown_input(lane_configuration_input, len(lane_configuration_art_list))
     if lane_configuration_input is None:
         return set_lane_variation(lane_configuration_list)
     else:

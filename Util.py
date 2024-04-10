@@ -83,7 +83,7 @@ def input_stored_songs(song_directories):
     dropdown_for_user_input(song_directories)
     directory_input = input("Enter the number of the song you would like to beatmap: ")
 
-    directory_input = validate_input(directory_input, len(song_directories))
+    directory_input = validate_dropdown_input(directory_input, len(song_directories))
     if directory_input is None:
         return input_stored_difficulties(song_directories)
     else:
@@ -104,13 +104,15 @@ def input_stored_difficulties(difficulty_beatmaps):
     dropdown_for_user_input(difficulty_beatmaps)
     directory_input = input("Enter the number of the difficulty you would like to beatmap: ")
 
-    directory_input = validate_input(directory_input, len(difficulty_beatmaps))
+    directory_input = validate_dropdown_input(directory_input, len(difficulty_beatmaps))
     if directory_input is None:
         return input_stored_difficulties(difficulty_beatmaps)
     else:
         return difficulty_beatmaps[int(directory_input) - 1]
 
 
+# takes the name of the beatmap and extracts the difficulty as the number immediately before the .json and after the
+# last, and more often than not, only "_"
 def extract_and_sort_difficulties(difficulty_list):
     difficulty_list = [s[:-5] for s in difficulty_list]
     difficulty_list = [s.rsplit('_', 1)[1] for s in difficulty_list]
@@ -118,7 +120,9 @@ def extract_and_sort_difficulties(difficulty_list):
     return sorted(difficulty_list)
 
 
-def validate_input(user_input, list_length):
+# when a dropdown is presented to the user, verify that they entered not only a number,
+# but also one that is present in the list
+def validate_dropdown_input(user_input, list_length):
     try:
         user_input = int(user_input)
 
