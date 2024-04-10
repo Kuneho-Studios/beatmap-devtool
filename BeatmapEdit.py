@@ -35,8 +35,7 @@ def edit_beatmap(song_name, song_difficulty):
 
 # obtain the beat for the current note to be added to the beatmap
 def edit_beatmap_input(notes):
-    Util.fancy_print_box("Current Lane Configuration: " + current_lane_configuration)
-    print(current_lane_configuration_art)
+    Util.note_report(current_lane_configuration, current_lane_configuration_art, Util.get_last_beat_difficulty())
     beat = input(
         "What is the beat for the note you want to add? ")
 

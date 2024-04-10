@@ -158,3 +158,41 @@ def get_song_name(song_save_name):
         song_name = json.load(root_data_file)['songName']
     root_data_file.close()
     return song_name
+
+
+# box to put information regarding the last note entered
+def note_report(current_lane_configuration, current_lane_configuration_art, last_beat):
+    lane_configuration_line = " Lane Configuration: " + current_lane_configuration
+    lane_configuration_art_line = " Lane Configuration Art: " + current_lane_configuration_art
+    last_beat_line = " Last Beat: " + last_beat[0]['beat']
+
+    last_notes_line = " Last Note(s): "
+    for note in last_beat:
+        print(note)
+        last_notes_line = last_notes_line + "\n\tLane " + note['lane'] + " (" + note['noteType'] + ")"
+
+    # print("LONGEST ", max(lane_configuration_line, last_beat_line, last_notes_line,
+    #                       key=len))
+    # longest_line = len(max(lane_configuration_line, last_beat_line, last_notes_line,
+    #                        key=len))
+    # print("LONGEST LINE ", longest_line)
+    box_width = len(lane_configuration_line) + 4
+    print("┌" + ("-" * (box_width - 2)) + "┐")
+    print(" " + lane_configuration_line + " ")
+    print(" " + lane_configuration_art_line + " ")
+    print(" " + last_beat_line + " ")
+    print(" " + last_notes_line + " ")
+    print("└" + "-" * (box_width - 2) + "┘")
+
+
+# fetches last beat from the current beatmap that's being edited
+def get_last_beat_difficulty():
+    # todo implement fetching last beat from the current file that's being edited
+    return [{"beat": "not implemented", "lane": "not implemented", "noteType": "not implemented"}]
+
+
+# fetches highest last beat from the current song (not the specific beatmap) that's being edited
+# to be used in getting the totalBeats field for the Data.json file for a given song
+def get_last_beat_song():
+    # todo implement fetching last beat amongst all the files in a given song
+    return ""
