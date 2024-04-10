@@ -45,6 +45,7 @@ def get_beatmap():
         difficulty_list = Util.extract_and_sort_difficulties(Util.get_stored_difficulties(song))
         difficulty = str(Util.input_stored_difficulties(difficulty_list))
         Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(song)) + "\" on difficulty " + difficulty + " ✨")
+        print("Type 'exit' to leave editor")
         return song, difficulty
 
 

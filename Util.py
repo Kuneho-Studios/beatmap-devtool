@@ -147,7 +147,7 @@ def fancy_print_box(text):
     length = len(text) + 3
     print("\n" + "~" * length)
     print(" " + text + " ")
-    print("~" * length + "\n")
+    print("~" * length)
 
 
 # gets the song name from the Data.json file
