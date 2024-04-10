@@ -66,18 +66,11 @@ def set_lane(beat):
 
     lane_input = input("What lane is beat " + str(beat) + " on? ")
 
-    try:
-        lane_input = int(lane_input)
-
-        if 0 < lane_input < current_lane_count + 1:
-            return lane_input
-        else:
-            print("\nPlease enter a number from the dropdown list.")
-            set_lane(beat)
-
-    except ValueError:
-        print("\nPlease enter a number from the dropdown list.")
-        set_lane(beat)
+    lane_input = Util.validate_input(lane_input, current_lane_count)
+    if lane_input is None:
+        return set_lane(beat)
+    else:
+        return lane_input
 
 
 # set the note type. if is a "laneSwap" then call methods to determine what to swap to
@@ -87,21 +80,14 @@ def set_note_data(beat, lane):
 
     note_type_input = input("Enter the number of beat " + str(beat) + " lane " + str(lane) + "'s note type: ")
 
-    try:
-        note_type_input = int(note_type_input)
+    note_type_input = Util.validate_input(note_type_input, len(Util.note_types_list))
+    if note_type_input is None:
+        return set_note_data(beat, lane)
+    else:
+        if Util.note_types_list[note_type_input - 1] == "LaneSwap":
+            return {"noteType": "LaneSwap", "laneChanges": set_lane_swap()}
 
-        if 0 < note_type_input < len(Util.note_types_list) + 1:
-            if Util.note_types_list[note_type_input - 1] == "LaneSwap":
-                return {"noteType": "LaneSwap", "laneChanges": set_lane_swap()}
-
-            return {"noteType": Util.note_types_list[note_type_input - 1]}
-        else:
-            print("\nPlease enter a number from the dropdown list.")
-            set_note_data(beat, lane)
-
-    except ValueError:
-        print("\nPlease enter a number from the dropdown list.")
-        set_note_data(beat, lane)
+        return {"noteType": Util.note_types_list[note_type_input - 1]}
 
 
 # given the desire to perform a lane swap, prompt and gather how many lanes the user would like the swap to have
@@ -112,18 +98,11 @@ def set_lane_swap():
 
     lane_swap_lane_count = input("Enter the number of lanes in the new lane configuration? ")
 
-    try:
-        lane_swap_lane_count = int(lane_swap_lane_count)
-
-        if 0 < lane_swap_lane_count < len(lane_names) + 1:
-            return set_lane_style(lane_swap_lane_count)
-        else:
-            print("\nPlease enter a number from the dropdown list.")
-            set_lane_swap()
-
-    except ValueError:
-        print("\nPlease enter a number from the dropdown list.")
-        set_lane_swap()
+    lane_swap_lane_count = Util.validate_input(lane_swap_lane_count, len(lane_names))
+    if lane_swap_lane_count is None:
+        return set_lane_swap()
+    else:
+        return set_lane_style(lane_swap_lane_count)
 
 
 # given the desired lane swap count, display the art for the different styles and allow the user to select which one
@@ -135,24 +114,17 @@ def set_lane_style(lane_swap_lane_count):
 
     lane_type_input = input("Enter the " + str(lane_swap_lane_count) + "-lane style: ")
 
-    try:
-        lane_type_input = int(lane_type_input)
+    lane_type_input = Util.validate_input(lane_type_input, len(lane_type_keys))
+    if lane_type_input is None:
+        return set_lane_style(lane_swap_lane_count)
+    else:
+        global current_lane_configuration
+        current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
 
-        if 0 < lane_type_input < len(lane_type_keys) + 1:
-            global current_lane_configuration
-            current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
+        lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].get(
+            current_lane_configuration)
 
-            lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].get(
-                current_lane_configuration)
-
-            return set_lane_variation(lane_configuration)
-        else:
-            print("\nPlease enter a number from the dropdown list.")
-            set_lane_style(lane_swap_lane_count)
-
-    except ValueError:
-        print("\nPlease enter a number from the dropdown list.")
-        set_lane_style(lane_swap_lane_count)
+        return set_lane_variation(lane_configuration)
 
 
 # given the desired lane format, display the art for the different variations and allow the user to select which one
@@ -165,28 +137,19 @@ def set_lane_variation(lane_configuration_list):
     Util.dropdown_for_user_input(lane_configuration_art_list)
     lane_configuration_input = input("Enter the number of the lane variations you want to swap to: ")
 
-    try:
-        lane_configuration_input = int(lane_configuration_input)
+    lane_configuration_input = Util.validate_input(lane_configuration_input, len(lane_configuration_art_list))
+    if lane_configuration_input is None:
+        return set_lane_variation(lane_configuration_list)
+    else:
+        selected_lane_list = lane_configuration_list[lane_configuration_input - 1][1]
 
-        if 0 < lane_configuration_input < len(lane_configuration_art_list) + 1:
-            selected_lane_list = lane_configuration_list[lane_configuration_input - 1][1]
+        lane_changes_list = []
+        for i in range(5):
+            lane_changes_list.append(
+                {"lane": i, "newLanePosition": selected_lane_list[i]})
 
-            lane_changes_list = []
-            for i in range(5):
-                lane_changes_list.append(
-                    {"lane": i, "newLanePosition": selected_lane_list[i]})
+        global current_lane_configuration_art
+        current_lane_configuration_art = lane_configuration_list[lane_configuration_input - 1][0]
 
-            global current_lane_configuration_art
-            current_lane_configuration_art = \
-                lane_configuration_list[lane_configuration_input - 1][0]
-
-            return lane_changes_list
-        else:
-            print("\nPlease enter a number from the dropdown list.")
-            set_lane_variation(lane_configuration_list)
-
-    except ValueError:
-        print("\nPlease enter a number from the dropdown list.")
-        set_lane_variation(lane_configuration_list)
-
+        return lane_changes_list
 

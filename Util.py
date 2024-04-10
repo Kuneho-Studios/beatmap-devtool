@@ -83,18 +83,11 @@ def input_stored_songs(song_directories):
     dropdown_for_user_input(song_directories)
     directory_input = input("Enter the number of the song you would like to beatmap: ")
 
-    try:
-        directory_input = int(directory_input)
-
-        if 0 < directory_input < len(song_directories) + 1:
-            return song_directories[directory_input - 1]
-        else:
-            print("\nPlease enter a number from the dropdown list.")
-            input_stored_songs(song_directories)
-
-    except ValueError:
-        print("\nPlease enter a number from the dropdown list.")
-        input_stored_songs(song_directories)
+    directory_input = validate_input(directory_input, len(song_directories))
+    if directory_input is None:
+        return input_stored_difficulties(song_directories)
+    else:
+        return song_directories[int(directory_input) - 1]
 
 
 # reads from the given song name directory to return all the saved difficulties
