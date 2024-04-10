@@ -40,7 +40,7 @@ def edit_beatmap_input(notes):
         "What is the beat for the note you want to add? ")
 
     if beat.lower() == "exit":
-        return
+        return "e"
     else:
         try:
             beat = float(beat)
@@ -117,8 +117,9 @@ def set_lane_style(lane_swap_lane_count):
     if lane_type_input is None:
         return set_lane_style(lane_swap_lane_count)
     else:
-        global current_lane_configuration
+        global current_lane_configuration, current_lane_count
         current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
+        current_lane_count = lane_swap_lane_count
 
         lane_configuration = Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].get(
             current_lane_configuration)
@@ -130,7 +131,7 @@ def set_lane_style(lane_swap_lane_count):
 def set_lane_variation(lane_configuration_list):
     lane_configuration_art_list = []
     for lane_configuration in lane_configuration_list:
-        lane_configuration_art_list.append(lane_configuration[0])
+        lane_configuration_art_list.append("\n" + lane_configuration[0])
 
     print("\nAvailable Lane Variations:")
     Util.dropdown_for_user_input(lane_configuration_art_list)
