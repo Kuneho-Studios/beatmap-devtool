@@ -23,7 +23,6 @@ def edit_beatmap(song_name, song_difficulty):
         notes = json_data["notes"]
         lane_events = json_data["laneEvents"]
     beatmap_read.close()
-
     sorted_notes_filled = sorted(edit_beatmap_input(notes), key=lambda note: (note['startBeat'], note['lane']))
 
     with open('beatmaps/' + song_name + "/" + song_name + "_" + song_difficulty + ".json", "w") as beatmap_write:
@@ -40,7 +39,7 @@ def edit_beatmap_input(notes):
         "What is the beat for the note you want to add? ")
 
     if beat.lower() == "exit":
-        return "e"
+        return ""
     else:
         try:
             beat = float(beat)
