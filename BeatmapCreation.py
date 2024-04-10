@@ -8,11 +8,6 @@ import os
 
 import Util
 
-BEATMAPS_DIRECTORY = 'beatmaps/'
-
-FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
-FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
-
 
 # gather all user data about the basic song info
 def get_user_input():
@@ -80,7 +75,7 @@ def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre
         "songName": song_name,
         "album": album_name,
         "artist": artist_name,
-        "fileLocation": FILE_LOCATION_ROOT + song_name_pascal,
+        "fileLocation": Util.FILE_LOCATION_ROOT + song_name_pascal,
         "bpm": bpm,
         "length": length,
         "genre": genre,
@@ -88,18 +83,13 @@ def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre
     }
 
     with open(
-            BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json",
+            Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json",
             "x") as root_data_file:
         json.dump(data_file, root_data_file, indent=4)
     root_data_file.close()
 
-    print("\nYour beatmap's root file for \""
-          + song_name
-          + "\" by "
-          + artist_name
-          + " has been created with "
-          + str(len(difficulties))
-          + " difficulties.")
+    Util.fancy_print_box("Your beatmap's root file for \"" + song_name + "\" by " + artist_name
+                         + " has been created with " + str(len(difficulties)) + " difficulties.")
 
 
 # creates the empty beatmap files for each of the difficulties the user plans on having for the given song
@@ -108,11 +98,11 @@ def create_difficulty_files(input_difficulties, song_name):
     for difficulty in input_difficulties:
         data = {
             "tier": difficulty,
-            "filePath": FILE_PATH_ROOT + song_name + "_" + str(difficulty) + ".json"
+            "filePath": Util.FILE_PATH_ROOT + song_name + "_" + str(difficulty) + ".json"
         }
         difficulty_data.append(data)
 
-        with open(BEATMAPS_DIRECTORY + song_name + "/"
+        with open(Util.BEATMAPS_DIRECTORY + song_name + "/"
                   + song_name + "_" + str(difficulty) + ".json",
                   "x") as difficulty_file:
             json.dump({"notes": [], "laneEvents": []}, difficulty_file, indent=4)
@@ -123,7 +113,7 @@ def create_difficulty_files(input_difficulties, song_name):
 # creates 'beatmaps/` directory if not already existing.
 # then creates the directory named after the song to hold all the beatmap files
 def create_directories(song_name_pascal):
-    if not os.path.exists(BEATMAPS_DIRECTORY):
-        os.makedirs(BEATMAPS_DIRECTORY)
+    if not os.path.exists(Util.BEATMAPS_DIRECTORY):
+        os.makedirs(Util.BEATMAPS_DIRECTORY)
 
-    os.makedirs(BEATMAPS_DIRECTORY + song_name_pascal)
+    os.makedirs(Util.BEATMAPS_DIRECTORY + song_name_pascal)

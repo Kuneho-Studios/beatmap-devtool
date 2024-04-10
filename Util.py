@@ -1,14 +1,14 @@
 ###
 # Contains utility methods that can be used in any class throughout the repository
 ###
-
+import json
 import os
-
 import LaneArt
 
-file_location_root = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
-file_path_root = "Content/ProjectRadiance/Data/"
-border = "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+BEATMAPS_DIRECTORY = 'beatmaps/'
+
+FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
+FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
 
 note_types_list = [
     "Tap",
@@ -80,12 +80,17 @@ def get_stored_songs():
 # given a list of songs, display them for the user to input which they would like to edit
 def input_stored_songs(song_directories):
     print("\nAvailable Songs:")
-    dropdown_for_user_input(song_directories)
+
+    song_name_list = []
+    for song in song_directories:
+        song_name_list.append(get_song_name(str(song)))
+
+    dropdown_for_user_input(song_name_list)
     directory_input = input("Enter the number of the song you would like to beatmap: ")
 
-    directory_input = validate_dropdown_input(directory_input, len(song_directories))
+    directory_input = validate_dropdown_input(directory_input, len(song_name_list))
     if directory_input is None:
-        return input_stored_difficulties(song_directories)
+        return input_stored_difficulties(song_name_list)
     else:
         return song_directories[int(directory_input) - 1]
 
@@ -135,3 +140,21 @@ def validate_dropdown_input(user_input, list_length):
     except ValueError:
         print("\nPlease enter a number from the dropdown list.")
         return None
+
+
+# box to put headers in
+def fancy_print_box(text):
+    length = len(text) + 3
+    print("\n" + "~" * length)
+    print(" " + text + " ")
+    print("~" * length + "\n")
+
+
+# gets the song name from the Data.json file
+def get_song_name(song_save_name):
+    with open(
+            BEATMAPS_DIRECTORY + song_save_name + "/" + song_save_name + "Data.json",
+            "r") as root_data_file:
+        song_name = json.load(root_data_file)['songName']
+    root_data_file.close()
+    return song_name

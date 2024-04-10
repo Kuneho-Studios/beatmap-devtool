@@ -30,8 +30,7 @@ def edit_beatmap(song_name, song_difficulty):
         json.dump({"notes": sorted_notes_filled, "laneEvents": lane_events}, beatmap_write, indent=4)
     beatmap_write.close()
 
-    print(
-        Util.border + "\t\t✨ " + song_name + " on " + song_difficulty + " difficulty updated! ✨" + Util.border)
+    Util.fancy_print_box("✨ " + song_name + " on " + song_difficulty + " difficulty updated! ✨")
 
 
 # obtain the beat for the current note to be added to the beatmap
