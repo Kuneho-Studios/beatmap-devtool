@@ -1,5 +1,5 @@
 ###
-# Contains utility methods that can be used in any class throughout the repository
+# Contains utility methods that can be used in any class
 ###
 import json
 import os
@@ -9,6 +9,8 @@ BEATMAPS_DIRECTORY = 'beatmaps/'
 
 FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
+
+MAX_LANE_SIZE = 5
 
 note_types_list = [
     "Tap",
@@ -59,7 +61,8 @@ def string_to_pascal_case(string_to_convert):
 
 
 # helper method that given a list.
-# creates the prompt menu which displays all elements in the list for the user to pick from
+# creates the prompt menu which displays all elements
+# in the list for the user to pick from
 def dropdown_for_user_input(list_to_print):
     display_index = 1
 
@@ -77,7 +80,7 @@ def get_stored_songs():
     return song_directories
 
 
-# given a list of songs, display them for the user to input which they would like to edit
+# given a list of songs, display them for the user to input which they edit
 def input_stored_songs(song_directories):
     print("\nAvailable Songs:")
 
@@ -86,9 +89,11 @@ def input_stored_songs(song_directories):
         song_name_list.append(get_song_name(str(song)))
 
     dropdown_for_user_input(song_name_list)
-    directory_input = input("Enter the number of the song you would like to beatmap: ")
+    directory_input = input(
+        "Enter the number of the song you would like to beatmap: ")
 
-    directory_input = validate_dropdown_input(directory_input, len(song_name_list))
+    directory_input = validate_dropdown_input(
+        directory_input, len(song_name_list))
     if directory_input is None:
         return input_stored_difficulties(song_name_list)
     else:
@@ -103,21 +108,24 @@ def get_stored_difficulties(song_name):
             "Data.json" not in element]
 
 
-# given a list of difficulties for a select song, display them for the user to input which they would like to edit
+# given a list of difficulties for a select song,
+# display them for the user to input which they would like to edit
 def input_stored_difficulties(difficulty_beatmaps):
     print("\nAvailable Difficulties:")
     dropdown_for_user_input(difficulty_beatmaps)
-    directory_input = input("Enter the number of the difficulty you would like to beatmap: ")
+    directory_input = input(
+        "Enter the number of the difficulty you would like to beatmap: ")
 
-    directory_input = validate_dropdown_input(directory_input, len(difficulty_beatmaps))
+    directory_input = validate_dropdown_input(
+        directory_input, len(difficulty_beatmaps))
     if directory_input is None:
         return input_stored_difficulties(difficulty_beatmaps)
     else:
         return difficulty_beatmaps[int(directory_input) - 1]
 
 
-# takes the name of the beatmap and extracts the difficulty as the number immediately before the .json and after the
-# last, and more often than not, only "_"
+# takes the name of the beatmap and extracts the difficulty as the number
+# immediately before the .json and after the last  "_"
 def extract_and_sort_difficulties(difficulty_list):
     difficulty_list = [s[:-5] for s in difficulty_list]
     difficulty_list = [s.rsplit('_', 1)[1] for s in difficulty_list]
@@ -125,8 +133,8 @@ def extract_and_sort_difficulties(difficulty_list):
     return sorted(difficulty_list)
 
 
-# when a dropdown is presented to the user, verify that they entered not only a number,
-# but also one that is present in the list
+# when a dropdown is presented to the user, verify that they entered a number,
+# and also one that is present in the list
 def validate_dropdown_input(user_input, list_length):
     try:
         user_input = int(user_input)
@@ -153,8 +161,8 @@ def fancy_print_box(text):
 # gets the song name from the Data.json file
 def get_song_name(song_save_name):
     with open(
-            BEATMAPS_DIRECTORY + song_save_name + "/" + song_save_name + "Data.json",
-            "r") as root_data_file:
+            BEATMAPS_DIRECTORY + song_save_name + "/"
+            + song_save_name + "Data.json", "r") as root_data_file:
         song_name = json.load(root_data_file)['songName']
     root_data_file.close()
     return song_name
@@ -162,16 +170,20 @@ def get_song_name(song_save_name):
 
 # box to put information regarding the last note entered
 def note_report(current_lane_configuration, current_lane_configuration_art, last_beat):
-    lane_configuration_line = " Lane Configuration: " + current_lane_configuration
-    lane_configuration_art_line = " Lane Configuration Art: \n" + current_lane_configuration_art
-    last_beat_line = " Last Beat: " + last_beat[0]['beat']
+    lane_configuration_line = (
+        " Lane Configuration: " + current_lane_configuration)
+    lane_configuration_art_line = (
+        " Lane Configuration Art: \n" + current_lane_configuration_art)
+    last_beat_line = (
+        " Last Beat: " + last_beat[0]['beat'])
 
     if len(last_beat) == 1:
         last_notes_line = " Last Note: "
     else:
         last_notes_line = " Last Notes: "
     for note in last_beat:
-        last_notes_line = last_notes_line + "Lane " + note['lane'] + " (" + note['noteType'] + "), "
+        last_notes_line = (last_notes_line + "Lane " + note['lane']
+                           + " (" + note['noteType'] + "), ")
     last_notes_line = last_notes_line.removesuffix(", ")
 
     max_length_line = max(lane_configuration_line, last_notes_line, key=len)
@@ -186,12 +198,14 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
 
 # fetches last beat from the current beatmap that's being edited
 def get_last_beat_difficulty():
-    # todo implement fetching last beat from the current file that's being edited
-    return [{"beat": "not implemented", "lane": "not implemented", "noteType": "not implemented"}]
+    # todo implement fetching last beat from current file that's being edited
+    return [{"beat": "not implemented", "lane": "not implemented",
+             "noteType": "not implemented"}]
 
 
-# fetches highest last beat from the current song (not the specific beatmap) that's being edited
-# to be used in getting the totalBeats field for the Data.json file for a given song
+# fetches highest last beat from the current song (not the specific beatmap)
+# that's being edited to be used in getting the totalBeats field
+# for the Data.json file for a given song
 def get_last_beat_song():
     # todo implement fetching last beat amongst all the files in a given song
     return ""
