@@ -10,6 +10,8 @@ BEATMAPS_DIRECTORY = 'beatmaps/'
 FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
 
+MAX_LANE_SIZE = 5
+
 note_types_list = [
     "Tap",
     "Hold",

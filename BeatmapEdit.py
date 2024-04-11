@@ -8,9 +8,9 @@ import json
 import LaneArt
 import Util
 
-current_lane_count = 2
-current_lane_configuration = "Two Lanes Left to Right"
-current_lane_configuration_art = LaneArt.TWO_LANES_RIGHT_LEFT[0][0]
+current_lane_count = None
+current_lane_configuration = None
+current_lane_configuration_art = None
 
 
 # open the existing beatmap for editing. then calls method edit_beatmap_input
@@ -28,6 +28,10 @@ def edit_beatmap(song_name, song_difficulty):
 
     if not lane_events:
         lane_events = set_lane_event()
+        Util.fancy_print_box("✨ Initial lane configuration set!"
+                             " You can proceed to beatmapping now! ✨")
+    else:
+        set_current_lane_values(lane_events)
 
     sorted_notes = sorted(edit_beatmap_input(notes),
                           key=lambda note: (note['startBeat'], note['lane']))
@@ -184,5 +188,53 @@ def set_lane_variation(lane_configuration_list):
 
 # populate the laneEvents segment which is used for starting lane configuration
 def set_lane_event():
-    print("You do not have the initial lane setup configured! Let's do that now")
+    Util.fancy_print_box(
+        "⚠ You do not have the initial lane setup configured! "
+        "Let's do that now ⚠")
     return [{"startBeat": 0, "lanes": set_lane_swap()}]
+
+
+# reads the laneEvents at the bottom of the beatmap
+# sets global current lane variables to match those
+def set_current_lane_values(lane_events_list):
+    global current_lane_count, current_lane_configuration, \
+        current_lane_configuration_art
+
+    lane_positions = []
+    none_count = 0
+    lane_events_lane_list = lane_events_list[0]['lanes']
+    for lane in lane_events_lane_list:
+        this_lane = lane['newLanePosition']
+        lane_positions.append(this_lane)
+        if "None" in this_lane:
+            none_count = none_count + 1
+    current_lane_count = Util.MAX_LANE_SIZE - none_count
+
+    lane_dictionary = get_lane_swap_dictionary()
+
+    for i in lane_dictionary.items():
+        for j in i[1]:
+            if lane_positions == j[1]:
+                current_lane_configuration_art = j[0]
+                break
+        if current_lane_configuration_art is not None:
+            current_lane_configuration = i[0]
+            break
+
+
+# helper method to determine which dictionary to loop through
+def get_lane_swap_dictionary():
+    global current_lane_count
+    if current_lane_count == 1:
+        return Util.one_lane_swap_types_dict
+    elif current_lane_count == 2:
+        return Util.two_lane_swap_types_dict
+    elif current_lane_count == 3:
+        return Util.three_lane_swap_types_dict
+    elif current_lane_count == 4:
+        return Util.four_lane_swap_types_dict
+    elif current_lane_count == 5:
+        return Util.five_lane_swap_types_dict
+    else:
+        print("CURRENT COUNT OF " + str(current_lane_count)
+              + " NOT FOUND. PLEASE REPORT")
