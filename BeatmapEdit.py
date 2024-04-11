@@ -25,6 +25,10 @@ def edit_beatmap(song_name, song_difficulty):
         notes = json_data["notes"]
         lane_events = json_data["laneEvents"]
     beatmap_read.close()
+
+    if not lane_events:
+        lane_events = set_lane_event()
+
     sorted_notes = sorted(edit_beatmap_input(notes),
                           key=lambda note: (note['startBeat'], note['lane']))
 
@@ -140,7 +144,7 @@ def set_lane_style(lane_swap_lane_count):
         current_lane_count = lane_swap_lane_count
 
         lane_configuration = (Util.lane_swap_types_dict.get(
-                lane_swap_lane_count)[1].get(current_lane_configuration))
+            lane_swap_lane_count)[1].get(current_lane_configuration))
 
         return set_lane_variation(lane_configuration)
 
@@ -176,3 +180,9 @@ def set_lane_variation(lane_configuration_list):
             lane_configuration_list)[lane_configuration_input - 1][0]
 
         return lane_changes_list
+
+
+# populate the laneEvents segment which is used for starting lane configuration
+def set_lane_event():
+    print("You do not have the initial lane setup configured! Let's do that now")
+    return [{"startBeat": 0, "lanes": set_lane_swap()}]
