@@ -212,11 +212,16 @@ def set_current_lane_values(lane_events_list):
 
     lane_dictionary = get_lane_swap_dictionary()
 
+    # loop through the various configurations
+    # outer-loop used to get the plain text name once position array matches
     for i in lane_dictionary.items():
+        # loop through the art for a given configuration
+        # if the lane position array's match, then return this art and break
         for j in i[1]:
             if lane_positions == j[1]:
                 current_lane_configuration_art = j[0]
                 break
+        # a check to ensure that the inner loop is "break"ed and not just done
         if current_lane_configuration_art is not None:
             current_lane_configuration = i[0]
             break
