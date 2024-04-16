@@ -30,7 +30,12 @@ def edit_beatmap(song_name, song_difficulty):
         Util.fancy_print_box("✨ Initial lane configuration set!"
                              " You can proceed to beatmapping now! ✨")
     else:
-        set_current_lane_values(lane_events)
+        global current_lane_count, current_lane_configuration, \
+            current_lane_configuration_art
+
+        current_lane_count, current_lane_configuration, \
+            current_lane_configuration_art = \
+            Util.get_initial_lane_configuration(lane_events[0]['lanes'])
 
     sorted_notes = sorted(edit_beatmap_input(notes),
                           key=lambda note: (note['startBeat'], note['lane']))
@@ -51,10 +56,15 @@ def edit_beatmap(song_name, song_difficulty):
 def edit_beatmap_input(notes):
     Util.note_report(current_lane_configuration, current_lane_configuration_art,
                      Util.get_last_beat_difficulty())
-    beat = input("What is the beat for the note you want to add? ")
+    beat = input(
+        "Enter beat for the note you want to add (or 'exit' or 'show swap')? ")
 
     if beat.lower() == "exit":
         return ""
+    elif beat.lower().strip() == "show swap" \
+            or beat.lower().strip() == "showswap":
+        Util.show_lane_swaps(notes)
+        edit_beatmap_input(notes)
     else:
         try:
             beat = float(beat)
@@ -195,57 +205,6 @@ def set_lane_event():
     return [{"startBeat": 0, "lanes": set_lane_swap()}]
 
 
-# reads the laneEvents at the bottom of the beatmap
-# sets global current lane variables to match those
-def set_current_lane_values(lane_events_list):
-    global current_lane_count, current_lane_configuration, \
-        current_lane_configuration_art
-
-    lane_positions = []
-    none_count = 0
-    lane_events_lane_list = lane_events_list[0]['lanes']
-    for lane in lane_events_lane_list:
-        this_lane = lane['newLanePosition']
-        lane_positions.append(this_lane)
-        if "None" in this_lane:
-            none_count = none_count + 1
-    current_lane_count = Util.MAX_LANE_SIZE - none_count
-
-    lane_dictionary = get_lane_swap_dictionary()
-
-    # loop through the various configurations
-    # outer-loop used to get the plain text name once position array matches
-    for i in lane_dictionary.items():
-        # loop through the art for a given configuration
-        # if the lane position array's match, then return this art and break
-        for j in i[1]:
-            if lane_positions == j[1]:
-                current_lane_configuration_art = j[0]
-                break
-        # a check to ensure that the inner loop is "break"ed and not just done
-        if current_lane_configuration_art is not None:
-            current_lane_configuration = i[0]
-            break
-
-
-# helper method to determine which dictionary to loop through
-def get_lane_swap_dictionary():
-    global current_lane_count
-    if current_lane_count == 1:
-        return Util.one_lane_swap_types_dict
-    elif current_lane_count == 2:
-        return Util.two_lane_swap_types_dict
-    elif current_lane_count == 3:
-        return Util.three_lane_swap_types_dict
-    elif current_lane_count == 4:
-        return Util.four_lane_swap_types_dict
-    elif current_lane_count == 5:
-        return Util.five_lane_swap_types_dict
-    else:
-        print("CURRENT COUNT OF " + str(current_lane_count)
-              + " NOT FOUND. PLEASE REPORT")
-
-
 # when the song is saved, fetch what was previously stored in the length field
 # if the highest beat in the current beatmap is greater than the current length
 # then update length to reflect that value
@@ -265,5 +224,5 @@ def set_song_note_length(song_name, notes):
         json_data["length"] = last_note_beat
         with open('beatmaps/' + song_name + "/" + song_name + "Data.json",
                   "w") as beatmap_data_write:
-            json.dump(json_data,  beatmap_data_write, indent=4)
+            json.dump(json_data, beatmap_data_write, indent=4)
         beatmap_data_write.close()
