@@ -16,12 +16,11 @@ def get_user_input():
     album_name = input("What's the album name? ").strip()
     artist_name = input("What's the artist name? ").strip()
     bpm = get_bpm_input()
-    length = int(input("How many total beats in the song? "))
     genre = input("What's the song's genre? ").strip()
     difficulty_count = get_difficulty_count_input()
     difficulties = get_difficulties_input(difficulty_count)
     create_root_data_file(
-        song_name, album_name, artist_name, bpm, length, genre, difficulties)
+        song_name, album_name, artist_name, bpm, genre, difficulties)
 
 
 def get_bpm_input():
@@ -71,7 +70,7 @@ def get_difficulties_input(difficulty_count):
 
 
 # creates the ...Data.json file containing the core information for the song
-def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre, difficulties):
+def create_root_data_file(song_name, album_name, artist_name, bpm, genre, difficulties):
     song_name_pascal = Util.string_to_pascal_case(song_name)
 
     create_directories(song_name_pascal)
@@ -82,7 +81,7 @@ def create_root_data_file(song_name, album_name, artist_name, bpm, length, genre
         "artist": artist_name,
         "fileLocation": Util.FILE_LOCATION_ROOT + song_name_pascal,
         "bpm": bpm,
-        "length": length,
+        "length": 0,
         "genre": genre,
         "difficulty": create_difficulty_files(difficulties, song_name_pascal)
     }

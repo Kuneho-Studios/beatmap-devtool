@@ -5,7 +5,6 @@
 ###
 import json
 
-import LaneArt
 import Util
 
 current_lane_count = None
@@ -41,6 +40,8 @@ def edit_beatmap(song_name, song_difficulty):
         json.dump({"notes": sorted_notes, "laneEvents": lane_events},
                   beatmap_write, indent=4)
     beatmap_write.close()
+
+    set_song_note_length(song_name, sorted_notes)
 
     Util.fancy_print_box("✨ " + song_name + " on " + song_difficulty
                          + " difficulty updated! ✨")
@@ -243,3 +244,26 @@ def get_lane_swap_dictionary():
     else:
         print("CURRENT COUNT OF " + str(current_lane_count)
               + " NOT FOUND. PLEASE REPORT")
+
+
+# when the song is saved, fetch what was previously stored in the length field
+# if the highest beat in the current beatmap is greater than the current length
+# then update length to reflect that value
+def set_song_note_length(song_name, notes):
+    with open('beatmaps/' + song_name + "/" + song_name + "Data.json", "r") \
+            as beatmap_data_read:
+        json_data = json.loads(beatmap_data_read.read())
+        song_length = json_data["length"]
+    beatmap_data_read.close()
+
+    if not notes:
+        last_note_beat = 0
+    else:
+        last_note_beat = notes[-1]["startBeat"]
+
+    if last_note_beat > song_length:
+        json_data["length"] = last_note_beat
+        with open('beatmaps/' + song_name + "/" + song_name + "Data.json",
+                  "w") as beatmap_data_write:
+            json.dump(json_data,  beatmap_data_write, indent=4)
+        beatmap_data_write.close()
