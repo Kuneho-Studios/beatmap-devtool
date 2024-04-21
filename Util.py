@@ -175,14 +175,14 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
     lane_configuration_art_line = (
             " Lane Configuration Art: \n" + current_lane_configuration_art)
     last_beat_line = (
-            " Last Beat: " + last_beat[0]['beat'])
+            " Last Beat: " + str(last_beat[0]['beat']))
 
     if len(last_beat) == 1:
         last_notes_line = " Last Note: "
     else:
         last_notes_line = " Last Notes: "
     for note in last_beat:
-        last_notes_line = (last_notes_line + "Lane " + note['lane']
+        last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
                            + " (" + note['noteType'] + "), ")
     last_notes_line = last_notes_line.removesuffix(", ")
 
@@ -197,10 +197,21 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
 
 
 # fetches last beat from the current beatmap that's being edited
-def get_last_beat_difficulty():
+def get_last_beat(current_beat, notes_list):
     # todo implement fetching last beat from current file that's being edited
-    return [{"beat": "not implemented", "lane": "not implemented",
-             "noteType": "not implemented"}]
+    last_lane_list = []
+    i = 1
+    while i < (MAX_LANE_SIZE + 1):
+        this_note = notes_list[-i]
+        if this_note["startBeat"] == current_beat:
+            last_lane_list.append({"beat": current_beat,
+                                   "lane": this_note["lane"],
+                                   "noteType": this_note["noteData"]["noteType"]})
+            i += 1
+        else:
+            break
+
+    return last_lane_list
 
 
 # reads the laneEvents at the bottom of the beatmap

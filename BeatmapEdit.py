@@ -13,6 +13,7 @@ current_lane_configuration_art = None
 
 current_song = None
 current_difficulty = None
+current_beat = None
 
 
 # open the existing beatmap for editing. then calls method edit_beatmap_input
@@ -20,9 +21,10 @@ current_difficulty = None
 # will not be changed here. paste it at the end of the editing process to
 # ensure it remains.
 def edit_beatmap(song_name, song_difficulty):
-    global current_song, current_difficulty
+    global current_song, current_difficulty, current_beat
     current_song = song_name
     current_difficulty = song_difficulty
+    current_beat = 0
 
     notes, lane_events = Util.read_beatmap(song_name, song_difficulty)
 
@@ -39,6 +41,9 @@ def edit_beatmap(song_name, song_difficulty):
         current_lane_count = last_lane_swap[1]
         current_lane_configuration = last_lane_swap[2]
         current_lane_configuration_art = last_lane_swap[3]
+
+        if len(notes) > 0:
+            current_beat = notes[-1]["startBeat"]
 
     sorted_notes = sorted(edit_beatmap_input(notes),
                           key=lambda note: (note['startBeat'], note['lane']))
@@ -57,8 +62,10 @@ def edit_beatmap(song_name, song_difficulty):
 
 # obtain the beat for the current note to be added to the beatmap
 def edit_beatmap_input(notes):
+    global current_beat
+
     Util.note_report(current_lane_configuration, current_lane_configuration_art,
-                     Util.get_last_beat_difficulty())
+                     Util.get_last_beat(current_beat, notes))
     beat = input(
         "Enter beat for the note you want to add (or 'exit' or 'show swap')? ")
 
@@ -77,6 +84,7 @@ def edit_beatmap_input(notes):
                                 "lane": lane,
                                 "noteData": note_data}
             notes.append(note_json_object)
+            current_beat = beat
 
             edit_beatmap_input(notes)
         except ValueError:
