@@ -11,19 +11,20 @@ current_lane_count = None
 current_lane_configuration = None
 current_lane_configuration_art = None
 
+current_song = None
+current_difficulty = None
+
 
 # open the existing beatmap for editing. then calls method edit_beatmap_input
 # to loop through the editing/adding process obtain the laneEvents since it
 # will not be changed here. paste it at the end of the editing process to
 # ensure it remains.
 def edit_beatmap(song_name, song_difficulty):
-    with open('beatmaps/' + song_name + "/"
-              + song_name + "_" + song_difficulty + ".json",
-              "r") as beatmap_read:
-        json_data = json.loads(beatmap_read.read())
-        notes = json_data["notes"]
-        lane_events = json_data["laneEvents"]
-    beatmap_read.close()
+    global current_song, current_difficulty
+    current_song = song_name
+    current_difficulty = song_difficulty
+
+    notes, lane_events = Util.read_beatmap(song_name, song_difficulty)
 
     if not lane_events:
         lane_events = set_lane_event()
@@ -34,7 +35,7 @@ def edit_beatmap(song_name, song_difficulty):
             current_lane_configuration_art
 
         current_lane_count, current_lane_configuration, \
-            current_lane_configuration_art = \
+        current_lane_configuration_art = \
             Util.get_initial_lane_configuration(lane_events[0]['lanes'])
 
     sorted_notes = sorted(edit_beatmap_input(notes),
@@ -63,7 +64,7 @@ def edit_beatmap_input(notes):
         return ""
     elif beat.lower().strip() == "show swap" \
             or beat.lower().strip() == "showswap":
-        Util.show_lane_swaps(notes)
+        Util.show_lane_swaps(notes, current_song, current_difficulty)
         edit_beatmap_input(notes)
     else:
         try:

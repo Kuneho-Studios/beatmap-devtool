@@ -286,8 +286,15 @@ def get_lane_swap_dictionary(lane_count):
 
 
 # method to fancy print and display the gathered lane swap events
-def show_lane_swaps(notes_list):
-    lane_swaps_list = get_lane_swaps(notes_list)
+def show_lane_swaps(notes_list, song_name, song_difficulty):
+
+    # get original lane configuration
+    notes, lane_events = read_beatmap(song_name, song_difficulty)
+    original_lane_configuration = get_initial_lane_configuration(lane_events[0]['lanes'])
+
+    # get lane swap events
+    lane_swaps_list = [(0, original_lane_configuration[1], original_lane_configuration[2])]
+    lane_swaps_list = lane_swaps_list + (get_lane_swaps(notes_list))
 
     box_width = 34
     print("\n┌" + ("-" * (box_width - 2)) + "┐")
@@ -301,3 +308,14 @@ def show_lane_swaps(notes_list):
             print("~" * box_width)
 
     print("└" + "-" * (box_width - 2) + "┘\n")
+
+
+def read_beatmap(song_name, song_difficulty):
+    with open('beatmaps/' + song_name + "/"
+              + song_name + "_" + song_difficulty + ".json",
+              "r") as beatmap_read:
+        json_data = json.loads(beatmap_read.read())
+        notes = json_data["notes"]
+        lane_events = json_data["laneEvents"]
+    beatmap_read.close()
+    return notes, lane_events
