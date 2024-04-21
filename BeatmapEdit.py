@@ -34,9 +34,11 @@ def edit_beatmap(song_name, song_difficulty):
         global current_lane_count, current_lane_configuration, \
             current_lane_configuration_art
 
-        current_lane_count, current_lane_configuration, \
-        current_lane_configuration_art = \
-            Util.get_initial_lane_configuration(lane_events[0]['lanes'])
+        last_lane_swap = \
+            Util.get_lane_swaps(notes, song_name, song_difficulty)[-1]
+        current_lane_count = last_lane_swap[1]
+        current_lane_configuration = last_lane_swap[2]
+        current_lane_configuration_art = last_lane_swap[3]
 
     sorted_notes = sorted(edit_beatmap_input(notes),
                           key=lambda note: (note['startBeat'], note['lane']))

@@ -220,10 +220,16 @@ def get_initial_lane_configuration(lanes_list):
 
 # reads the noteData for each note. if noteType is swap
 # then determine the art and plaintext name of the swap
-def get_lane_swaps(notes_list):
+def get_lane_swaps(notes_list, song_name, song_difficulty):
     lane_positions = []
     none_count = 0
-    swaps_list = []
+
+    # get original lane configuration
+    notes, lane_events = read_beatmap(song_name, song_difficulty)
+    original_lane_configuration = \
+        get_initial_lane_configuration(lane_events[0]['lanes'])
+    swaps_list = [(0, original_lane_configuration[0],
+                   original_lane_configuration[1], original_lane_configuration[2])]
 
     for note in notes_list:
         if note["noteData"]["noteType"] == "LaneSwap":
@@ -235,7 +241,8 @@ def get_lane_swaps(notes_list):
 
             lane_count, lane_config, lane_art = \
                 get_current_lane_values((MAX_LANE_SIZE - none_count), lane_positions)
-            swaps_list.append((note["startBeat"], lane_config, lane_art))
+            swaps_list.append((note["startBeat"], (MAX_LANE_SIZE - none_count),
+                               lane_config, lane_art))
             none_count = 0
             lane_positions = []
 
@@ -287,14 +294,8 @@ def get_lane_swap_dictionary(lane_count):
 
 # method to fancy print and display the gathered lane swap events
 def show_lane_swaps(notes_list, song_name, song_difficulty):
-
-    # get original lane configuration
-    notes, lane_events = read_beatmap(song_name, song_difficulty)
-    original_lane_configuration = get_initial_lane_configuration(lane_events[0]['lanes'])
-
     # get lane swap events
-    lane_swaps_list = [(0, original_lane_configuration[1], original_lane_configuration[2])]
-    lane_swaps_list = lane_swaps_list + (get_lane_swaps(notes_list))
+    lane_swaps_list = get_lane_swaps(notes_list, song_name, song_difficulty)
 
     box_width = 34
     print("\n┌" + ("-" * (box_width - 2)) + "┐")
@@ -302,8 +303,8 @@ def show_lane_swaps(notes_list, song_name, song_difficulty):
     for i in range(0, len(lane_swaps_list)):
         lane_swap = lane_swaps_list[i]
         print(" Beat\n" + "\t" + str(lane_swap[0]))
-        print(" Lane Swap Name\n" + "\t" + lane_swap[1])
-        print(" Lane Swap Art\n" + lane_swap[2])
+        print(" Lane Swap Name\n" + "\t" + lane_swap[2])
+        print(" Lane Swap Art\n" + lane_swap[3])
         if i < len(lane_swaps_list) - 1:
             print("~" * box_width)
 
