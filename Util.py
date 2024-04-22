@@ -171,18 +171,23 @@ def get_song_name(song_save_name):
 # box to put information regarding the last note entered
 def note_report(current_lane_configuration, current_lane_configuration_art, last_beat):
     lane_configuration_line = (
-        " Lane Configuration: " + current_lane_configuration)
+            " Lane Configuration: " + current_lane_configuration)
     lane_configuration_art_line = (
-        " Lane Configuration Art: \n" + current_lane_configuration_art)
-    last_beat_line = (
-        " Last Beat: " + last_beat[0]['beat'])
+            " Lane Configuration Art: \n" + current_lane_configuration_art)
 
-    if len(last_beat) == 1:
-        last_notes_line = " Last Note: "
+    if len(last_beat) == 0:
+        last_beat_line = " Last Beat: None"
+        last_notes_line = " Last Note: None"
     else:
-        last_notes_line = " Last Notes: "
+        if len(last_beat) == 1:
+            last_notes_line = " Last Note: "
+        else:
+            last_notes_line = " Last Notes: "
+        last_beat_line = (
+                " Last Beat: " + str(last_beat[0]['beat']))
+
     for note in last_beat:
-        last_notes_line = (last_notes_line + "Lane " + note['lane']
+        last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
                            + " (" + note['noteType'] + "), ")
     last_notes_line = last_notes_line.removesuffix(", ")
 
@@ -197,15 +202,140 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
 
 
 # fetches last beat from the current beatmap that's being edited
-def get_last_beat_difficulty():
-    # todo implement fetching last beat from current file that's being edited
-    return [{"beat": "not implemented", "lane": "not implemented",
-             "noteType": "not implemented"}]
+def get_last_beat(current_beat, notes_list):
+    if len(notes_list) == 0:
+        return []
+
+    last_lane_list = []
+    i = 1
+    while i < (MAX_LANE_SIZE + 1) and i < len(notes_list) + 1:
+        this_note = notes_list[-i]
+        if this_note["startBeat"] == current_beat:
+            last_lane_list.append({"beat": current_beat,
+                                   "lane": this_note["lane"],
+                                   "noteType": this_note["noteData"]["noteType"]})
+            i += 1
+        else:
+            break
+
+    return sorted(last_lane_list,
+                          key=lambda note: (note['lane']))
 
 
-# fetches highest last beat from the current song (not the specific beatmap)
-# that's being edited to be used in getting the totalBeats field
-# for the Data.json file for a given song
-def get_last_beat_song():
-    # todo implement fetching last beat amongst all the files in a given song
-    return ""
+# reads the laneEvents at the bottom of the beatmap
+# sets global current lane variables to match those
+def get_initial_lane_configuration(lanes_list):
+    lane_positions = []
+    none_count = 0
+
+    for lane in lanes_list:
+        this_lane = lane['newLanePosition']
+        lane_positions.append(this_lane)
+        if "None" in this_lane:
+            none_count = none_count + 1
+
+    return get_current_lane_values((MAX_LANE_SIZE - none_count), lane_positions)
+
+
+# reads the noteData for each note. if noteType is swap
+# then determine the art and plaintext name of the swap
+def get_lane_swaps(notes_list, song_name, song_difficulty):
+    lane_positions = []
+    none_count = 0
+
+    # get original lane configuration
+    notes, lane_events = read_beatmap(song_name, song_difficulty)
+    original_lane_configuration = \
+        get_initial_lane_configuration(lane_events[0]['lanes'])
+    swaps_list = [(0, original_lane_configuration[0],
+                   original_lane_configuration[1], original_lane_configuration[2])]
+
+    for note in notes_list:
+        if note["noteData"]["noteType"] == "LaneSwap":
+            lanes_list = note["noteData"]['laneChanges']
+            for lane in lanes_list:
+                lane_positions.append(lane["newLanePosition"])
+                if "None" in lane["newLanePosition"]:
+                    none_count = none_count + 1
+
+            lane_count, lane_config, lane_art = \
+                get_current_lane_values((MAX_LANE_SIZE - none_count), lane_positions)
+            swaps_list.append((note["startBeat"], (MAX_LANE_SIZE - none_count),
+                               lane_config, lane_art))
+            none_count = 0
+            lane_positions = []
+
+    return swaps_list
+
+
+# given the amount of lanes and the lane positions
+# loop through the art to determine which variation is used
+# as well as the plaintext name of the variation
+def get_current_lane_values(lane_count, lane_positions):
+    lane_dictionary = get_lane_swap_dictionary(lane_count)
+
+    current_lane_configuration = None
+    current_lane_configuration_art = None
+
+    # loop through the various configurations
+    # outer-loop used to get the plain text name once position array matches
+    for i in lane_dictionary.items():
+        # loop through the art for a given configuration
+        # if the lane position array's match, then return this art and break
+        for j in i[1]:
+            if lane_positions == j[1]:
+                current_lane_configuration_art = j[0]
+                break
+        # a check to ensure that the inner loop is "break"ed and not just done
+        if current_lane_configuration_art is not None:
+            current_lane_configuration = i[0]
+            break
+
+    return lane_count, current_lane_configuration, current_lane_configuration_art
+
+
+# helper method to determine which dictionary to loop through
+def get_lane_swap_dictionary(lane_count):
+    if lane_count == 1:
+        return one_lane_swap_types_dict
+    elif lane_count == 2:
+        return two_lane_swap_types_dict
+    elif lane_count == 3:
+        return three_lane_swap_types_dict
+    elif lane_count == 4:
+        return four_lane_swap_types_dict
+    elif lane_count == 5:
+        return five_lane_swap_types_dict
+    else:
+        print("CURRENT COUNT OF " + str(lane_count)
+              + " NOT FOUND. PLEASE REPORT")
+
+
+# method to fancy print and display the gathered lane swap events
+def show_lane_swaps(notes_list, song_name, song_difficulty):
+    # get lane swap events
+    lane_swaps_list = get_lane_swaps(notes_list, song_name, song_difficulty)
+
+    box_width = 34
+    print("\n┌" + ("-" * (box_width - 2)) + "┐")
+
+    for i in range(0, len(lane_swaps_list)):
+        lane_swap = lane_swaps_list[i]
+        print(" Beat\n" + "\t" + str(lane_swap[0]))
+        print(" Lane Swap Name\n" + "\t" + lane_swap[2])
+        print(" Lane Swap Art\n" + lane_swap[3])
+        if i < len(lane_swaps_list) - 1:
+            print("~" * box_width)
+
+    print("└" + "-" * (box_width - 2) + "┘\n")
+
+
+def read_beatmap(song_name, song_difficulty):
+    with open('beatmaps/' + song_name + "/"
+              + song_name + "_" + song_difficulty + ".json",
+              "r") as beatmap_read:
+        json_data = json.loads(beatmap_read.read())
+        notes = json_data["notes"]
+        lane_events = json_data["laneEvents"]
+    beatmap_read.close()
+    return notes, lane_events
