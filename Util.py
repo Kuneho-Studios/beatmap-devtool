@@ -174,13 +174,18 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
             " Lane Configuration: " + current_lane_configuration)
     lane_configuration_art_line = (
             " Lane Configuration Art: \n" + current_lane_configuration_art)
-    last_beat_line = (
-            " Last Beat: " + str(last_beat[0]['beat']))
 
-    if len(last_beat) == 1:
-        last_notes_line = " Last Note: "
+    if len(last_beat) == 0:
+        last_beat_line = " Last Beat: None"
+        last_notes_line = " Last Note: None"
     else:
-        last_notes_line = " Last Notes: "
+        if len(last_beat) == 1:
+            last_notes_line = " Last Note: "
+        else:
+            last_notes_line = " Last Notes: "
+        last_beat_line = (
+                " Last Beat: " + str(last_beat[0]['beat']))
+
     for note in last_beat:
         last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
                            + " (" + note['noteType'] + "), ")
@@ -198,10 +203,12 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
 
 # fetches last beat from the current beatmap that's being edited
 def get_last_beat(current_beat, notes_list):
-    # todo implement fetching last beat from current file that's being edited
+    if len(notes_list) == 0:
+        return []
+
     last_lane_list = []
     i = 1
-    while i < (MAX_LANE_SIZE + 1):
+    while i < (MAX_LANE_SIZE + 1) and i < len(notes_list) + 1:
         this_note = notes_list[-i]
         if this_note["startBeat"] == current_beat:
             last_lane_list.append({"beat": current_beat,
@@ -211,7 +218,8 @@ def get_last_beat(current_beat, notes_list):
         else:
             break
 
-    return last_lane_list
+    return sorted(last_lane_list,
+                          key=lambda note: (note['lane']))
 
 
 # reads the laneEvents at the bottom of the beatmap
