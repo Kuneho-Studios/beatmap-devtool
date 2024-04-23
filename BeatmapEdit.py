@@ -254,8 +254,9 @@ def set_song_note_length(song_name, notes):
 
 
 # shift all notes from a user supplied amount
-def shift_all_notes(shift_count):
-    if shift_count[0] == '+':
-        print("Shifting all notes right", shift_count[1:])
-    elif shift_count[0] == '-':
-        print("Shifting all notes left", shift_count[1:])
+def shift_all_notes(shift_input):
+    shift_amount = shift_input[1:]
+    if shift_input[0] == '+':
+        print("Shifting all notes right", shift_amount)
+    elif shift_input[0] == '-':
+        print("Shifting all notes left", shift_amount)
