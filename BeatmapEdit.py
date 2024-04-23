@@ -67,7 +67,7 @@ def edit_beatmap_input(notes):
     Util.note_report(current_lane_configuration, current_lane_configuration_art,
                      Util.get_last_beat(current_beat, notes))
     beat = input(
-        "Enter beat for the note you want to add (or 'exit' or 'show swap')? ")
+        "Enter beat for the note you want to add (or 'exit' or 'show swap' or 'shift')? ")
 
     if beat.lower() == "exit":
         return ""
@@ -75,6 +75,20 @@ def edit_beatmap_input(notes):
             or beat.lower().strip() == "showswap":
         Util.show_lane_swaps(notes, current_song, current_difficulty)
         edit_beatmap_input(notes)
+    elif beat.lower().strip() == "shift":
+        # todo give option to shift a subset of notes opposed to every note
+        shift_input = input("Enter the count to shift all the beats "
+                            "(prefix with `-` for shift left or `+` to shift right): ").strip()
+
+        if shift_input[0] != "+" and shift_input[0] != "-":
+            print("Please include a '+' or '-' before the amount to shift")
+            edit_beatmap_input(notes)
+        try:
+            float(shift_input[1:])
+            shift_all_notes(shift_input)
+        except ValueError:
+            print("Please enter only a number after the '+' or '-'")
+            edit_beatmap_input(notes)
     else:
         try:
             beat = float(beat)
@@ -237,3 +251,11 @@ def set_song_note_length(song_name, notes):
                   "w") as beatmap_data_write:
             json.dump(json_data, beatmap_data_write, indent=4)
         beatmap_data_write.close()
+
+
+# shift all notes from a user supplied amount
+def shift_all_notes(shift_count):
+    if shift_count[0] == '+':
+        print("Shifting all notes right", shift_count[1:])
+    elif shift_count[0] == '-':
+        print("Shifting all notes left", shift_count[1:])
