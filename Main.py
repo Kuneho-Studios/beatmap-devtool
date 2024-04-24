@@ -24,7 +24,9 @@ def get_user_purpose():
     if create_or_edit.lower() == "create" or create_or_edit.lower() == "c":
         BeatmapCreation.get_user_input()
     elif create_or_edit.lower() == "edit" or create_or_edit.lower() == "e":
-        name, difficulty = get_beatmap()
+        name, difficulty = get_user_beatmap()
+        Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
+                             + "\" on difficulty " + difficulty + " ✨")
         BeatmapEdit.edit_beatmap(name, difficulty)
     elif create_or_edit.lower() == "exit":
         Util.fancy_print_box(
@@ -37,7 +39,7 @@ def get_user_purpose():
 
 
 # gets the specified beatmap that the user would like to edit
-def get_beatmap():
+def get_user_beatmap():
     song_list = Util.get_stored_songs()
 
     if len(song_list) == 0:
@@ -45,14 +47,7 @@ def get_beatmap():
             "⚠ There are no beatmaps present. Please create one first ⚠")
         get_user_purpose()
     else:
-        song = Util.input_stored_songs(song_list)
-        difficulty_list = Util.extract_and_sort_difficulties(
-            Util.get_stored_difficulties(song))
-        difficulty = str(Util.input_stored_difficulties(difficulty_list))
-        Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(song))
-                             + "\" on difficulty " + difficulty + " ✨")
-        print("Type 'exit' to leave editor")
-        return song, difficulty
+        return Util.get_beatmap(song_list)
 
 
 main()
