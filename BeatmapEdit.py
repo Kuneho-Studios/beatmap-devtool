@@ -15,6 +15,17 @@ current_song = None
 current_difficulty = None
 current_beat = None
 
+available_actions_list = [
+    "Add Notes",
+    # "Edit Note",
+    # "Delete Note",
+    "Shift All Notes",
+    "Shift Some Notes",
+    "Show All Lane Swaps",
+    # Enter any new commands before exit
+    "Exit"
+]
+
 
 # open the existing beatmap for editing. then calls method edit_beatmap_input
 # to loop through the editing/adding process obtain the laneEvents since it
@@ -66,30 +77,31 @@ def edit_beatmap_input(notes):
 
     Util.note_report(current_lane_configuration, current_lane_configuration_art,
                      Util.get_last_beat(current_beat, notes))
-    beat = input(
-        "Enter beat for the note you want to add (or 'exit' or 'show swap')? ")
 
-    if beat.lower() == "exit":
+    print("\nAvailable Beatmap Actions:")
+    Util.dropdown_for_user_input(available_actions_list)
+
+    action_input = (
+        input("Enter the number of the action you'd like to perform: "))
+
+    action_input = (
+        Util.validate_dropdown_input(action_input, len(available_actions_list)))
+
+    if available_actions_list[action_input - 1] == "Exit":
         return ""
-    elif beat.lower().strip() == "show swap" \
-            or beat.lower().strip() == "showswap":
+    elif available_actions_list[action_input - 1] == "Show All Lane Swaps":
         Util.show_lane_swaps(notes, current_song, current_difficulty)
         edit_beatmap_input(notes)
-    else:
-        try:
-            beat = float(beat)
-            lane = set_lane(beat)
-            note_data = set_note_data(beat, lane)
-            note_json_object = {"startBeat": beat,
-                                "lane": lane,
-                                "noteData": note_data}
-            notes.append(note_json_object)
-            current_beat = beat
+    elif available_actions_list[action_input - 1] == "Shift All Notes":
+        shift_all_notes(notes)
+        edit_beatmap_input(notes)
+    elif available_actions_list[action_input - 1] == "Shift Some Notes":
+        shift_some_notes(notes)
+        edit_beatmap_input(notes)
+    elif available_actions_list[action_input - 1] == "Add Notes":
+        notes = add_note(notes)
+        edit_beatmap_input(notes)
 
-            edit_beatmap_input(notes)
-        except ValueError:
-            print("Either enter a number or 'exit'!")
-            edit_beatmap_input(notes)
     print("")
     return notes
 
@@ -237,3 +249,91 @@ def set_song_note_length(song_name, notes):
                   "w") as beatmap_data_write:
             json.dump(json_data, beatmap_data_write, indent=4)
         beatmap_data_write.close()
+
+
+# shift all notes from a user supplied amount
+def shift_all_notes(notes):
+    shift_input = input("Enter the count to shift all the beats "
+                        "(prefix with `-` for shift left or `+` to shift right): ").strip()
+
+    if shift_input[0] != "+" and shift_input[0] != "-":
+        print("Please include a '+' or '-' before the amount to shift")
+        shift_all_notes(notes)
+    try:
+        shift_amount = float(shift_input[1:])
+        if shift_input[0] == '-':
+            shift_amount = -1 * shift_amount
+
+        for note in notes:
+            note["startBeat"] = note["startBeat"] + shift_amount
+
+        return notes
+    except ValueError:
+        print("Please enter only a number after the '+' or '-'")
+        shift_all_notes(notes)
+
+
+# shift notes within the user supplied range a user supplied amount
+def shift_some_notes(notes):
+    shift_start_input = input("Enter the beat where the shift begins: ").strip()
+    try:
+        shift_start_input = float(shift_start_input)
+    except ValueError:
+        print("Please enter valid number for the start beat")
+        shift_some_notes(notes)
+
+    shift_end_input = input("Enter the beat where the shift ends: ").strip()
+    try:
+        shift_end_input = float(shift_end_input)
+        if shift_end_input < shift_start_input:
+            print("Please ensure that the end beat count is the same or later"
+                  " than the start beat count")
+            shift_some_notes(notes)
+    except ValueError:
+        print("Please enter valid number for the end beat")
+        shift_some_notes(notes)
+
+    shift_input = input("Enter the count to shift the beats between "
+                        + str(shift_start_input) + " and "
+                        + str(shift_end_input) +
+                        "(prefix with `-` for shift left or `+` to shift right): ").strip()
+
+    if shift_input[0] != "+" and shift_input[0] != "-":
+        print("Please include a '+' or '-' before the amount to shift")
+        shift_all_notes(notes)
+    try:
+        shift_amount = float(shift_input[1:])
+        if shift_input[0] == '-':
+            shift_amount = -1 * shift_amount
+
+        for note in notes:
+            if shift_start_input <= note["startBeat"] <= shift_end_input:
+                note["startBeat"] = note["startBeat"] + shift_amount
+
+        return notes
+    except ValueError:
+        print("Please enter only a number after the '+' or '-'")
+        shift_all_notes(notes)
+
+
+# add a note to the beatmap
+def add_note(notes):
+    global current_beat
+
+    beat = input(
+        "Enter beat for the note you want to add: ")
+
+    try:
+        beat = float(beat)
+        lane = set_lane(beat)
+        note_data = set_note_data(beat, lane)
+        note_json_object = {"startBeat": beat,
+                            "lane": lane,
+                            "noteData": note_data}
+        notes.append(note_json_object)
+        current_beat = beat
+
+        return notes
+    except ValueError:
+        print("\n Please enter a number.")
+        add_note(notes)
