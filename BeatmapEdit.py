@@ -406,11 +406,9 @@ def copy_beatmap_from():
         with open(Util.BEATMAPS_DIRECTORY + Util.string_to_pascal_case(current_song) + "/"
                   + Util.string_to_pascal_case(current_song) + "_" + str(current_difficulty) + ".json",
                   "w") as file_to_copy_from:
-            print("COPYING INTO - " + file_to_copy_from.name)
             json.dump(
                 {"notes": new_notes, "laneEvents": new_lane_events},
                 file_to_copy_from, indent=4)
-            print("NEW NOTES - ", new_notes)
         file_to_copy_from.close()
         print("Copied " + song_name + " (difficulty " + song_difficulty + ") into "
               + current_song + " (difficulty " + current_difficulty + ")")
