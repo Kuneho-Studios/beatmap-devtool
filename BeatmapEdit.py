@@ -96,8 +96,7 @@ def edit_beatmap_input(notes):
         shift_all_notes(notes)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Shift Some Notes":
-        # todo give option to shift a subset of notes opposed to every note
-        print("Shifting some notes")
+        shift_some_notes(notes)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Add Notes":
         notes = add_note(notes)
@@ -267,6 +266,49 @@ def shift_all_notes(notes):
 
         for note in notes:
             note["startBeat"] = note["startBeat"] + shift_amount
+
+        return notes
+    except ValueError:
+        print("Please enter only a number after the '+' or '-'")
+        shift_all_notes(notes)
+
+
+# shift notes within the user supplied range a user supplied amount
+def shift_some_notes(notes):
+    shift_start_input = input("Enter the beat where the shift begins: ").strip()
+    try:
+        shift_start_input = float(shift_start_input)
+    except ValueError:
+        print("Please enter valid number for the start beat")
+        shift_some_notes(notes)
+
+    shift_end_input = input("Enter the beat where the shift ends: ").strip()
+    try:
+        shift_end_input = float(shift_end_input)
+        if shift_end_input < shift_start_input:
+            print("Please ensure that the end beat count is the same or later"
+                  " than the start beat count")
+            shift_some_notes(notes)
+    except ValueError:
+        print("Please enter valid number for the end beat")
+        shift_some_notes(notes)
+
+    shift_input = input("Enter the count to shift the beats between "
+                        + str(shift_start_input) + " and "
+                        + str(shift_end_input) +
+                        "(prefix with `-` for shift left or `+` to shift right): ").strip()
+
+    if shift_input[0] != "+" and shift_input[0] != "-":
+        print("Please include a '+' or '-' before the amount to shift")
+        shift_all_notes(notes)
+    try:
+        shift_amount = float(shift_input[1:])
+        if shift_input[0] == '-':
+            shift_amount = -1 * shift_amount
+
+        for note in notes:
+            if shift_start_input <= note["startBeat"] <= shift_end_input:
+                note["startBeat"] = note["startBeat"] + shift_amount
 
         return notes
     except ValueError:
