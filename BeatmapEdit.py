@@ -85,7 +85,8 @@ def edit_beatmap_input(notes):
             edit_beatmap_input(notes)
         try:
             float(shift_input[1:])
-            shift_all_notes(shift_input)
+            notes = shift_all_notes(shift_input, notes)
+            edit_beatmap_input(notes)
         except ValueError:
             print("Please enter only a number after the '+' or '-'")
             edit_beatmap_input(notes)
@@ -254,9 +255,12 @@ def set_song_note_length(song_name, notes):
 
 
 # shift all notes from a user supplied amount
-def shift_all_notes(shift_input):
-    shift_amount = shift_input[1:]
-    if shift_input[0] == '+':
-        print("Shifting all notes right", shift_amount)
-    elif shift_input[0] == '-':
-        print("Shifting all notes left", shift_amount)
+def shift_all_notes(shift_input, notes):
+    shift_amount = float(shift_input[1:])
+    if shift_input[0] == '-':
+        shift_amount = -1 * shift_amount
+
+    for note in notes:
+        note["startBeat"] = note["startBeat"] + shift_amount
+
+    return notes
