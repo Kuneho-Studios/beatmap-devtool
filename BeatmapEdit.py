@@ -15,6 +15,17 @@ current_song = None
 current_difficulty = None
 current_beat = None
 
+available_actions_list = [
+    "Add Notes",
+    # "Edit Note",
+    # "Delete Note",
+    "Shift All Notes",
+    "Shift Some Notes",
+    "Show All Lane Swaps",
+    # Enter any new commands before exit
+    "Exit"
+]
+
 
 # open the existing beatmap for editing. then calls method edit_beatmap_input
 # to loop through the editing/adding process obtain the laneEvents since it
@@ -66,17 +77,22 @@ def edit_beatmap_input(notes):
 
     Util.note_report(current_lane_configuration, current_lane_configuration_art,
                      Util.get_last_beat(current_beat, notes))
-    beat = input(
-        "Enter beat for the note you want to add (or 'exit' or 'show swap' or 'shift')? ")
 
-    if beat.lower() == "exit":
+    print("\nAvailable Beatmap Actions:")
+    Util.dropdown_for_user_input(available_actions_list)
+
+    action_input = (
+        input("Enter the number of the action you'd like to perform: "))
+
+    action_input = (
+        Util.validate_dropdown_input(action_input, len(available_actions_list)))
+
+    if available_actions_list[action_input - 1] == "Exit":
         return ""
-    elif beat.lower().strip() == "show swap" \
-            or beat.lower().strip() == "showswap":
+    elif available_actions_list[action_input - 1] == "Show All Lane Swaps":
         Util.show_lane_swaps(notes, current_song, current_difficulty)
         edit_beatmap_input(notes)
-    elif beat.lower().strip() == "shift":
-        # todo give option to shift a subset of notes opposed to every note
+    elif available_actions_list[action_input - 1] == "Shift All Notes":
         shift_input = input("Enter the count to shift all the beats "
                             "(prefix with `-` for shift left or `+` to shift right): ").strip()
 
@@ -90,21 +106,14 @@ def edit_beatmap_input(notes):
         except ValueError:
             print("Please enter only a number after the '+' or '-'")
             edit_beatmap_input(notes)
-    else:
-        try:
-            beat = float(beat)
-            lane = set_lane(beat)
-            note_data = set_note_data(beat, lane)
-            note_json_object = {"startBeat": beat,
-                                "lane": lane,
-                                "noteData": note_data}
-            notes.append(note_json_object)
-            current_beat = beat
+    elif available_actions_list[action_input - 1] == "Shift Some Notes":
+        # todo give option to shift a subset of notes opposed to every note
+        print("Shifting some notes")
+        edit_beatmap_input(notes)
+    elif available_actions_list[action_input - 1] == "Add Notes":
+        notes = add_note(notes)
+        edit_beatmap_input(notes)
 
-            edit_beatmap_input(notes)
-        except ValueError:
-            print("Either enter a number or 'exit'!")
-            edit_beatmap_input(notes)
     print("")
     return notes
 
@@ -264,3 +273,25 @@ def shift_all_notes(shift_input, notes):
         note["startBeat"] = note["startBeat"] + shift_amount
 
     return notes
+
+# add a note to the beatmap
+def add_note(notes):
+    global current_beat
+
+    beat = input(
+        "Enter beat for the note you want to add: ")
+
+    try:
+        beat = float(beat)
+        lane = set_lane(beat)
+        note_data = set_note_data(beat, lane)
+        note_json_object = {"startBeat": beat,
+                            "lane": lane,
+                            "noteData": note_data}
+        notes.append(note_json_object)
+        current_beat = beat
+
+        return notes
+    except ValueError:
+        print("\n Please enter a number.")
+        add_note(notes)
