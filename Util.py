@@ -114,7 +114,7 @@ def input_stored_difficulties(difficulty_beatmaps):
     print("\nAvailable Difficulties:")
     dropdown_for_user_input(difficulty_beatmaps)
     directory_input = input(
-        "Enter the number of the difficulty you would like to beatmap: ")
+        "Enter the number of the difficulty you would like to use: ")
 
     directory_input = validate_dropdown_input(
         directory_input, len(difficulty_beatmaps))
@@ -219,7 +219,7 @@ def get_last_beat(current_beat, notes_list):
             break
 
     return sorted(last_lane_list,
-                          key=lambda note: (note['lane']))
+                  key=lambda note: (note['lane']))
 
 
 # reads the laneEvents at the bottom of the beatmap
@@ -330,6 +330,7 @@ def show_lane_swaps(notes_list, song_name, song_difficulty):
     print("└" + "-" * (box_width - 2) + "┘\n")
 
 
+# reads the beatmap and returns the notes and lane events elements
 def read_beatmap(song_name, song_difficulty):
     with open('beatmaps/' + song_name + "/"
               + song_name + "_" + song_difficulty + ".json",
@@ -339,3 +340,11 @@ def read_beatmap(song_name, song_difficulty):
         lane_events = json_data["laneEvents"]
     beatmap_read.close()
     return notes, lane_events
+
+
+def get_beatmap(song_list):
+    song = input_stored_songs(song_list)
+    difficulty_list = extract_and_sort_difficulties(
+        get_stored_difficulties(song))
+    difficulty = str(input_stored_difficulties(difficulty_list))
+    return song, difficulty
