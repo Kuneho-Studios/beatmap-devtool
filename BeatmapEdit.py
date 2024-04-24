@@ -93,19 +93,8 @@ def edit_beatmap_input(notes):
         Util.show_lane_swaps(notes, current_song, current_difficulty)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Shift All Notes":
-        shift_input = input("Enter the count to shift all the beats "
-                            "(prefix with `-` for shift left or `+` to shift right): ").strip()
-
-        if shift_input[0] != "+" and shift_input[0] != "-":
-            print("Please include a '+' or '-' before the amount to shift")
-            edit_beatmap_input(notes)
-        try:
-            float(shift_input[1:])
-            notes = shift_all_notes(shift_input, notes)
-            edit_beatmap_input(notes)
-        except ValueError:
-            print("Please enter only a number after the '+' or '-'")
-            edit_beatmap_input(notes)
+        shift_all_notes(notes)
+        edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Shift Some Notes":
         # todo give option to shift a subset of notes opposed to every note
         print("Shifting some notes")
@@ -264,15 +253,26 @@ def set_song_note_length(song_name, notes):
 
 
 # shift all notes from a user supplied amount
-def shift_all_notes(shift_input, notes):
-    shift_amount = float(shift_input[1:])
-    if shift_input[0] == '-':
-        shift_amount = -1 * shift_amount
+def shift_all_notes(notes):
+    shift_input = input("Enter the count to shift all the beats "
+                        "(prefix with `-` for shift left or `+` to shift right): ").strip()
 
-    for note in notes:
-        note["startBeat"] = note["startBeat"] + shift_amount
+    if shift_input[0] != "+" and shift_input[0] != "-":
+        print("Please include a '+' or '-' before the amount to shift")
+        shift_all_notes(notes)
+    try:
+        shift_amount = float(shift_input[1:])
+        if shift_input[0] == '-':
+            shift_amount = -1 * shift_amount
 
-    return notes
+        for note in notes:
+            note["startBeat"] = note["startBeat"] + shift_amount
+
+        return notes
+    except ValueError:
+        print("Please enter only a number after the '+' or '-'")
+        shift_all_notes(notes)
+
 
 # add a note to the beatmap
 def add_note(notes):
