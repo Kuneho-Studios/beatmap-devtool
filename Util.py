@@ -21,8 +21,8 @@ note_types_list = [
 one_lane_swap_types_dict = {}
 
 two_lane_swap_types_dict = {
-    "Two Lanes Left to Right": LaneArt.TWO_LANES_RIGHT_LEFT,
-    "Two Lanes Right to Left": LaneArt.TWO_LANES_LEFT_RIGHT
+    "Two Lanes Left to Right": LaneArt.TWO_LANES_LEFT_RIGHT,
+    "Two Lanes Right to Left": LaneArt.TWO_LANES_RIGHT_LEFT,
 }
 
 three_lane_swap_types_dict = {}
