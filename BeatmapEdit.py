@@ -416,6 +416,7 @@ def copy_beatmap_from():
         file_to_copy_from.close()
         print("Copied " + song_name + " (difficulty " + song_difficulty + ") into "
               + current_song + " (difficulty " + current_difficulty + ")")
+
     else:
         print("Copy cancelled")
 
@@ -457,3 +458,43 @@ def copy_note_segment(notes):
         note["startBeat"] += note_shift_distance
 
     notes.extend(notes_subset)
+
+
+# update the difficulty of an exisiting beatmap in the root Data.json file
+def update_beatmap_difficulty():
+    global current_song, current_difficulty
+    song_name_pascal = Util.string_to_pascal_case(current_song)
+
+    updated_difficulty = input(
+        "Enter the desired updated difficulty: ")
+    try:
+        updated_difficulty = int(updated_difficulty)
+    except ValueError:
+        print("\n Please enter a number.")
+        update_beatmap_difficulty()
+
+    if updated_difficulty < 1:
+        print("\n Please enter a difficulty greater than 1")
+
+    with open(
+            Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
+            + "Data.json", "r") as root_data_file:
+        json_data = json.loads(root_data_file.read())
+        song_difficulty_list = json_data["difficulty"]
+    root_data_file.close()
+
+    already_exists = False
+    for song_difficulty in song_difficulty_list:
+        # if desired difficulty already exists, prevent it from being updated to it
+        if song_difficulty["tier"] == updated_difficulty:
+            already_exists = True
+            break
+
+        # if current difficulty matches, then this is the reference need to update
+        if song_difficulty["tier"] == current_difficulty:
+            song_difficulty["tier"] = updated_difficulty
+            song_difficulty["filePath"] = Util.FILE_PATH_ROOT + song_name_pascal + "_" + str(updated_difficulty) + ".json"
+
+    if already_exists:
+        print("\n Difficulty", updated_difficulty, "already exists for "
+              + current_song + ". Please choose a different difficulty")
