@@ -25,7 +25,8 @@ available_actions_list = [
     "Shift Some Notes",
     "Show All Lane Swaps",
     "Copy This Beatmap Into Another",
-    "Copy From Another Beatmap Into This"
+    "Copy From Another Beatmap Into This",
+    "Copy Some Notes To Another Place"
 ]
 
 
@@ -108,6 +109,9 @@ def edit_beatmap_input(notes):
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Copy From Another Beatmap Into This":
         copy_beatmap_from()
+        edit_beatmap_input(notes)
+    elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
+        copy_note_segment(notes)
         edit_beatmap_input(notes)
 
     print("")
@@ -414,3 +418,36 @@ def copy_beatmap_from():
               + current_song + " (difficulty " + current_difficulty + ")")
     else:
         print("Copy cancelled")
+
+
+# copy a subset of notes and place them at a different beat
+def copy_note_segment(notes):
+    start_copy_note = input(
+        "Enter first beat of the segment you want to copy: ")
+    try:
+        start_copy_note = float(start_copy_note)
+    except ValueError:
+        print("\n Please enter a number.")
+        copy_note_segment(notes)
+
+    end_copy_note = input(
+        "Enter last beat of the segment you want to copy: ")
+    try:
+        end_copy_note = float(end_copy_note)
+    except ValueError:
+        print("\n Please enter a number.")
+        copy_note_segment(notes)
+
+    if start_copy_note > end_copy_note:
+        print("\n Please ensure that the last beat comes after the first beat")
+        copy_note_segment(notes)
+
+    copied_location = input(
+        "Enter beat where the copied segment will begin: ")
+    try:
+        copied_location = float(copied_location)
+    except ValueError:
+        print("\n Please enter a number.")
+        copy_note_segment(notes)
+
+    print("START - ", start_copy_note, " END - ", end_copy_note, " COPIED LOCATION ", copied_location)
