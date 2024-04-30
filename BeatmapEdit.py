@@ -4,7 +4,7 @@
 # beatmap then provides prompts to the user to aid in editing the beatmap.
 ###
 import json
-
+import copy
 import Util
 
 current_lane_count = None
@@ -450,4 +450,10 @@ def copy_note_segment(notes):
         print("\n Please enter a number.")
         copy_note_segment(notes)
 
-    print("START - ", start_copy_note, " END - ", end_copy_note, " COPIED LOCATION ", copied_location)
+    notes_subset = copy.deepcopy(list(filter(lambda x: start_copy_note <= x.get("startBeat") <= end_copy_note, notes)))
+
+    note_shift_distance = copied_location - start_copy_note
+    for note in notes_subset:
+        note["startBeat"] += note_shift_distance
+
+    notes.extend(notes_subset)
