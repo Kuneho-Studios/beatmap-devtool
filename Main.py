@@ -8,6 +8,13 @@ import BeatmapCreation
 import BeatmapEdit
 import Util
 
+start_actions_list = [
+    "Exit",
+    "Create A New Song (And Beatmaps)",
+    "Edit A Song's Metadata",
+    "Update A Beatmap"
+]
+
 
 # display the starting message and call the entry method
 # determine if editing or creating a beatmap
@@ -19,22 +26,32 @@ def main():
 # gets initial user input. if 'create', then create a new beatmap.
 # if 'edit', then identify what to edit.
 def get_user_purpose():
-    create_or_edit = input(
-        "Would you like to create a new beatmap or edit an existing one? ")
-    if create_or_edit.lower() == "create" or create_or_edit.lower() == "c":
+    print("What would you like to do?")
+    Util.dropdown_for_user_input(start_actions_list)
+
+    starter_input = (
+        input("Enter the number of the action you'd like to perform: "))
+
+    starter_input = (
+        Util.validate_dropdown_input(starter_input, len(start_actions_list)))
+
+    if starter_input is None:
+        print("")
+        get_user_purpose()
+    elif start_actions_list[starter_input - 1] == "Exit":
+        Util.fancy_print_box(
+            "💛 Thanks for using Project Radiance's Beatmap Dev Tool 💛")
+        return ""
+    elif start_actions_list[starter_input - 1] == "Create A New Song (And Beatmaps)":
         BeatmapCreation.get_user_input()
-    elif create_or_edit.lower() == "edit" or create_or_edit.lower() == "e":
+    elif start_actions_list[starter_input - 1] == "Edit A Song's Metadata":
+        print("METADATA SUCH AS EDITING EXISTING DIFFICULTIES, CREATING, AND REMOVING DIFFICULTIES. UPDATING STARTER FIELDS")
+    elif start_actions_list[starter_input - 1] == "Update A Beatmap":
         name, difficulty = get_user_beatmap()
         Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
                              + "\" on difficulty " + difficulty + " ✨")
         BeatmapEdit.edit_beatmap(name, difficulty)
-    elif create_or_edit.lower() == "exit":
-        Util.fancy_print_box(
-            "💛 Thanks for using Project Radiance's Beatmap Dev Tool 💛")
-        return ""
-    else:
-        print("Please only enter 'create' or 'edit'")
-        get_user_purpose()
+
     get_user_purpose()
 
 
