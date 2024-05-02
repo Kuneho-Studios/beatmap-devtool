@@ -5,6 +5,8 @@
 ###
 import json
 import copy
+import os
+
 import Util
 
 current_lane_count = None
@@ -26,7 +28,8 @@ available_actions_list = [
     "Show All Lane Swaps",
     "Copy This Beatmap Into Another",
     "Copy From Another Beatmap Into This",
-    "Copy Some Notes To Another Place"
+    "Copy Some Notes To Another Place",
+    "Update Beatmap Difficulty"
 ]
 
 
@@ -112,6 +115,9 @@ def edit_beatmap_input(notes):
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
         copy_note_segment(notes)
+        edit_beatmap_input(notes)
+    elif available_actions_list[action_input - 1] == "Update Beatmap Difficulty":
+        update_beatmap_difficulty()
         edit_beatmap_input(notes)
 
     print("")
@@ -460,7 +466,7 @@ def copy_note_segment(notes):
     notes.extend(notes_subset)
 
 
-# update the difficulty of an exisiting beatmap in the root Data.json file
+# update the difficulty of an existing beatmap in the root Data.json file
 def update_beatmap_difficulty():
     global current_song, current_difficulty
     song_name_pascal = Util.string_to_pascal_case(current_song)
@@ -485,15 +491,39 @@ def update_beatmap_difficulty():
 
     already_exists = False
     for song_difficulty in song_difficulty_list:
+
         # if desired difficulty already exists, prevent it from being updated to it
         if song_difficulty["tier"] == updated_difficulty:
             already_exists = True
             break
 
         # if current difficulty matches, then this is the reference need to update
-        if song_difficulty["tier"] == current_difficulty:
+        if song_difficulty["tier"] == int(current_difficulty):
             song_difficulty["tier"] = updated_difficulty
-            song_difficulty["filePath"] = Util.FILE_PATH_ROOT + song_name_pascal + "_" + str(updated_difficulty) + ".json"
+            song_difficulty["filePath"] = Util.FILE_PATH_ROOT + song_name_pascal + "_" + str(
+                updated_difficulty) + ".json"
+
+            song_difficulty_list = sorted(song_difficulty_list,
+                                          key=lambda difficulty: (difficulty['tier']))
+
+            json_data["difficulty"] = song_difficulty_list
+
+            with open(
+                    Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
+                    + "Data.json", "w") as updated_root_data_file:
+                json.dump(json_data,
+                          updated_root_data_file, indent=4)
+            updated_root_data_file.close()
+
+            beatmap_directory = "beatmaps/" + song_name_pascal + "/"
+            os.rename(
+                beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"),
+                beatmap_directory + (song_name_pascal + "_" + str(updated_difficulty) + ".json"))
+
+            if os.path.exists(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")):
+                os.remove(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"))
+
+            break
 
     if already_exists:
         print("\n Difficulty", updated_difficulty, "already exists for "
