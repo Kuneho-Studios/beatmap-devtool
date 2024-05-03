@@ -6,6 +6,7 @@
 
 import BeatmapCreation
 import BeatmapEdit
+import SongEdit
 import Util
 
 start_actions_list = [
@@ -13,6 +14,13 @@ start_actions_list = [
     "Create A New Song (And Beatmaps)",
     "Edit A Song's Metadata",
     "Update A Beatmap"
+]
+
+available_song_edit_actions = [
+    "Back",
+    "Copy This Beatmap Into Another",
+    "Copy From Another Beatmap Into This",
+    "Update Beatmap Difficulty"
 ]
 
 
@@ -45,7 +53,8 @@ def get_user_purpose():
     elif start_actions_list[starter_input - 1] == "Create A New Song (And Beatmaps)":
         BeatmapCreation.get_user_input()
     elif start_actions_list[starter_input - 1] == "Edit A Song's Metadata":
-        print("METADATA SUCH AS EDITING EXISTING DIFFICULTIES, CREATING, AND REMOVING DIFFICULTIES. UPDATING STARTER FIELDS")
+        edit_songs()
+        # "METADATA SUCH AS EDITING EXISTING DIFFICULTIES, CREATING, AND REMOVING DIFFICULTIES. UPDATING STARTER FIELDS")
     elif start_actions_list[starter_input - 1] == "Update A Beatmap":
         name, difficulty = get_user_beatmap()
         Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
@@ -65,6 +74,31 @@ def get_user_beatmap():
         get_user_purpose()
     else:
         return Util.get_beatmap(song_list)
+
+
+def edit_songs():
+
+    print("\nAvailable Song Metadata Editing Options")
+
+    Util.dropdown_for_user_input(available_song_edit_actions)
+
+    action_input = (
+        input("Enter the number of the action you'd like to perform: "))
+
+    action_input = (
+        Util.validate_dropdown_input(action_input, len(available_song_edit_actions)))
+
+    if available_song_edit_actions[action_input - 1] == "Back":
+        get_user_purpose()
+    elif available_song_edit_actions[action_input - 1] == "Copy This Beatmap Into Another":
+        SongEdit.copy_beatmap_into()
+        edit_songs()
+    elif available_song_edit_actions[action_input - 1] == "Copy From Another Beatmap Into This":
+        SongEdit.copy_beatmap_from()
+        edit_songs()
+    elif available_song_edit_actions[action_input - 1] == "Update Beatmap Difficulty":
+        SongEdit.update_beatmap_difficulty()
+        edit_songs()
 
 
 main()
