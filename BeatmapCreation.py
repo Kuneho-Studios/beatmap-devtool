@@ -99,8 +99,11 @@ def create_root_data_file(song_name, album_name, artist_name, bpm, genre, diffic
 
 # creates the empty beatmap files
 # for each of the difficulties the user plans on having for the given song
-def create_difficulty_files(input_difficulties, song_name):
-    difficulty_data = []
+# pass in existing difficulty data if appending, omit it if a new song
+def create_difficulty_files(input_difficulties, song_name, difficulty_data=None):
+    if difficulty_data is None:
+        difficulty_data = []
+
     for difficulty in input_difficulties:
         data = {
             "tier": difficulty,

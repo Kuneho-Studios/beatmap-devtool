@@ -71,6 +71,19 @@ def dropdown_for_user_input(list_to_print):
         display_index += 1
 
 
+# gets the specified beatmap that the user would like to edit
+def get_user_beatmap():
+    song_list = get_stored_songs()
+
+    if len(song_list) == 0:
+        fancy_print_box(
+            "⚠ There are no beatmaps present. Please create one first ⚠")
+        return None
+    else:
+        return get_beatmap(song_list)
+
+
+
 # reads from the beatmaps directory to return all the saved songs
 # if directory does not exist, return an empty list
 def get_stored_songs():
