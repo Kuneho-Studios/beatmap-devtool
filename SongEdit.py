@@ -90,23 +90,36 @@ def update_beatmap_difficulty():
                         os.remove(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"))
                     except FileNotFoundError:
                         print("FileNotFound - " + (
-                                    beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")))
+                                beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")))
                 print("\nDifficulty updated to be", updated_difficulty)
                 break
 
 
-# copy this beatmap into another difficulty
-def copy_beatmap_into():
-    song_name, song_difficulty = Util.get_beatmap(Util.get_stored_songs())
-    song_name = Util.string_to_pascal_case(song_name)
-    current_notes, current_lane_events = \
-        Util.read_beatmap(current_song, current_difficulty)
+# copy the contents of one beatmap into another, overwritting the destination
+def copy_entire_beatmap():
+    print("\nSelect the song for the source of the copy")
+    source_beatmap = Util.get_user_beatmap()
+    if source_beatmap is None:
+        update_beatmap_difficulty()
+    else:
+        source_song = source_beatmap[0]
+        source_difficulty = source_beatmap[1]
+    source_song_pascal = Util.string_to_pascal_case(source_song)
 
-    print("\nYou are about to copy " + current_song
-          + " (difficulty " + current_difficulty + ") into " + song_name
-          + " (difficulty " + song_difficulty + ") "
-          + "\n⚠ THIS WILL OVERRIDE ALL CONTENTS OF " + song_name
-          + " (difficulty " + song_difficulty + ")⚠"
+    print("\nSelect the song for the destination of the copy")
+    destination_beatmap = Util.get_user_beatmap()
+    if destination_beatmap is None:
+        update_beatmap_difficulty()
+    else:
+        destination_song = destination_beatmap[0]
+        destination_difficulty = destination_beatmap[1]
+    destination_song_pascal = Util.string_to_pascal_case(destination_song)
+
+    print("\nYou are about to copy " + source_song
+          + " (difficulty " + source_difficulty + ") into " + destination_song
+          + " (difficulty " + destination_difficulty + ") "
+          + "\n⚠ THIS WILL OVERRIDE ALL CONTENTS OF " + destination_song
+          + " (difficulty " + destination_difficulty + ")⚠"
           + "\nAre you sure you want to proceed?")
 
     Util.dropdown_for_user_input(["Yes - perform the copy", "No - I changed my mind"])
@@ -117,49 +130,17 @@ def copy_beatmap_into():
     confirmation_input = (Util.validate_dropdown_input(confirmation_input, 2))
 
     if confirmation_input == 1:
-        with open(Util.BEATMAPS_DIRECTORY + song_name + "/"
-                  + song_name + "_" + str(song_difficulty) + ".json",
+        source_notes, source_lane_events = \
+            Util.read_beatmap(source_song, source_difficulty)
+
+        with open(Util.BEATMAPS_DIRECTORY + destination_song_pascal + "/"
+                  + destination_song_pascal + "_" + str(destination_difficulty) + ".json",
                   "w") as file_to_copy_into:
             json.dump(
-                {"notes": current_notes, "laneEvents": current_lane_events},
+                {"notes": source_notes, "laneEvents": source_lane_events},
                 file_to_copy_into, indent=4)
         file_to_copy_into.close()
-        print("Copied " + current_song + " (difficulty " + current_difficulty + ") into "
-              + song_name + " (difficulty " + song_difficulty + ")")
-    else:
-        print("Copy cancelled")
-
-
-# copy a beatmap from another difficulty into this one
-def copy_beatmap_from():
-    song_name, song_difficulty = Util.get_beatmap(Util.get_stored_songs())
-    new_notes, new_lane_events = \
-        Util.read_beatmap(song_name, song_difficulty)
-
-    print("\nYou are about to copy " + song_name
-          + " (difficulty " + song_difficulty + ") into " + current_song
-          + " (difficulty " + current_difficulty + ") "
-          + "\n⚠ THIS WILL OVERRIDE ALL CONTENTS OF " + current_song
-          + " (difficulty " + current_difficulty + ")⚠"
-          + "\nAre you sure you want to proceed?")
-
-    Util.dropdown_for_user_input(["Yes - perform the copy", "No - I changed my mind"])
-
-    confirmation_input = (
-        input("Enter the number of the action you'd like to perform: "))
-
-    confirmation_input = (Util.validate_dropdown_input(confirmation_input, 2))
-
-    if confirmation_input == 1:
-        with open(Util.BEATMAPS_DIRECTORY + Util.string_to_pascal_case(current_song) + "/"
-                  + Util.string_to_pascal_case(current_song) + "_" + str(current_difficulty) + ".json",
-                  "w") as file_to_copy_from:
-            json.dump(
-                {"notes": new_notes, "laneEvents": new_lane_events},
-                file_to_copy_from, indent=4)
-        file_to_copy_from.close()
-        print("Copied " + song_name + " (difficulty " + song_difficulty + ") into "
-              + current_song + " (difficulty " + current_difficulty + ")")
-
+        print("Copied " + source_song + " (difficulty " + source_difficulty + ") into "
+              + destination_song + " (difficulty " + destination_difficulty + ")")
     else:
         print("Copy cancelled")

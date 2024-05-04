@@ -18,8 +18,7 @@ start_actions_list = [
 
 available_song_edit_actions = [
     "Back",
-    "Copy This Beatmap Into Another",
-    "Copy From Another Beatmap Into This",
+    "Copy Beatmap Contents",
     "Update Beatmap Difficulty"
 ]
 
@@ -83,12 +82,10 @@ def edit_songs():
     if action_input is None:
         edit_songs()
     elif available_song_edit_actions[action_input - 1] == "Back":
+        print("")
         get_user_purpose()
-    elif available_song_edit_actions[action_input - 1] == "Copy This Beatmap Into Another":
-        SongEdit.copy_beatmap_into()
-        edit_songs()
-    elif available_song_edit_actions[action_input - 1] == "Copy From Another Beatmap Into This":
-        SongEdit.copy_beatmap_from()
+    elif available_song_edit_actions[action_input - 1] == "Copy Beatmap Contents":
+        SongEdit.copy_entire_beatmap()
         edit_songs()
     elif available_song_edit_actions[action_input - 1] == "Update Beatmap Difficulty":
         SongEdit.update_beatmap_difficulty()
