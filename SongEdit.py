@@ -7,19 +7,33 @@ import Util
 
 
 def update_beatmap_difficulty():
-    global current_song, current_difficulty
+    beatmap = Util.get_user_beatmap()
+    if beatmap is None:
+        update_beatmap_difficulty()
+    else:
+        current_song = beatmap[0]
+        current_difficulty = beatmap[1]
+
     song_name_pascal = Util.string_to_pascal_case(current_song)
 
     updated_difficulty = input(
         "Enter the desired updated difficulty: ")
-    try:
-        updated_difficulty = int(updated_difficulty)
-    except ValueError:
-        print("\n Please enter a number.")
-        update_beatmap_difficulty()
 
-    if updated_difficulty < 1:
-        print("\n Please enter a difficulty greater than 1")
+    while isinstance(updated_difficulty, str) or int(updated_difficulty) < 1:
+        try:
+            updated_difficulty = int(updated_difficulty)
+            if updated_difficulty < 1:
+                print("\nPlease enter a difficulty greater than 0\n")
+                updated_difficulty = input(
+                    "Enter the desired updated difficulty: ")
+            elif updated_difficulty > 10:
+                print("\nPlease enter a difficulty less than 11\n")
+                updated_difficulty = input(
+                    "Enter the desired updated difficulty: ")
+        except ValueError:
+            print("\nPlease enter a number.\n")
+            updated_difficulty = input(
+                "Enter the desired updated difficulty: ")
 
     with open(
             Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
@@ -36,50 +50,49 @@ def update_beatmap_difficulty():
             already_exists = True
             break
 
-        # if current difficulty matches, then this is the reference need to update
-        if song_difficulty["tier"] == int(current_difficulty):
-            song_difficulty["tier"] = updated_difficulty
-            song_difficulty["filePath"] = Util.FILE_PATH_ROOT + song_name_pascal + "_" + str(
-                updated_difficulty) + ".json"
-
-            song_difficulty_list = sorted(song_difficulty_list,
-                                          key=lambda difficulty: (difficulty['tier']))
-
-            json_data["difficulty"] = song_difficulty_list
-
-            with open(
-                    Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
-                    + "Data.json", "w") as updated_root_data_file:
-                json.dump(json_data,
-                          updated_root_data_file, indent=4)
-            updated_root_data_file.close()
-
-            beatmap_directory = "beatmaps/" + song_name_pascal + "/"
-            # os.rename(
-            #     beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"),
-            #     beatmap_directory + (song_name_pascal + "_" + str(updated_difficulty) + ".json"))
-            shutil.copy2(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"),
-                         beatmap_directory + (song_name_pascal + "_" + str(updated_difficulty) + ".json"))
-
-            if os.path.exists(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")):
-                print("IF REMOVE")
-                os.remove(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"))
-                if os.path.exists(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")):
-                    print("STILL EXISTS")
-            else:
-                print("ELSE REMOVE")
-                try:
-                    os.remove(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"))
-                except FileNotFoundError:
-                    print("FileNotFound - " + (
-                                beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")))
-            break
-
     if already_exists:
-        print("\n Difficulty", updated_difficulty, "already exists for "
+        print("\nDifficulty", updated_difficulty, "already exists for "
               + current_song + ". Please choose a different difficulty")
     else:
-        print("\n Difficulty updated to be", updated_difficulty)
+        for song_difficulty in song_difficulty_list:
+
+            # if current difficulty matches, then this is the reference need to update
+            if song_difficulty["tier"] == int(current_difficulty):
+                song_difficulty["tier"] = updated_difficulty
+                song_difficulty["filePath"] = Util.FILE_PATH_ROOT + song_name_pascal + "_" + str(
+                    updated_difficulty) + ".json"
+
+                song_difficulty_list = sorted(song_difficulty_list,
+                                              key=lambda difficulty: (difficulty['tier']))
+
+                json_data["difficulty"] = song_difficulty_list
+
+                with open(
+                        Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
+                        + "Data.json", "w") as updated_root_data_file:
+                    json.dump(json_data,
+                              updated_root_data_file, indent=4)
+                updated_root_data_file.close()
+
+                beatmap_directory = "beatmaps/" + song_name_pascal + "/"
+                # os.rename(
+                #     beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"),
+                #     beatmap_directory + (song_name_pascal + "_" + str(updated_difficulty) + ".json"))
+                shutil.copy2(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"),
+                             beatmap_directory + (song_name_pascal + "_" + str(updated_difficulty) + ".json"))
+
+                if os.path.exists(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")):
+                    os.remove(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"))
+                    if os.path.exists(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")):
+                        print("STILL EXISTS")
+                else:
+                    try:
+                        os.remove(beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json"))
+                    except FileNotFoundError:
+                        print("FileNotFound - " + (
+                                    beatmap_directory + (song_name_pascal + "_" + str(current_difficulty) + ".json")))
+                print("\nDifficulty updated to be", updated_difficulty)
+                break
 
 
 # copy this beatmap into another difficulty

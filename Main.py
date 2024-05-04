@@ -56,28 +56,20 @@ def get_user_purpose():
         edit_songs()
         # "METADATA SUCH AS EDITING EXISTING DIFFICULTIES, CREATING, AND REMOVING DIFFICULTIES. UPDATING STARTER FIELDS")
     elif start_actions_list[starter_input - 1] == "Update A Beatmap":
-        name, difficulty = get_user_beatmap()
+        beatmap = Util.get_user_beatmap()
+
+        if beatmap is None:
+            get_user_purpose()
+        else:
+            name = beatmap[0]
+            difficulty = beatmap[1]
+
         Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
                              + "\" on difficulty " + difficulty + " ✨")
         BeatmapEdit.edit_beatmap(name, difficulty)
 
-    get_user_purpose()
-
-
-# gets the specified beatmap that the user would like to edit
-def get_user_beatmap():
-    song_list = Util.get_stored_songs()
-
-    if len(song_list) == 0:
-        Util.fancy_print_box(
-            "⚠ There are no beatmaps present. Please create one first ⚠")
-        get_user_purpose()
-    else:
-        return Util.get_beatmap(song_list)
-
 
 def edit_songs():
-
     print("\nAvailable Song Metadata Editing Options")
 
     Util.dropdown_for_user_input(available_song_edit_actions)
@@ -88,7 +80,9 @@ def edit_songs():
     action_input = (
         Util.validate_dropdown_input(action_input, len(available_song_edit_actions)))
 
-    if available_song_edit_actions[action_input - 1] == "Back":
+    if action_input is None:
+        edit_songs()
+    elif available_song_edit_actions[action_input - 1] == "Back":
         get_user_purpose()
     elif available_song_edit_actions[action_input - 1] == "Copy This Beatmap Into Another":
         SongEdit.copy_beatmap_into()
