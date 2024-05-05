@@ -103,7 +103,7 @@ def edit_beatmap_input(notes):
         shift_some_notes(notes)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Add Notes":
-        notes = add_note(notes)
+        notes = add_note_input(notes)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
         copy_note_segment(notes)
@@ -323,8 +323,8 @@ def shift_some_notes(notes):
         shift_all_notes(notes)
 
 
-# add a note to the beatmap
-def add_note(notes):
+# gather input for adding a note to the beatmap
+def add_note_input(notes):
     global current_beat
 
     beat = input(
@@ -332,18 +332,51 @@ def add_note(notes):
 
     try:
         beat = float(beat)
-        lane = set_lane(beat)
-        note_data = set_note_data(beat, lane)
-        note_json_object = {"startBeat": beat,
-                            "lane": lane,
-                            "noteData": note_data}
-        notes.append(note_json_object)
-        current_beat = beat
-
-        return notes
     except ValueError:
         print("\n Please enter a number.")
-        add_note(notes)
+        add_note_input(notes)
+
+    current_beat = beat
+    return add_note(notes, beat)
+
+
+# add a note to the beatmap
+def add_note(notes, beat):
+    lane = set_lane(beat)
+    note_data = set_note_data(beat, lane)
+    note_json_object = {"startBeat": beat,
+                        "lane": lane,
+                        "noteData": note_data}
+    notes.append(note_json_object)
+
+    if note_data["noteType"] == "Hold":
+        hold_note_duration = input(
+            "Enter the duration of the hold note in beats: ")
+
+        while isinstance(hold_note_duration, str) or float(hold_note_duration) <= 1.0:
+            try:
+                hold_note_duration = float(hold_note_duration)
+                if hold_note_duration <= 1:
+                    print("\nPlease enter a length greater than 1\n")
+                    hold_note_duration = input(
+                        "Enter the duration of the hold note in beats: ")
+            except ValueError:
+                print("\nPlease enter a number.\n")
+                hold_note_duration = input(
+                    "Enter the duration of the hold note in beats: ")
+
+        # subtract 1 since the note they selected is the first one
+        hold_note_duration = hold_note_duration - 1
+        while hold_note_duration > 0:
+            hold_beat = beat + hold_note_duration
+            note_json_object = {"startBeat": hold_beat,
+                                "lane": lane,
+                                "noteData": note_data}
+            notes.append(note_json_object)
+            hold_note_duration -= 1
+
+    return notes
+
 
 # copy a subset of notes and place them at a different beat
 def copy_note_segment(notes):
