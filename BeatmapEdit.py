@@ -5,9 +5,6 @@
 ###
 import json
 import copy
-import os
-import shutil
-
 import Util
 
 current_lane_count = None
