@@ -1,4 +1,7 @@
-# update the difficulty of an existing beatmap in the root Data.json file
+###
+# Contains the flow for updating a song's metadata and copying files
+###
+
 import json
 import os
 import shutil
@@ -6,6 +9,7 @@ import shutil
 import Util
 
 
+# update the difficulty of an existing beatmap in the root Data.json file
 def update_beatmap_difficulty():
     beatmap = Util.get_user_beatmap()
     if beatmap is None:
@@ -131,7 +135,7 @@ def copy_entire_beatmap():
 
     if confirmation_input == 1:
         source_notes, source_lane_events = \
-            Util.read_beatmap(source_song, source_difficulty)
+            Util.read_beatmap(source_song_pascal, source_difficulty)
 
         with open(Util.BEATMAPS_DIRECTORY + destination_song_pascal + "/"
                   + destination_song_pascal + "_" + str(destination_difficulty) + ".json",

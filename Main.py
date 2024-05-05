@@ -3,23 +3,24 @@
 # and get the initial user input to determine which flow to take.
 ###
 
-
 import BeatmapCreation
 import BeatmapEdit
 import SongEdit
+import SongExport
 import Util
 
 start_actions_list = [
     "Exit",
     "Create A New Song (And Beatmaps)",
     "Edit A Song's Metadata",
-    "Update A Beatmap"
+    "Update A Beatmap",
+    "Export A Song"
 ]
 
 available_song_edit_actions = [
     "Back",
     "Copy Beatmap Contents",
-    "Update Beatmap Difficulty"
+    "Update Beatmap Difficulty",
 ]
 
 
@@ -66,6 +67,8 @@ def get_user_purpose():
         Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
                              + "\" on difficulty " + difficulty + " ✨")
         BeatmapEdit.edit_beatmap(name, difficulty)
+    elif start_actions_list[starter_input - 1] == "Export A Song":
+        SongExport.export_song()
 
 
 def edit_songs():
