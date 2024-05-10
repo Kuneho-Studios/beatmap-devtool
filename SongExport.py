@@ -17,7 +17,7 @@ def export_song():
 
     if len(song_list) == 0:
         Util.fancy_print_box(
-            "⚠ There are no beatmaps present to export ⚠")
+            "⚠ There are no songs present to export ⚠")
     else:
         selected_song = Util.input_stored_songs(song_list)
         directory_to_zip = "beatmaps/" + selected_song

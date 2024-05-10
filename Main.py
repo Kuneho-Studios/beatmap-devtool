@@ -20,7 +20,8 @@ start_actions_list = [
 available_song_edit_actions = [
     "Back",
     "Copy Beatmap Contents",
-    "Update Beatmap Difficulty",
+    "Update Existing Beatmap Difficulty",
+    "Edit Song Basic Info"
 ]
 
 
@@ -54,7 +55,6 @@ def get_user_purpose():
         BeatmapCreation.get_user_input()
     elif start_actions_list[starter_input - 1] == "Edit A Song's Metadata":
         edit_songs()
-        # "METADATA SUCH AS EDITING EXISTING DIFFICULTIES, CREATING, AND REMOVING DIFFICULTIES. UPDATING STARTER FIELDS")
     elif start_actions_list[starter_input - 1] == "Update A Beatmap":
         beatmap = Util.get_user_beatmap()
 
@@ -90,8 +90,11 @@ def edit_songs():
     elif available_song_edit_actions[action_input - 1] == "Copy Beatmap Contents":
         SongEdit.copy_entire_beatmap()
         edit_songs()
-    elif available_song_edit_actions[action_input - 1] == "Update Beatmap Difficulty":
+    elif available_song_edit_actions[action_input - 1] == "Update Existing Beatmap Difficulty":
         SongEdit.update_beatmap_difficulty()
+        edit_songs()
+    elif available_song_edit_actions[action_input - 1] == "Edit Song Basic Info":
+        SongEdit.update_basic_info()
         edit_songs()
 
 

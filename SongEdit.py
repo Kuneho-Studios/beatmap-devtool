@@ -192,8 +192,6 @@ def copy_into_new_beatmap(source_song, source_difficulty):
                       + selected_song + ". Please choose a different difficulty\n")
                 difficulty = input("Enter the new difficulty: ")
 
-        print("COPY CONTENTS FOR", difficulty, " ", selected_song)
-
     # copy contents
     source_song_pascal = Util.string_to_pascal_case(source_song)
     destination_song_pascal = Util.string_to_pascal_case(selected_song)
@@ -227,6 +225,8 @@ def copy_into_new_beatmap(source_song, source_difficulty):
         json.dump(song_data, updated_root_data_file, indent=4)
     updated_root_data_file.close()
 
+
+# helper method to determine if a difficulty is already in use for a specific song
 def does_difficulty_exist(song_name_pascal, updated_difficulty):
     with open(
             Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
@@ -242,3 +242,73 @@ def does_difficulty_exist(song_name_pascal, updated_difficulty):
             return True, json_data
 
     return False, json_data
+
+
+# update the basic info that was set at creation time
+def update_basic_info():
+    print("\nSelect the song whose info you want to edit")
+    song_list = Util.get_stored_songs()
+
+    if len(song_list) == 0:
+        Util.fancy_print_box(
+            "⚠ There are no songs present to export ⚠")
+        return None
+    else:
+        song_name = Util.input_stored_songs(song_list)
+
+    song_name_pascal = Util.string_to_pascal_case(song_name)
+    with open(Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json", "r") \
+            as song_read:
+        song_data = json.load(song_read)
+    song_read.close()
+
+    print("For each key, enter the new desired value (or press \"ENTER\" to keep it)")
+    is_name_updated = False
+    for key, value in song_data.items():
+        if key != "difficulty" and key != "fileLocation" and key != "length":
+            space_case_key = Util.camel_case_to_space_case(key)
+            updated_value = input(f"{space_case_key} (currently {value}): ")
+            if updated_value != "":
+                if key == "bpm":
+                    while isinstance(updated_value, str):
+                        try:
+                            updated_value = float(updated_value)
+                        except ValueError:
+                            print("\"BPM\" must be a number. Please enter a number")
+                            updated_value = input(f"{space_case_key} (currently {value}): ")
+
+                if key == "songName":
+                    is_name_updated = True
+                    old_song_name_pascal = Util.string_to_pascal_case(value)
+                    new_song_name_pascal = Util.string_to_pascal_case(updated_value)
+                    song_data["fileLocation"] = song_data["fileLocation"].replace(
+                        old_song_name_pascal, new_song_name_pascal)
+                    song_data["difficulty"] = Util.replace_field_in_json_list(
+                        song_data["difficulty"],
+                        "filePath",
+                        "/" + old_song_name_pascal,
+                        "/" + new_song_name_pascal)
+
+                song_data[key] = updated_value
+
+        with open(Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json", "w") \
+                as song_write:
+            json.dump(song_data, song_write, indent=4)
+        song_write.close()
+
+    if is_name_updated:
+        song_directory = Util.BEATMAPS_DIRECTORY + old_song_name_pascal + "/"
+        for filename in os.listdir(song_directory):
+            # Construct the paths for the old and new filenames
+            old_path = os.path.join(song_directory, filename)
+            new_path = os.path.join(song_directory, filename.replace(old_song_name_pascal, new_song_name_pascal))
+
+            # Rename the file
+            os.rename(old_path, new_path)
+
+        # Construct the paths for the old and new folder names
+        old_path = os.path.join(Util.BEATMAPS_DIRECTORY, old_song_name_pascal)
+        new_path = os.path.join(Util.BEATMAPS_DIRECTORY, new_song_name_pascal)
+
+        # Rename the folder
+        os.rename(old_path, new_path)
