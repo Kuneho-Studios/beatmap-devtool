@@ -257,7 +257,7 @@ def update_basic_info():
         song_name = Util.input_stored_songs(song_list)
 
     song_name_pascal = Util.string_to_pascal_case(song_name)
-    with open('beatmaps/' + song_name_pascal + "/" + song_name_pascal + "Data.json", "r") \
+    with open(Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json", "r") \
             as song_read:
         song_data = json.load(song_read)
     song_read.close()
@@ -278,15 +278,32 @@ def update_basic_info():
                             updated_value = input(f"{space_case_key} (currently {value}): ")
 
                 if key == "songName":
+                    old_song_name = value
+                    new_song_name = updated_value
                     is_name_updated = True
 
                 song_data[key] = updated_value
 
-        with open('beatmaps/' + song_name_pascal + "/" + song_name_pascal + "Data.json", "w") \
+        with open(Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal + "Data.json", "w") \
                 as song_write:
             json.dump(song_data, song_write, indent=4)
         song_write.close()
 
     if is_name_updated:
-        print("DO SONG NAME UPDATE")
+        old_song_name_pascal = Util.string_to_pascal_case(old_song_name)
+        new_song_name_pascal = Util.string_to_pascal_case(new_song_name)
+        song_directory = Util.BEATMAPS_DIRECTORY + old_song_name_pascal + "/"
+        for filename in os.listdir(song_directory):
+            # Construct the paths for the old and new filenames
+            old_path = os.path.join(song_directory, filename)
+            new_path = os.path.join(song_directory, filename.replace(old_song_name_pascal, new_song_name_pascal))
 
+            # Rename the file
+            os.rename(old_path, new_path)
+
+        # Construct the paths for the old and new folder names
+        old_path = os.path.join(Util.BEATMAPS_DIRECTORY, old_song_name_pascal)
+        new_path = os.path.join(Util.BEATMAPS_DIRECTORY, new_song_name_pascal)
+
+        # Rename the folder
+        os.rename(old_path, new_path)

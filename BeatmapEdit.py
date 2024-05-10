@@ -60,7 +60,7 @@ def edit_beatmap(song_name, song_difficulty):
     sorted_notes = sorted(edit_beatmap_input(notes),
                           key=lambda note: (note['startBeat'], note['lane']))
 
-    with open('beatmaps/' + song_name + "/" + song_name + "_" + song_difficulty
+    with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "_" + song_difficulty
               + ".json", "w") as beatmap_write:
         json.dump({"notes": sorted_notes, "laneEvents": lane_events},
                   beatmap_write, indent=4)
@@ -236,7 +236,7 @@ def set_lane_event():
 # if the highest beat in the current beatmap is greater than the current length
 # then update length to reflect that value
 def set_song_note_length(song_name, notes):
-    with open('beatmaps/' + song_name + "/" + song_name + "Data.json", "r") \
+    with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "Data.json", "r") \
             as beatmap_data_read:
         json_data = json.loads(beatmap_data_read.read())
         song_length = json_data["length"]
@@ -249,7 +249,7 @@ def set_song_note_length(song_name, notes):
 
     if last_note_beat > song_length:
         json_data["length"] = last_note_beat
-        with open('beatmaps/' + song_name + "/" + song_name + "Data.json",
+        with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "Data.json",
                   "w") as beatmap_data_write:
             json.dump(json_data, beatmap_data_write, indent=4)
         beatmap_data_write.close()

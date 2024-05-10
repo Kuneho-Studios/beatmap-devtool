@@ -98,9 +98,9 @@ def get_user_beatmap():
 # reads from the beatmaps directory to return all the saved songs
 # if directory does not exist, return an empty list
 def get_stored_songs():
-    if not os.path.exists('beatmaps/'):
+    if not os.path.exists(BEATMAPS_DIRECTORY):
         return []
-    song_directories = os.listdir('beatmaps/')
+    song_directories = os.listdir(BEATMAPS_DIRECTORY)
     return song_directories
 
 
@@ -127,7 +127,7 @@ def input_stored_songs(song_directories):
 # reads from the given song name directory to return all the saved difficulties
 # doesn't display the ...Data.json file that is present for every song
 def get_stored_difficulties(song_name):
-    difficulty_beatmaps = os.listdir('beatmaps/' + song_name + "/")
+    difficulty_beatmaps = os.listdir(BEATMAPS_DIRECTORY + song_name + "/")
     return [element for element in difficulty_beatmaps if
             "Data.json" not in element]
 
@@ -356,7 +356,7 @@ def show_lane_swaps(notes_list, song_name, song_difficulty):
 
 # reads the beatmap and returns the notes and lane events elements
 def read_beatmap(song_name, song_difficulty):
-    with open('beatmaps/' + song_name + "/"
+    with open(BEATMAPS_DIRECTORY + song_name + "/"
               + song_name + "_" + song_difficulty + ".json",
               "r") as beatmap_read:
         json_data = json.loads(beatmap_read.read())
