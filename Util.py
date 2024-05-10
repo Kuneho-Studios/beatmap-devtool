@@ -3,6 +3,7 @@
 ###
 import json
 import os
+
 import LaneArt
 
 BEATMAPS_DIRECTORY = 'beatmaps/'
@@ -60,6 +61,17 @@ def string_to_pascal_case(string_to_convert):
     return ''.join(pascal_case_words)
 
 
+# converts a string to Space Case
+def camel_case_to_space_case(string_to_convert):
+    space_case_string = string_to_convert[0].upper()  # Add the first character as it is
+    for char in string_to_convert[1:]:
+        if char.isupper():
+            space_case_string += " " + char
+        else:
+            space_case_string += char
+    return space_case_string
+
+
 # helper method that given a list.
 # creates the prompt menu which displays all elements
 # in the list for the user to pick from
@@ -81,7 +93,6 @@ def get_user_beatmap():
         return None
     else:
         return get_beatmap(song_list)
-
 
 
 # reads from the beatmaps directory to return all the saved songs
