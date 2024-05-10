@@ -6,7 +6,6 @@ import json
 import os
 import shutil
 
-import BeatmapCreation
 import Util
 
 
@@ -167,6 +166,7 @@ def copy_into_new_beatmap(source_song, source_difficulty):
     if len(song_list) == 0:
         Util.fancy_print_box(
             "⚠ There are no songs present to copy add a new difficulty to ⚠")
+        return None
     else:
         selected_song = Util.input_stored_songs(song_list)
         print("selected song", selected_song)
@@ -185,7 +185,8 @@ def copy_into_new_beatmap(source_song, source_difficulty):
                       "Please enter a number.\n")
                 difficulty = input("Enter the new difficulty: ")
 
-            already_exists = does_difficulty_exist(Util.string_to_pascal_case(selected_song), difficulty)[0]
+            selected_song_data = does_difficulty_exist(Util.string_to_pascal_case(selected_song), difficulty)
+            already_exists = selected_song_data[0]
             if already_exists:
                 print("\nDifficulty", difficulty, "already exists for "
                       + selected_song + ". Please choose a different difficulty\n")
@@ -194,9 +195,37 @@ def copy_into_new_beatmap(source_song, source_difficulty):
         print("COPY CONTENTS FOR", difficulty, " ", selected_song)
 
     # copy contents
+    source_song_pascal = Util.string_to_pascal_case(source_song)
+    destination_song_pascal = Util.string_to_pascal_case(selected_song)
+    try:
+        with open(Util.BEATMAPS_DIRECTORY + source_song_pascal + "/"
+                  + source_song_pascal + "_" + str(source_difficulty) + ".json", 'r') as source:
+            with open(Util.BEATMAPS_DIRECTORY + destination_song_pascal + "/"
+                      + destination_song_pascal + "_" + str(difficulty) + ".json",
+                      'w') as destination:
+                destination.write(source.read())
+        print("Copied " + source_song + " (difficulty " + source_difficulty + ") into "
+              + selected_song + " (difficulty " + str(difficulty) + ")")
+    except FileNotFoundError:
+        print("File not found.")
+    except Exception as e:
+        print("An error occurred:", e)
 
     # add difficulty to that song's directory
+    song_data = selected_song_data[1]
+    song_difficulty_list = song_data["difficulty"]
+    song_difficulty_list.append({
+        "tier": difficulty,
+        "filePath": Util.FILE_PATH_ROOT + destination_song_pascal + "_" + str(difficulty) + ".json"
+    })
 
+    song_difficulty_list = sorted(song_difficulty_list,
+                                  key=lambda difficulty: (difficulty['tier']))
+    song_data["difficulty"] = song_difficulty_list
+    with (open(Util.BEATMAPS_DIRECTORY + selected_song + "/" + selected_song + "Data.json", "w")
+          as updated_root_data_file):
+        json.dump(song_data, updated_root_data_file, indent=4)
+    updated_root_data_file.close()
 
 def does_difficulty_exist(song_name_pascal, updated_difficulty):
     with open(
