@@ -366,9 +366,21 @@ def read_beatmap(song_name, song_difficulty):
     return notes, lane_events
 
 
+# given a list of songs, determine which song the user wants
+# then return the song name and difficulty number of their selected song
 def get_beatmap(song_list):
     song = input_stored_songs(song_list)
     difficulty_list = extract_and_sort_difficulties(
         get_stored_difficulties(song))
     difficulty = str(input_stored_difficulties(difficulty_list))
     return song, difficulty
+
+
+# given a list of json items, replace a specific element in a the json object
+def replace_field_in_json_list(json_list, field_name, old_substring, new_substring):
+    updated_list = []
+    for json_obj in json_list:
+        if field_name in json_obj:
+            json_obj[field_name] = json_obj[field_name].replace(old_substring, new_substring)
+        updated_list.append(json_obj)
+    return updated_list

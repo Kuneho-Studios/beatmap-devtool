@@ -278,9 +278,16 @@ def update_basic_info():
                             updated_value = input(f"{space_case_key} (currently {value}): ")
 
                 if key == "songName":
-                    old_song_name = value
-                    new_song_name = updated_value
                     is_name_updated = True
+                    old_song_name_pascal = Util.string_to_pascal_case(value)
+                    new_song_name_pascal = Util.string_to_pascal_case(updated_value)
+                    song_data["fileLocation"] = song_data["fileLocation"].replace(
+                        old_song_name_pascal, new_song_name_pascal)
+                    song_data["difficulty"] = Util.replace_field_in_json_list(
+                        song_data["difficulty"],
+                        "filePath",
+                        "/" + old_song_name_pascal,
+                        "/" + new_song_name_pascal)
 
                 song_data[key] = updated_value
 
@@ -290,8 +297,6 @@ def update_basic_info():
         song_write.close()
 
     if is_name_updated:
-        old_song_name_pascal = Util.string_to_pascal_case(old_song_name)
-        new_song_name_pascal = Util.string_to_pascal_case(new_song_name)
         song_directory = Util.BEATMAPS_DIRECTORY + old_song_name_pascal + "/"
         for filename in os.listdir(song_directory):
             # Construct the paths for the old and new filenames
