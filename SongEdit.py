@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 
+import BeatmapCreation
 import Util
 
 
@@ -39,20 +40,8 @@ def update_beatmap_difficulty():
             updated_difficulty = input(
                 "Enter the desired updated difficulty: ")
 
-    with open(
-            Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
-            + "Data.json", "r") as root_data_file:
-        json_data = json.loads(root_data_file.read())
-        song_difficulty_list = json_data["difficulty"]
-    root_data_file.close()
-
-    already_exists = False
-    for song_difficulty in song_difficulty_list:
-
-        # if desired difficulty already exists, prevent it from being updated to it
-        if song_difficulty["tier"] == updated_difficulty:
-            already_exists = True
-            break
+    already_exists, song_data = does_difficulty_exist(song_name_pascal, updated_difficulty)
+    song_difficulty_list = song_data["difficulty"]
 
     if already_exists:
         print("\nDifficulty", updated_difficulty, "already exists for "
@@ -69,12 +58,12 @@ def update_beatmap_difficulty():
                 song_difficulty_list = sorted(song_difficulty_list,
                                               key=lambda difficulty: (difficulty['tier']))
 
-                json_data["difficulty"] = song_difficulty_list
+                song_data["difficulty"] = song_difficulty_list
 
                 with open(
                         Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
                         + "Data.json", "w") as updated_root_data_file:
-                    json.dump(json_data,
+                    json.dump(song_data,
                               updated_root_data_file, indent=4)
                 updated_root_data_file.close()
 
@@ -99,21 +88,38 @@ def update_beatmap_difficulty():
                 break
 
 
-# copy the contents of one beatmap into another, overwritting the destination
+# copy the contents of one beatmap into another, overwriting the destination
 def copy_entire_beatmap():
     print("\nSelect the song for the source of the copy")
     source_beatmap = Util.get_user_beatmap()
     if source_beatmap is None:
-        update_beatmap_difficulty()
+        print("There are no songs saved, please create one before copying")
+        return None
     else:
         source_song = source_beatmap[0]
         source_difficulty = source_beatmap[1]
-    source_song_pascal = Util.string_to_pascal_case(source_song)
 
+    print("\nCopy into an existing beatmap or create a new one?")
+    Util.dropdown_for_user_input(["Use existing beatmap", "Create new beatmap"])
+
+    destination_input = (
+        input("Enter the number of the action you'd like to perform: "))
+
+    destination_input = (Util.validate_dropdown_input(destination_input, 2))
+
+    if destination_input == 1:
+        copy_into_existing_beatmap(source_song, source_difficulty)
+    elif destination_input == 2:
+        copy_into_new_beatmap(source_song, source_difficulty)
+
+
+# find the desired beatmap to copy into, and perform the copy
+def copy_into_existing_beatmap(source_song, source_difficulty):
     print("\nSelect the song for the destination of the copy")
     destination_beatmap = Util.get_user_beatmap()
     if destination_beatmap is None:
-        update_beatmap_difficulty()
+        print("There are no songs saved, please create one before copying")
+        return None
     else:
         destination_song = destination_beatmap[0]
         destination_difficulty = destination_beatmap[1]
@@ -134,6 +140,8 @@ def copy_entire_beatmap():
     confirmation_input = (Util.validate_dropdown_input(confirmation_input, 2))
 
     if confirmation_input == 1:
+        source_song_pascal = Util.string_to_pascal_case(source_song)
+
         source_notes, source_lane_events = \
             Util.read_beatmap(source_song_pascal, source_difficulty)
 
@@ -148,3 +156,60 @@ def copy_entire_beatmap():
               + destination_song + " (difficulty " + destination_difficulty + ")")
     else:
         print("Copy cancelled")
+
+
+# create the beatmap to copy into, and perform the copy
+def copy_into_new_beatmap(source_song, source_difficulty):
+    # create new file
+    print("\nSelect the song to add the new difficulty to")
+    song_list = Util.get_stored_songs()
+
+    if len(song_list) == 0:
+        Util.fancy_print_box(
+            "⚠ There are no songs present to copy add a new difficulty to ⚠")
+    else:
+        selected_song = Util.input_stored_songs(song_list)
+        print("selected song", selected_song)
+
+        difficulty = input("Enter the new difficulty: ")
+        while isinstance(difficulty, str) or int(difficulty) < 1:
+            try:
+                difficulty = int(difficulty)
+
+                if difficulty < 1 or difficulty > 10:
+                    print("\nDifficulty must be a whole number between 1 and 10 "
+                          "(inclusive). Please enter again.\n")
+                    difficulty = input("Enter the new difficulty: ")
+            except ValueError:
+                print("\nDifficulty must be a whole number. "
+                      "Please enter a number.\n")
+                difficulty = input("Enter the new difficulty: ")
+
+            already_exists = does_difficulty_exist(Util.string_to_pascal_case(selected_song), difficulty)[0]
+            if already_exists:
+                print("\nDifficulty", difficulty, "already exists for "
+                      + selected_song + ". Please choose a different difficulty\n")
+                difficulty = input("Enter the new difficulty: ")
+
+        print("COPY CONTENTS FOR", difficulty, " ", selected_song)
+
+    # copy contents
+
+    # add difficulty to that song's directory
+
+
+def does_difficulty_exist(song_name_pascal, updated_difficulty):
+    with open(
+            Util.BEATMAPS_DIRECTORY + song_name_pascal + "/" + song_name_pascal
+            + "Data.json", "r") as root_data_file:
+        json_data = json.loads(root_data_file.read())
+        song_difficulty_list = json_data["difficulty"]
+    root_data_file.close()
+
+    for song_difficulty in song_difficulty_list:
+
+        # if desired difficulty already exists, prevent it from being updated to it
+        if song_difficulty["tier"] == updated_difficulty:
+            return True, json_data
+
+    return False, json_data
