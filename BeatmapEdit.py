@@ -18,6 +18,7 @@ current_beat = None
 available_actions_list = [
     "Exit",
     # Enter any new commands after exit
+    "Set Beat",
     "Add Notes",
     # "Edit Note",
     # "Delete Note",
@@ -104,6 +105,10 @@ def edit_beatmap_input(notes):
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
         copy_note_segment(notes)
+        edit_beatmap_input(notes)
+    elif available_actions_list[action_input - 1] == "Set Beat":
+        current_beat = set_beat()
+        update_lane_configuration(current_beat, notes)
         edit_beatmap_input(notes)
 
     print("")
@@ -412,3 +417,34 @@ def copy_note_segment(notes):
         note["startBeat"] += note_shift_distance
 
     notes.extend(notes_subset)
+
+
+# sets the current beat
+def set_beat():
+    beat = input("Enter the beat to jump to: ")
+
+    try:
+        return float(beat)
+    except ValueError:
+        print("\n Please enter a number.")
+        set_beat()
+
+
+# given a beat, update the lane configuration to reflect it
+def update_lane_configuration(beat, notes):
+    global current_song, current_difficulty, current_lane_configuration, current_lane_configuration_art
+    lane_swaps = Util.get_lane_swaps(notes, current_song, current_difficulty)
+
+    current_lane_configuration = lane_swaps[0][2]
+    current_lane_configuration_art = lane_swaps[0][3]
+
+    if len(lane_swaps) > 1:
+        beat_index = 1
+        while beat_index < len(lane_swaps):
+            lane_swap_beat = float(lane_swaps[beat_index][0])
+            if beat < lane_swap_beat:
+                break
+            else:
+                current_lane_configuration = lane_swaps[beat_index][2]
+                current_lane_configuration_art = lane_swaps[beat_index][3]
+            beat_index += 1
