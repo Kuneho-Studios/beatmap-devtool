@@ -58,16 +58,15 @@ def edit_beatmap(song_name, song_difficulty):
         if len(notes) > 0:
             current_beat = notes[-1]["startBeat"]
 
-    sorted_notes = sorted(edit_beatmap_input(notes),
-                          key=lambda note: (note['startBeat'], note['lane']))
+    notes = edit_beatmap_input(notes)
 
     with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "_" + song_difficulty
               + ".json", "w") as beatmap_write:
-        json.dump({"notes": sorted_notes, "laneEvents": lane_events},
+        json.dump({"notes": notes, "laneEvents": lane_events},
                   beatmap_write, indent=4)
     beatmap_write.close()
 
-    set_song_note_length(song_name, sorted_notes)
+    set_song_note_length(song_name, notes)
 
     Util.fancy_print_box("✨ " + song_name + " on " + song_difficulty
                          + " difficulty updated! ✨")
@@ -76,6 +75,9 @@ def edit_beatmap(song_name, song_difficulty):
 # obtain the beat for the current note to be added to the beatmap
 def edit_beatmap_input(notes):
     global current_beat
+
+    Util.note_report(current_lane_configuration, current_lane_configuration_art,
+                     Util.get_last_beat(current_beat, notes))
 
     print("\nAvailable Beatmap Actions:")
     Util.dropdown_for_user_input(available_actions_list)
@@ -98,7 +100,7 @@ def edit_beatmap_input(notes):
         shift_some_notes(notes)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Add Notes":
-        notes = add_note_input(notes)
+        notes = add_note(notes, current_beat)
         edit_beatmap_input(notes)
     elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
         copy_note_segment(notes)
@@ -106,8 +108,6 @@ def edit_beatmap_input(notes):
     elif available_actions_list[action_input - 1] == "Set Beat":
         current_beat = set_beat()
         update_lane_configuration(current_beat, notes)
-        Util.note_report(current_lane_configuration, current_lane_configuration_art,
-                         Util.get_last_beat(current_beat, notes))
         edit_beatmap_input(notes)
 
     print("")
@@ -323,24 +323,6 @@ def shift_some_notes(notes):
         print("Please enter only a number after the '+' or '-'")
         shift_all_notes(notes)
 
-
-# gather input for adding a note to the beatmap
-def add_note_input(notes):
-    global current_beat
-
-    beat = input(
-        "Enter beat for the note you want to add: ")
-
-    try:
-        beat = float(beat)
-    except ValueError:
-        print("\n Please enter a number.")
-        add_note_input(notes)
-
-    current_beat = beat
-    return add_note(notes, beat)
-
-
 # add a note to the beatmap
 def add_note(notes, beat):
     lane = set_lane(beat)
@@ -376,7 +358,7 @@ def add_note(notes, beat):
             notes.append(note_json_object)
             hold_note_duration -= 1
 
-    return notes
+    return sorted(notes, key=lambda note: (note['startBeat'], note['lane']))
 
 
 # copy a subset of notes and place them at a different beat
