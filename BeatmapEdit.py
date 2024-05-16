@@ -76,41 +76,34 @@ def edit_beatmap(song_name, song_difficulty):
 def edit_beatmap_input(notes):
     global current_beat
 
-    Util.note_report(current_lane_configuration, current_lane_configuration_art,
-                     Util.get_last_beat(current_beat, notes))
+    action_input = ""
+    while action_input != 1:
+        Util.note_report(current_lane_configuration, current_lane_configuration_art,
+                         Util.get_last_beat(current_beat, notes))
 
-    print("\nAvailable Beatmap Actions:")
-    Util.dropdown_for_user_input(available_actions_list)
+        print("\nAvailable Beatmap Actions:")
+        Util.dropdown_for_user_input(available_actions_list)
 
-    action_input = (
-        input("Enter the number of the action you'd like to perform: "))
+        action_input = (
+            input("Enter the number of the action you'd like to perform: "))
 
-    action_input = (
-        Util.validate_dropdown_input(action_input, len(available_actions_list)))
+        action_input = (
+            Util.validate_dropdown_input(action_input, len(available_actions_list)))
 
-    if available_actions_list[action_input - 1] == "Exit":
-        return ""
-    elif available_actions_list[action_input - 1] == "Show All Lane Swaps":
-        Util.show_lane_swaps(notes, current_song, current_difficulty)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Shift All Notes":
-        shift_all_notes(notes)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Shift Some Notes":
-        shift_some_notes(notes)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Add Notes":
-        notes = add_note(notes, current_beat)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
-        copy_note_segment(notes)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Set Beat":
-        current_beat = set_beat()
-        update_lane_configuration(current_beat, notes)
-        edit_beatmap_input(notes)
+        if available_actions_list[action_input - 1] == "Show All Lane Swaps":
+            Util.show_lane_swaps(notes, current_song, current_difficulty)
+        elif available_actions_list[action_input - 1] == "Shift All Notes":
+            shift_all_notes(notes)
+        elif available_actions_list[action_input - 1] == "Shift Some Notes":
+            shift_some_notes(notes)
+        elif available_actions_list[action_input - 1] == "Add Notes":
+            notes = add_note(notes, current_beat)
+        elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
+            copy_note_segment(notes)
+        elif available_actions_list[action_input - 1] == "Set Beat":
+            current_beat = set_beat()
+            update_lane_configuration(current_beat, notes)
 
-    print("")
     return notes
 
 
@@ -322,6 +315,7 @@ def shift_some_notes(notes):
     except ValueError:
         print("Please enter only a number after the '+' or '-'")
         shift_all_notes(notes)
+
 
 # add a note to the beatmap
 def add_note(notes, beat):

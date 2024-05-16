@@ -202,6 +202,9 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
     if not isinstance(last_beat, list):
         last_beat_line = " Last Beat: " + str(last_beat)
         last_notes_line = " Last Note: None"
+    elif not last_beat:
+        last_beat_line = " Last Beat: None"
+        last_notes_line = " Last Note: None"
     else:
         if len(last_beat) == 1:
             last_notes_line = " Last Note: "
