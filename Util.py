@@ -199,8 +199,8 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
     lane_configuration_art_line = (
             " Lane Configuration Art: \n" + current_lane_configuration_art)
 
-    if len(last_beat) == 0:
-        last_beat_line = " Last Beat: None"
+    if not isinstance(last_beat, list):
+        last_beat_line = " Last Beat: " + str(last_beat)
         last_notes_line = " Last Note: None"
     else:
         if len(last_beat) == 1:
@@ -210,10 +210,10 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
         last_beat_line = (
                 " Last Beat: " + str(last_beat[0]['beat']))
 
-    for note in last_beat:
-        last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
-                           + " (" + note['noteType'] + "), ")
-    last_notes_line = last_notes_line.removesuffix(", ")
+        for note in last_beat:
+            last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
+                               + " (" + note['noteType'] + "), ")
+        last_notes_line = last_notes_line.removesuffix(", ")
 
     max_length_line = max(lane_configuration_line, last_notes_line, key=len)
     box_width = len(max_length_line) + 4
@@ -232,18 +232,22 @@ def get_last_beat(current_beat, notes_list):
 
     last_lane_list = []
     i = 1
-    while i < (MAX_LANE_SIZE + 1) and i < len(notes_list) + 1:
+    is_found = False
+    while i < len(notes_list) + 1:
         this_note = notes_list[-i]
         if this_note["startBeat"] == current_beat:
             last_lane_list.append({"beat": current_beat,
                                    "lane": this_note["lane"],
                                    "noteType": this_note["noteData"]["noteType"]})
-            i += 1
-        else:
+            is_found = True
+        elif is_found or this_note["startBeat"] < current_beat:
             break
+        i += 1
 
-    return sorted(last_lane_list,
-                  key=lambda note: (note['lane']))
+    if not last_lane_list:
+        return current_beat
+    else:
+        return sorted(last_lane_list, key=lambda note: (note['lane']))
 
 
 # reads the laneEvents at the bottom of the beatmap

@@ -77,9 +77,6 @@ def edit_beatmap(song_name, song_difficulty):
 def edit_beatmap_input(notes):
     global current_beat
 
-    Util.note_report(current_lane_configuration, current_lane_configuration_art,
-                     Util.get_last_beat(current_beat, notes))
-
     print("\nAvailable Beatmap Actions:")
     Util.dropdown_for_user_input(available_actions_list)
 
@@ -109,6 +106,8 @@ def edit_beatmap_input(notes):
     elif available_actions_list[action_input - 1] == "Set Beat":
         current_beat = set_beat()
         update_lane_configuration(current_beat, notes)
+        Util.note_report(current_lane_configuration, current_lane_configuration_art,
+                         Util.get_last_beat(current_beat, notes))
         edit_beatmap_input(notes)
 
     print("")
@@ -437,7 +436,6 @@ def update_lane_configuration(beat, notes):
 
     current_lane_configuration = lane_swaps[0][2]
     current_lane_configuration_art = lane_swaps[0][3]
-
     if len(lane_swaps) > 1:
         beat_index = 1
         while beat_index < len(lane_swaps):
