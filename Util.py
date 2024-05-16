@@ -278,8 +278,7 @@ def get_lane_swaps(notes_list, song_name, song_difficulty):
     notes, lane_events = read_beatmap(song_name, song_difficulty)
     original_lane_configuration = \
         get_initial_lane_configuration(lane_events[0]['lanes'])
-    swaps_list = [(0, original_lane_configuration[0],
-                   original_lane_configuration[1], original_lane_configuration[2])]
+    swaps_dict = {0: (original_lane_configuration[0], original_lane_configuration[1], original_lane_configuration[2])}
 
     for note in notes_list:
         if note["noteData"]["noteType"] == "LaneSwap":
@@ -291,12 +290,11 @@ def get_lane_swaps(notes_list, song_name, song_difficulty):
 
             lane_count, lane_config, lane_art = \
                 get_current_lane_values((MAX_LANE_SIZE - none_count), lane_positions)
-            swaps_list.append((note["startBeat"], (MAX_LANE_SIZE - none_count),
-                               lane_config, lane_art))
+            swaps_dict[note["startBeat"]] = ((MAX_LANE_SIZE - none_count), lane_config, lane_art)
             none_count = 0
             lane_positions = []
 
-    return swaps_list
+    return swaps_dict
 
 
 # given the amount of lanes and the lane positions

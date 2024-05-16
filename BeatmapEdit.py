@@ -7,6 +7,8 @@ import json
 import copy
 import Util
 
+lane_configurations = {}
+
 current_lane_count = None
 current_lane_configuration = None
 current_lane_configuration_art = None
@@ -46,17 +48,13 @@ def edit_beatmap(song_name, song_difficulty):
         Util.fancy_print_box("✨ Initial lane configuration set!"
                              " You can proceed to beatmapping now! ✨")
     else:
-        global current_lane_count, current_lane_configuration, \
+        global lane_configurations, current_lane_count, current_lane_configuration, \
             current_lane_configuration_art
-
-        last_lane_swap = \
-            Util.get_lane_swaps(notes, song_name, song_difficulty)[-1]
-        current_lane_count = last_lane_swap[1]
-        current_lane_configuration = last_lane_swap[2]
-        current_lane_configuration_art = last_lane_swap[3]
 
         if len(notes) > 0:
             current_beat = notes[-1]["startBeat"]
+
+        update_lane_configuration(current_beat, notes)
 
     notes = edit_beatmap_input(notes)
 
@@ -407,18 +405,18 @@ def set_beat():
 
 # given a beat, update the lane configuration to reflect it
 def update_lane_configuration(beat, notes):
-    global current_song, current_difficulty, current_lane_configuration, current_lane_configuration_art
+    global current_song, current_difficulty, current_lane_configuration, current_lane_configuration_art, current_lane_count
     lane_swaps = Util.get_lane_swaps(notes, current_song, current_difficulty)
 
-    current_lane_configuration = lane_swaps[0][2]
-    current_lane_configuration_art = lane_swaps[0][3]
+    current_lane_count = lane_swaps[0][0]
+    current_lane_configuration = lane_swaps[0][1]
+    current_lane_configuration_art = lane_swaps[0][2]
+
     if len(lane_swaps) > 1:
-        beat_index = 1
-        while beat_index < len(lane_swaps):
-            lane_swap_beat = float(lane_swaps[beat_index][0])
-            if beat < lane_swap_beat:
-                break
+        for dict_beat, dict_configs in lane_swaps.items():
+            if dict_beat < beat:
+                current_lane_count = lane_swaps[dict_beat][0]
+                current_lane_configuration = lane_swaps[dict_beat][1]
+                current_lane_configuration_art = lane_swaps[dict_beat][2]
             else:
-                current_lane_configuration = lane_swaps[beat_index][2]
-                current_lane_configuration_art = lane_swaps[beat_index][3]
-            beat_index += 1
+                break
