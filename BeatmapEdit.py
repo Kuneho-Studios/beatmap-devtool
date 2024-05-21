@@ -23,7 +23,7 @@ available_actions_list = [
     "Set Beat",
     "Add Notes",
     # "Edit Note",
-    # "Delete Note",
+    "Delete Note",
     "Shift All Notes",
     "Shift Some Notes",
     "Show All Lane Swaps",
@@ -101,6 +101,8 @@ def edit_beatmap_input(notes):
         elif available_actions_list[action_input - 1] == "Set Beat":
             current_beat = set_beat()
             update_lane_configuration(current_beat, notes)
+        elif available_actions_list[action_input - 1] == "Delete Note":
+            notes = delete_note(notes, current_beat)
 
     return notes
 
@@ -420,3 +422,32 @@ def update_lane_configuration(beat, notes):
                 current_lane_configuration_art = lane_swaps[dict_beat][2]
             else:
                 break
+
+
+# given a beat, delete a specific a note
+def delete_note(notes, beat):
+    current_beat_notes_list = Util.get_last_beat(beat, notes)
+
+    if not current_beat_notes_list:
+        print("\nThere are no notes at this beat. Nothing to delete.\n")
+    else:
+        note_list = []
+        for note in current_beat_notes_list:
+            note_list.append(str(note['lane']) + " (" + note['noteType'] + ")")
+
+        print("\nNotes at Beat " + str(beat) + ": ")
+        Util.dropdown_for_user_input(note_list)
+
+        note_to_delete_input = (
+            input("Enter the number of the note you'd like to delete: "))
+
+        note_to_delete_input = (
+            Util.validate_dropdown_input(note_to_delete_input, len(note_list)))
+
+        if note_to_delete_input is None:
+            return delete_note(notes, beat)
+        else:
+            notes = [note for note in notes if note.get("startBeat") != beat or
+                     note.get("lane") != current_beat_notes_list[note_to_delete_input - 1]['lane']]
+
+    return notes
