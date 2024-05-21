@@ -7,6 +7,8 @@ import json
 import copy
 import Util
 
+lane_configurations = {}
+
 current_lane_count = None
 current_lane_configuration = None
 current_lane_configuration_art = None
@@ -18,6 +20,7 @@ current_beat = None
 available_actions_list = [
     "Exit",
     # Enter any new commands after exit
+    "Set Beat",
     "Add Notes",
     # "Edit Note",
     # "Delete Note",
@@ -45,28 +48,23 @@ def edit_beatmap(song_name, song_difficulty):
         Util.fancy_print_box("✨ Initial lane configuration set!"
                              " You can proceed to beatmapping now! ✨")
     else:
-        global current_lane_count, current_lane_configuration, \
+        global lane_configurations, current_lane_count, current_lane_configuration, \
             current_lane_configuration_art
-
-        last_lane_swap = \
-            Util.get_lane_swaps(notes, song_name, song_difficulty)[-1]
-        current_lane_count = last_lane_swap[1]
-        current_lane_configuration = last_lane_swap[2]
-        current_lane_configuration_art = last_lane_swap[3]
 
         if len(notes) > 0:
             current_beat = notes[-1]["startBeat"]
 
-    sorted_notes = sorted(edit_beatmap_input(notes),
-                          key=lambda note: (note['startBeat'], note['lane']))
+        update_lane_configuration(current_beat, notes)
+
+    notes = edit_beatmap_input(notes)
 
     with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "_" + song_difficulty
               + ".json", "w") as beatmap_write:
-        json.dump({"notes": sorted_notes, "laneEvents": lane_events},
+        json.dump({"notes": notes, "laneEvents": lane_events},
                   beatmap_write, indent=4)
     beatmap_write.close()
 
-    set_song_note_length(song_name, sorted_notes)
+    set_song_note_length(song_name, notes)
 
     Util.fancy_print_box("✨ " + song_name + " on " + song_difficulty
                          + " difficulty updated! ✨")
@@ -76,37 +74,34 @@ def edit_beatmap(song_name, song_difficulty):
 def edit_beatmap_input(notes):
     global current_beat
 
-    Util.note_report(current_lane_configuration, current_lane_configuration_art,
-                     Util.get_last_beat(current_beat, notes))
+    action_input = ""
+    while action_input != 1:
+        Util.note_report(current_lane_configuration, current_lane_configuration_art,
+                         Util.get_last_beat(current_beat, notes))
 
-    print("\nAvailable Beatmap Actions:")
-    Util.dropdown_for_user_input(available_actions_list)
+        print("\nAvailable Beatmap Actions:")
+        Util.dropdown_for_user_input(available_actions_list)
 
-    action_input = (
-        input("Enter the number of the action you'd like to perform: "))
+        action_input = (
+            input("Enter the number of the action you'd like to perform: "))
 
-    action_input = (
-        Util.validate_dropdown_input(action_input, len(available_actions_list)))
+        action_input = (
+            Util.validate_dropdown_input(action_input, len(available_actions_list)))
 
-    if available_actions_list[action_input - 1] == "Exit":
-        return ""
-    elif available_actions_list[action_input - 1] == "Show All Lane Swaps":
-        Util.show_lane_swaps(notes, current_song, current_difficulty)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Shift All Notes":
-        shift_all_notes(notes)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Shift Some Notes":
-        shift_some_notes(notes)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Add Notes":
-        notes = add_note_input(notes)
-        edit_beatmap_input(notes)
-    elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
-        copy_note_segment(notes)
-        edit_beatmap_input(notes)
+        if available_actions_list[action_input - 1] == "Show All Lane Swaps":
+            Util.show_lane_swaps(notes, current_song, current_difficulty)
+        elif available_actions_list[action_input - 1] == "Shift All Notes":
+            shift_all_notes(notes)
+        elif available_actions_list[action_input - 1] == "Shift Some Notes":
+            shift_some_notes(notes)
+        elif available_actions_list[action_input - 1] == "Add Notes":
+            notes = add_note(notes, current_beat)
+        elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
+            copy_note_segment(notes)
+        elif available_actions_list[action_input - 1] == "Set Beat":
+            current_beat = set_beat()
+            update_lane_configuration(current_beat, notes)
 
-    print("")
     return notes
 
 
@@ -320,23 +315,6 @@ def shift_some_notes(notes):
         shift_all_notes(notes)
 
 
-# gather input for adding a note to the beatmap
-def add_note_input(notes):
-    global current_beat
-
-    beat = input(
-        "Enter beat for the note you want to add: ")
-
-    try:
-        beat = float(beat)
-    except ValueError:
-        print("\n Please enter a number.")
-        add_note_input(notes)
-
-    current_beat = beat
-    return add_note(notes, beat)
-
-
 # add a note to the beatmap
 def add_note(notes, beat):
     lane = set_lane(beat)
@@ -372,7 +350,7 @@ def add_note(notes, beat):
             notes.append(note_json_object)
             hold_note_duration -= 1
 
-    return notes
+    return sorted(notes, key=lambda note: (note['startBeat'], note['lane']))
 
 
 # copy a subset of notes and place them at a different beat
@@ -412,3 +390,33 @@ def copy_note_segment(notes):
         note["startBeat"] += note_shift_distance
 
     notes.extend(notes_subset)
+
+
+# sets the current beat
+def set_beat():
+    beat = input("Enter the beat to jump to: ")
+
+    try:
+        return float(beat)
+    except ValueError:
+        print("\n Please enter a number.")
+        set_beat()
+
+
+# given a beat, update the lane configuration to reflect it
+def update_lane_configuration(beat, notes):
+    global current_song, current_difficulty, current_lane_configuration, current_lane_configuration_art, current_lane_count
+    lane_swaps = Util.get_lane_swaps(notes, current_song, current_difficulty)
+
+    current_lane_count = lane_swaps[0][0]
+    current_lane_configuration = lane_swaps[0][1]
+    current_lane_configuration_art = lane_swaps[0][2]
+
+    if len(lane_swaps) > 1:
+        for dict_beat, dict_configs in lane_swaps.items():
+            if dict_beat < beat:
+                current_lane_count = lane_swaps[dict_beat][0]
+                current_lane_configuration = lane_swaps[dict_beat][1]
+                current_lane_configuration_art = lane_swaps[dict_beat][2]
+            else:
+                break

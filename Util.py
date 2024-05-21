@@ -199,7 +199,10 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
     lane_configuration_art_line = (
             " Lane Configuration Art: \n" + current_lane_configuration_art)
 
-    if len(last_beat) == 0:
+    if not isinstance(last_beat, list):
+        last_beat_line = " Last Beat: " + str(last_beat)
+        last_notes_line = " Last Note: None"
+    elif not last_beat:
         last_beat_line = " Last Beat: None"
         last_notes_line = " Last Note: None"
     else:
@@ -210,10 +213,10 @@ def note_report(current_lane_configuration, current_lane_configuration_art, last
         last_beat_line = (
                 " Last Beat: " + str(last_beat[0]['beat']))
 
-    for note in last_beat:
-        last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
-                           + " (" + note['noteType'] + "), ")
-    last_notes_line = last_notes_line.removesuffix(", ")
+        for note in last_beat:
+            last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
+                               + " (" + note['noteType'] + "), ")
+        last_notes_line = last_notes_line.removesuffix(", ")
 
     max_length_line = max(lane_configuration_line, last_notes_line, key=len)
     box_width = len(max_length_line) + 4
@@ -232,18 +235,22 @@ def get_last_beat(current_beat, notes_list):
 
     last_lane_list = []
     i = 1
-    while i < (MAX_LANE_SIZE + 1) and i < len(notes_list) + 1:
+    is_found = False
+    while i < len(notes_list) + 1:
         this_note = notes_list[-i]
         if this_note["startBeat"] == current_beat:
             last_lane_list.append({"beat": current_beat,
                                    "lane": this_note["lane"],
                                    "noteType": this_note["noteData"]["noteType"]})
-            i += 1
-        else:
+            is_found = True
+        elif is_found or this_note["startBeat"] < current_beat:
             break
+        i += 1
 
-    return sorted(last_lane_list,
-                  key=lambda note: (note['lane']))
+    if not last_lane_list:
+        return current_beat
+    else:
+        return sorted(last_lane_list, key=lambda note: (note['lane']))
 
 
 # reads the laneEvents at the bottom of the beatmap
@@ -271,8 +278,7 @@ def get_lane_swaps(notes_list, song_name, song_difficulty):
     notes, lane_events = read_beatmap(song_name, song_difficulty)
     original_lane_configuration = \
         get_initial_lane_configuration(lane_events[0]['lanes'])
-    swaps_list = [(0, original_lane_configuration[0],
-                   original_lane_configuration[1], original_lane_configuration[2])]
+    swaps_dict = {0: (original_lane_configuration[0], original_lane_configuration[1], original_lane_configuration[2])}
 
     for note in notes_list:
         if note["noteData"]["noteType"] == "LaneSwap":
@@ -284,12 +290,11 @@ def get_lane_swaps(notes_list, song_name, song_difficulty):
 
             lane_count, lane_config, lane_art = \
                 get_current_lane_values((MAX_LANE_SIZE - none_count), lane_positions)
-            swaps_list.append((note["startBeat"], (MAX_LANE_SIZE - none_count),
-                               lane_config, lane_art))
+            swaps_dict[note["startBeat"]] = ((MAX_LANE_SIZE - none_count), lane_config, lane_art)
             none_count = 0
             lane_positions = []
 
-    return swaps_list
+    return swaps_dict
 
 
 # given the amount of lanes and the lane positions
@@ -338,18 +343,19 @@ def get_lane_swap_dictionary(lane_count):
 # method to fancy print and display the gathered lane swap events
 def show_lane_swaps(notes_list, song_name, song_difficulty):
     # get lane swap events
-    lane_swaps_list = get_lane_swaps(notes_list, song_name, song_difficulty)
+    lane_swaps_dict = get_lane_swaps(notes_list, song_name, song_difficulty)
 
     box_width = 34
     print("\n┌" + ("-" * (box_width - 2)) + "┐")
 
-    for i in range(0, len(lane_swaps_list)):
-        lane_swap = lane_swaps_list[i]
-        print(" Beat\n" + "\t" + str(lane_swap[0]))
-        print(" Lane Swap Name\n" + "\t" + lane_swap[2])
-        print(" Lane Swap Art\n" + lane_swap[3])
-        if i < len(lane_swaps_list) - 1:
+    dict_index = 0
+    for dict_beat, dict_configs in lane_swaps_dict.items():
+        print(" Beat\n" + "\t" + str(dict_beat))
+        print(" Lane Swap Name\n" + "\t" + dict_configs[1])
+        print(" Lane Swap Art\n" + dict_configs[2])
+        if dict_index < len(lane_swaps_dict) - 1:
             print("~" * box_width)
+            dict_index += 1
 
     print("└" + "-" * (box_width - 2) + "┘\n")
 
