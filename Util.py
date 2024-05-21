@@ -343,18 +343,19 @@ def get_lane_swap_dictionary(lane_count):
 # method to fancy print and display the gathered lane swap events
 def show_lane_swaps(notes_list, song_name, song_difficulty):
     # get lane swap events
-    lane_swaps_list = get_lane_swaps(notes_list, song_name, song_difficulty)
+    lane_swaps_dict = get_lane_swaps(notes_list, song_name, song_difficulty)
 
     box_width = 34
     print("\n┌" + ("-" * (box_width - 2)) + "┐")
 
-    for i in range(0, len(lane_swaps_list)):
-        lane_swap = lane_swaps_list[i]
-        print(" Beat\n" + "\t" + str(lane_swap[0]))
-        print(" Lane Swap Name\n" + "\t" + lane_swap[2])
-        print(" Lane Swap Art\n" + lane_swap[3])
-        if i < len(lane_swaps_list) - 1:
+    dict_index = 0
+    for dict_beat, dict_configs in lane_swaps_dict.items():
+        print(" Beat\n" + "\t" + str(dict_beat))
+        print(" Lane Swap Name\n" + "\t" + dict_configs[1])
+        print(" Lane Swap Art\n" + dict_configs[2])
+        if dict_index < len(lane_swaps_dict) - 1:
             print("~" * box_width)
+            dict_index += 1
 
     print("└" + "-" * (box_width - 2) + "┘\n")
 
