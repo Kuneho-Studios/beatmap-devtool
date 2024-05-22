@@ -8,6 +8,7 @@ import copy
 import Util
 
 lane_configurations = {}
+initial_lane_events = None
 
 current_lane_count = None
 current_lane_configuration = None
@@ -27,7 +28,8 @@ available_actions_list = [
     "Shift All Notes",
     "Shift Some Notes",
     "Show All Lane Swaps",
-    "Copy Some Notes To Another Place"
+    "Copy Some Notes To Another Place",
+    "Save"
 ]
 
 
@@ -36,7 +38,7 @@ available_actions_list = [
 # will not be changed here. paste it at the end of the editing process to
 # ensure it remains.
 def edit_beatmap(song_name, song_difficulty):
-    global current_song, current_difficulty, current_beat
+    global current_song, current_difficulty, current_beat, initial_lane_events
     current_song = song_name
     current_difficulty = song_difficulty
     current_beat = 0
@@ -56,18 +58,10 @@ def edit_beatmap(song_name, song_difficulty):
 
         update_lane_configuration(current_beat, notes)
 
+    initial_lane_events = lane_events
     notes = edit_beatmap_input(notes)
 
-    with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "_" + song_difficulty
-              + ".json", "w") as beatmap_write:
-        json.dump({"notes": notes, "laneEvents": lane_events},
-                  beatmap_write, indent=4)
-    beatmap_write.close()
-
-    set_song_note_length(song_name, notes)
-
-    Util.fancy_print_box("✨ " + song_name + " on " + song_difficulty
-                         + " difficulty updated! ✨")
+    save_beatmap(notes, song_name, song_difficulty, lane_events)
 
 
 # obtain the beat for the current note to be added to the beatmap
@@ -106,6 +100,8 @@ def edit_beatmap_input(notes):
             notes = delete_note(notes, current_beat)
         elif available_actions_list[action_input - 1] == "Edit Note":
             notes = edit_note(notes, current_beat)
+        elif available_actions_list[action_input - 1] == "Save":
+            save_beatmap(notes, current_song, current_difficulty, initial_lane_events)
 
     return notes
 
@@ -488,3 +484,17 @@ def edit_note(notes, beat):
 
             # add new note
             return add_note(notes, beat, lane)
+
+
+# save the current beatmap
+def save_beatmap(notes, song_name, song_difficulty, lane_events):
+    with open(Util.BEATMAPS_DIRECTORY + song_name + "/" + song_name + "_" + song_difficulty
+              + ".json", "w") as beatmap_write:
+        json.dump({"notes": notes, "laneEvents": lane_events},
+                  beatmap_write, indent=4)
+    beatmap_write.close()
+
+    set_song_note_length(song_name, notes)
+
+    Util.fancy_print_box("✨ " + song_name + " on " + song_difficulty
+                         + " difficulty updated! ✨")
