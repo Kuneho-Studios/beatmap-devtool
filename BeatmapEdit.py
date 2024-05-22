@@ -21,8 +21,8 @@ available_actions_list = [
     "Exit",
     # Enter any new commands after exit
     "Set Beat",
-    "Add Notes",
-    # "Edit Note",
+    "Add Note",
+    "Edit Note",
     "Delete Note",
     "Shift All Notes",
     "Shift Some Notes",
@@ -94,8 +94,9 @@ def edit_beatmap_input(notes):
             shift_all_notes(notes)
         elif available_actions_list[action_input - 1] == "Shift Some Notes":
             shift_some_notes(notes)
-        elif available_actions_list[action_input - 1] == "Add Notes":
-            notes = add_note(notes, current_beat)
+        elif available_actions_list[action_input - 1] == "Add Note":
+            lane = set_lane(current_beat)
+            notes = add_note(notes, current_beat, lane)
         elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
             copy_note_segment(notes)
         elif available_actions_list[action_input - 1] == "Set Beat":
@@ -103,6 +104,8 @@ def edit_beatmap_input(notes):
             update_lane_configuration(current_beat, notes)
         elif available_actions_list[action_input - 1] == "Delete Note":
             notes = delete_note(notes, current_beat)
+        elif available_actions_list[action_input - 1] == "Edit Note":
+            notes = edit_note(notes, current_beat)
 
     return notes
 
@@ -318,8 +321,7 @@ def shift_some_notes(notes):
 
 
 # add a note to the beatmap
-def add_note(notes, beat):
-    lane = set_lane(beat)
+def add_note(notes, beat, lane):
     note_data = set_note_data(beat, lane)
     note_json_object = {"startBeat": beat,
                         "lane": lane,
@@ -433,7 +435,7 @@ def delete_note(notes, beat):
     else:
         note_list = []
         for note in current_beat_notes_list:
-            note_list.append(str(note['lane']) + " (" + note['noteType'] + ")")
+            note_list.append(note['noteType'] + " (" + "Lane " + str(note['lane']) + ")")
 
         print("\nNotes at Beat " + str(beat) + ": ")
         Util.dropdown_for_user_input(note_list)
@@ -451,3 +453,38 @@ def delete_note(notes, beat):
                      note.get("lane") != current_beat_notes_list[note_to_delete_input - 1]['lane']]
 
     return notes
+
+
+# given a beat, allow the user to edit it
+def edit_note(notes, beat):
+    current_beat_notes_list = Util.get_last_beat(beat, notes)
+
+    if not current_beat_notes_list:
+        return notes
+    else:
+        note_list = []
+        for note in current_beat_notes_list:
+            note_list.append(note['noteType'] + " (" + "Lane " + str(note['lane']) + ")")
+
+        print("\nNotes at Beat " + str(beat) + ": ")
+        Util.dropdown_for_user_input(note_list)
+
+        note_to_edit_input = (
+            input("Enter the number of the note you'd like to edit: "))
+
+        note_to_edit_input = (
+            Util.validate_dropdown_input(note_to_edit_input, len(note_list)))
+
+        if note_to_edit_input is None:
+            return edit_note(notes, beat)
+        else:
+            print("Current note is a " + str(current_beat_notes_list[note_to_edit_input - 1]['noteType']) + " on Lane "
+                  + str(current_beat_notes_list[note_to_edit_input - 1]['lane']))
+            lane = set_lane(beat)
+
+            # remove old note
+            notes = [note for note in notes if note.get("startBeat") != beat or
+                     note.get("lane") != current_beat_notes_list[note_to_edit_input - 1]['lane']]
+
+            # add new note
+            return add_note(notes, beat, lane)

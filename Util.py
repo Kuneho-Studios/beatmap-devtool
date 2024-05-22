@@ -248,7 +248,7 @@ def get_last_beat(current_beat, notes_list):
         i += 1
 
     if not last_lane_list:
-        return current_beat
+        return []
     else:
         return sorted(last_lane_list, key=lambda note: (note['lane']))
 
