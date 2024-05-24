@@ -59,7 +59,7 @@ Upon opening, the user is shown the initial prompts where they can `create a new
 
 ## Glossary
 ### Note Types
-* 
+There are several different note types that can occur in any given Project Radiance song.The user is given free rein on how many notes different note types they would like to incorporate into their beatmap
 
 ### Lane Configurations
 * 
@@ -73,15 +73,57 @@ Upon opening, the user is shown the initial prompts where they can `create a new
 ## Contact
 Please report any bugs or address any questions, comments, concerns, or suggestions to `projectradiance@kunehostudios.com` and include `Devtool` in the subject.
 
-## Release Notes
+## Change Log
 ### Version 1.0.0 (Latest)
-[Note Types]
-* Tap
-* Hold
-* Lane Change
-* Glitch
-* Heal
 
-[Lane Configurations and Variations]
-* asd
+##### [Note Types]
+&plus; Tap
+<br>
+&plus; Hold
+<br>
+&plus; Lane Change
+<br>
+&plus; Glitch
+<br>
+&plus; Heal
 
+##### [Lane Configurations and Variations]
+<p>&plus; Two Lanes</p>
+
+* Two lanes left to right
+* Two lanes right to left
+
+<p>&plus; Four Lanes</p>
+
+* Four lanes top to bottom
+* Four lanes bottom to top
+* Four lanes left to right
+* Four lanes right to left
+* Four corners
+
+<p>&plus; Five Lanes</p>
+
+* Five lanes top to bottom
+* Five lanes bottom to top
+* Five lanes left to right
+* Five lanes right to left
+* Four corners, middle lane top to bottom
+* Four corners, middle lane bottom to top
+
+##### [Note Functions]
+&plus; Set beat
+<br>
+&plus; Add note
+<br>
+&plus; Edit note
+<br>
+&plus; Delete note
+<br>
+&plus; Shift some notes
+<br>
+&plus; Shift all notes
+<br>
+&plus; Copy notes
+
+##### [Other]
+&plus; Export song and associated beatmaps
