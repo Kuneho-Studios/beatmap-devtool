@@ -30,47 +30,48 @@ available_song_edit_actions = [
 def main():
     Util.fancy_print_box("✨ Welcome To Project Radiance's Beatmap Dev Tool ✨")
     get_user_purpose()
+    Util.fancy_print_box(
+        "💛 Thanks for using Project Radiance's Beatmap Dev Tool 💛")
 
 
 # gets initial user input. if 'create', then create a new beatmap.
 # if 'edit', then identify what to edit.
 def get_user_purpose():
-    print("What would you like to do?")
-    Util.dropdown_for_user_input(start_actions_list)
+    starter_input = ""
+    while starter_input != 1:
+        print("What would you like to do?")
+        Util.dropdown_for_user_input(start_actions_list)
 
-    starter_input = (
-        input("Enter the number of the action you'd like to perform: "))
+        starter_input = (
+            input("Enter the number of the action you'd like to perform: "))
 
-    starter_input = (
-        Util.validate_dropdown_input(starter_input, len(start_actions_list)))
+        starter_input = (
+            Util.validate_dropdown_input(starter_input, len(start_actions_list)))
 
-    if starter_input is None:
-        print("")
-        get_user_purpose()
-    elif start_actions_list[starter_input - 1] == "Exit":
-        Util.fancy_print_box(
-            "💛 Thanks for using Project Radiance's Beatmap Dev Tool 💛")
-        return ""
-    elif start_actions_list[starter_input - 1] == "Create A New Song (And Beatmaps)":
-        BeatmapCreation.get_user_input()
-    elif start_actions_list[starter_input - 1] == "Edit A Song's Metadata":
-        edit_songs()
-    elif start_actions_list[starter_input - 1] == "Update A Beatmap":
-        beatmap = Util.get_user_beatmap()
-
-        if beatmap is None:
+        if starter_input is None:
+            print("")
             get_user_purpose()
-        else:
-            name = beatmap[0]
-            difficulty = beatmap[1]
+        elif start_actions_list[starter_input - 1] == "Create A New Song (And Beatmaps)":
+            BeatmapCreation.get_user_input()
+        elif start_actions_list[starter_input - 1] == "Edit A Song's Metadata":
+            edit_songs()
+        elif start_actions_list[starter_input - 1] == "Update A Beatmap":
+            beatmap = Util.get_user_beatmap()
 
-        Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
-                             + "\" on difficulty " + difficulty + " ✨")
-        BeatmapEdit.edit_beatmap(name, difficulty)
-    elif start_actions_list[starter_input - 1] == "Export A Song":
-        SongExport.export_song()
+            if beatmap is None:
+                get_user_purpose()
+            else:
+                name = beatmap[0]
+                difficulty = beatmap[1]
+
+            Util.fancy_print_box("✨ Editing \"" + Util.get_song_name(str(name))
+                                 + "\" on difficulty " + difficulty + " ✨")
+            BeatmapEdit.edit_beatmap(name, difficulty)
+        elif start_actions_list[starter_input - 1] == "Export A Song":
+            SongExport.export_song()
 
 
+# prompt entry for editing a song's metadata
 def edit_songs():
     print("\nAvailable Song Metadata Editing Options")
 

@@ -19,8 +19,8 @@ current_difficulty = None
 current_beat = None
 
 available_actions_list = [
-    "Exit",
-    # Enter any new commands after exit
+    "Back",
+    # Enter any new commands after back
     "Set Beat",
     "Add Note",
     "Edit Note",
