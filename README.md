@@ -59,7 +59,62 @@ Upon opening, the user is shown the initial prompts where they can `create a new
 
 ## Glossary
 ### Difficulty
-* 
+To Project Radiance, increasing difficulty doesn't just mean that missed notes become more punishing. The game will play slightly differently amongst the difficulties and provide the users with different challenges. Not everyone starts at the same place as some might have a lot of rhythm game experience. No matter what, the goal is that at each difficulty, no matter the song, the player should expect similar conditions and upon "mastering" that difficulty level can move onto the next one and expect to use the skills they were honing in the previous difficulty, plus a little more. Whether that be some more obstacles, or more frequent lane changes, or more variations in notes, that is up to the beatmapper. At Project Radiance, we would like the player to feel the gradual increase in difficulty between the levels and not harsh jumps.
+
+Difficulty is a numerical rating between 1 and 9. The general guidelines for determining what rating your beatmap should be placed under are as follow:
+
+#### Difficulty 1
+* Maximum lane count is 3
+* Near tutorial-level beatmapping
+* Limited obstacles
+* Anybody should be able to complete it, or would have great success after little practice
+
+#### Difficulty 2
+* Maximum lane count is 3
+* Limited lane changes
+* Limited obstacles
+
+#### Difficulty 3
+* Maximum lane count is 3
+* Works towards "mastery" of 3 lane configurations
+* Limited lane changes
+* Limited obstacles
+
+#### Difficulty 4
+* Maximum lane count is 4
+* Introduction to the 4th lane and the new configurations that come with it (e.g. four corners)
+* Limited lane changes
+* Limited obstacles
+
+#### Difficulty 5
+* Maximum lane count is 4
+* Moderate lane changes
+* Moderate obstacles
+
+#### Difficulty 6
+* Maximum lane count is 4
+* Works towards "mastery" of 4 lane configurations
+* Moderate lane changes
+* Moderate obstacles
+
+#### Difficulty 7
+* Maximum lane count is 5
+* Introduction to the 5th lane and the new configurations that come with it (e.g. four corners with a middle, vertical lane)
+* Moderate lane changes 
+* Moderate obstacles
+
+#### Difficulty 8
+* Maximum lane count is 5
+* "Maximum" lane changes
+* "Maximum" obstacles
+
+#### Difficulty 9
+* Maximum lane count is 5
+* Works towards "mastery" of the game
+  * Highest difficulty and anything goes 
+* "Maximum" lane changes
+* "Maximum" obstacles
+
 
 ### Lane Configurations and Variations
 One of Project Radiance's unique characteristics is for the lane configurations to have the ability to change throughout the song. As a result, there are many different lane configurations on offer in the devtool
