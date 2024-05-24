@@ -205,27 +205,24 @@ def get_song_name(song_save_name):
 
 
 # box to put information regarding the last note entered
-def note_report(current_lane_configuration, current_lane_configuration_art, last_beat):
+def note_report(current_lane_configuration, current_lane_configuration_art, last_beat_lanes, last_beat):
     lane_configuration_line = (
             " Lane Configuration: " + current_lane_configuration)
     lane_configuration_art_line = (
             " Lane Configuration Art: \n" + current_lane_configuration_art)
 
-    if not isinstance(last_beat, list):
+    if not isinstance(last_beat_lanes, list) or not last_beat_lanes:
         last_beat_line = " Last Beat: " + str(last_beat)
         last_notes_line = " Last Note: None"
-    elif not last_beat:
-        last_beat_line = " Last Beat: None"
-        last_notes_line = " Last Note: None"
     else:
-        if len(last_beat) == 1:
+        if len(last_beat_lanes) == 1:
             last_notes_line = " Last Note: "
         else:
             last_notes_line = " Last Notes: "
         last_beat_line = (
-                " Last Beat: " + str(last_beat[0]['beat']))
+                " Last Beat: " + str(last_beat_lanes[0]['beat']))
 
-        for note in last_beat:
+        for note in last_beat_lanes:
             last_notes_line = (str(last_notes_line) + "Lane " + str(note['lane'])
                                + " (" + note['noteType'] + "), ")
         last_notes_line = last_notes_line.removesuffix(", ")

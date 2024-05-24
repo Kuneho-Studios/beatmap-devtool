@@ -73,7 +73,7 @@ def edit_beatmap_input(notes):
     action_input = ""
     while action_input != 1:
         Util.note_report(current_lane_configuration, current_lane_configuration_art,
-                         Util.get_last_beat(current_beat, notes))
+                         Util.get_last_beat(current_beat, notes), current_beat)
 
         print("\nAvailable Beatmap Actions:")
         Util.dropdown_for_user_input(available_actions_list, True)
@@ -91,7 +91,7 @@ def edit_beatmap_input(notes):
         elif available_actions_list[action_input] == SHIFT_ALL_NOTES_ACTION:
             shift_all_notes(notes)
         elif available_actions_list[action_input] == SHIFT_SOME_NOTES_ACTION:
-            shift_some_notes(notes, current_beat)
+            notes = shift_some_notes(notes, current_beat)
         elif available_actions_list[action_input] == ADD_NOTE_ACTION:
             lane = set_lane(current_beat)
             notes = add_note(notes, current_beat, lane)
@@ -293,24 +293,24 @@ def shift_some_notes(notes, beat):
     shift_input = input("Enter the count to shift the beats between "
                         + str(beat) + " and "
                         + str(shift_end_input) +
-                        "(prefix with `-` for shift left or `+` to shift right): ").strip()
+                        " (prefix with `-` for shift left or `+` to shift right): ").strip()
 
     if shift_input[0] != "+" and shift_input[0] != "-":
         print("Please include a '+' or '-' before the amount to shift")
-        shift_all_notes(notes)
+        shift_some_notes(notes, beat)
     try:
         shift_amount = float(shift_input[1:])
         if shift_input[0] == '-':
             shift_amount = -1 * shift_amount
 
-        for note in beat:
-            if current_beat <= note["startBeat"] <= shift_end_input:
+        for note in notes:
+            if beat <= note["startBeat"] <= shift_end_input:
                 note["startBeat"] = note["startBeat"] + shift_amount
 
         return notes
     except ValueError:
         print("Please enter only a number after the '+' or '-'")
-        shift_all_notes(notes)
+        shift_some_notes(notes, beat)
 
 
 # add a note to the beatmap
