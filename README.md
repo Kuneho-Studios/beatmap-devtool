@@ -45,8 +45,8 @@ Upon opening, the user is shown the initial prompts where they can `create a new
   * `Shift all notes`
     * Shifts all notes in the song by the amount of beats specified
     * The shift amount must begin with a `+` (to shift to higher/later beats) or a `-` (to shift to lower/earlier beats)
-  * `Show all lane swaps`
-    * Displays all the lane swaps that exist in the beatmap
+  * `Show all lane changes`
+    * Displays all the lane changes that exist in the beatmap
     * Includes the beat where the swap occurs, the name of the lane configuration, as well as a visual depiction of what that looks like
       * Can read about the various lane configurations and depictions in the ["Lane Configurations and Variations"](#lane-configurations-and-variations) glossary section
   * `Copy some notes to another beat`
