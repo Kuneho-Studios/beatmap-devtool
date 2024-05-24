@@ -16,7 +16,9 @@ MAX_LANE_SIZE = 5
 note_types_list = [
     "Tap",
     "Hold",
-    "LaneSwap"
+    "LaneSwap",
+    "Glitch",
+    "Heal"
 ]
 
 one_lane_swap_types_dict = {}
