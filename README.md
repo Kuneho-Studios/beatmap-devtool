@@ -48,7 +48,7 @@ Upon opening, the user is shown the initial prompts where they can `create a new
   * `Show all lane swaps`
     * Displays all the lane swaps that exist in the beatmap
     * Includes the beat where the swap occurs, the name of the lane configuration, as well as a visual depiction of what that looks like
-      * Can read about the various lane configurations and depictions in the ["Lane Configurations"](#lane-configurations) and ["Lane Variations"](#lane-variations) glossary sections
+      * Can read about the various lane configurations and depictions in the ["Lane Configurations and Variations"](#lane-configurations-and-variations) glossary section
   * `Copy some notes to another beat`
     * Starting at the current beat and ending at the beat specified, it will then copy all the notes that fall within that range and place them starting at another beat that will be specified
   * `Save`
@@ -58,17 +58,170 @@ Upon opening, the user is shown the initial prompts where they can `create a new
   * After selecting the song via the prompts, all the song's files are placed into a zip file and can be downloaded to anywhere on the user's computer via the operating systems save menu that should pop up.
 
 ## Glossary
-### Note Types
-There are several different note types that can occur in any given Project Radiance song.The user is given free rein on how many notes different note types they would like to incorporate into their beatmap
-
-### Lane Configurations
-* 
-
-### Lane Variations
-* asd
-
 ### Difficulty
 * 
+
+### Lane Configurations and Variations
+One of Project Radiance's unique characteristics is for the lane configurations to have the ability to change throughout the song. As a result, there are many different lane configurations on offer in the devtool
+
+For each `Lane Configuration`, there are different `Lane Variations` into how they are displayed. Not all lane sections are necessarily played the same way.
+
+Below, for each lane configuration available, there will be some art depicted an example for each lane configuration. The `x` and a `lane number` can be interchanged to create new variations, but for the essence of not making this document to big, all will not be listed here (but are accessible in the devtool). The notes will move in the direction the arrow is facing and the lane number is placed where the strike zone would be. 
+
+The names "left to right" or "top to bottom" indicate the direction in which the note is moving. Therefore, "left to right" would indicate the note is moving from the left of the screen over to the right, similary "top to bottom" is moving from the top of the screen to the bottom.
+#### Two Lanes
+* Two lanes left to right
+```
+╔═══════════════════╗
+║           ---→ 1  ║
+║           ---→ 2  ║
+║           ---- x  ║
+║           ---- x  ║
+║           ---- x  ║
+╚═══════════════════╝
+```
+* Two lanes right to left
+```
+╔═══════════════════╗
+║  1 ←---           ║
+║  2 ←---           ║
+║  x ----           ║
+║  x ----           ║
+║  x ----           ║
+╚═══════════════════╝
+```
+
+#### Four Lanes
+* Four lanes top to bottom
+```
+╔═══════════════════╗
+║                   ║
+║   |  |  |  |  |   ║
+║   |  |  |  |  |   ║
+║   |  ↓  ↓  ↓  ↓   ║
+║   x  1  2  3  4   ║
+╚═══════════════════╝
+```
+* Four lanes bottom to top
+```
+╔═══════════════════╗
+║   x  1  2  3  4   ║
+║   |  ↑  ↑  ↑  ↑   ║
+║   |  |  |  |  |   ║
+║   |  |  |  |  |   ║
+║                   ║
+╚═══════════════════╝
+```
+* Four lanes left to right
+```
+╔═══════════════════╗
+║           ---- x  ║
+║           ---→ 1  ║
+║           ---→ 2  ║
+║           ---→ 3  ║
+║           ---→ 4  ║
+╚═══════════════════╝
+```
+* Four lanes right to left
+```
+╔═══════════════════╗
+║  x ----           ║
+║  1 ←---           ║
+║  2 ←---           ║
+║  3 ←---           ║
+║  4 ←---           ║
+╚═══════════════════╝
+```
+* Four corners
+```
+╔═══════════════════╗
+║  1             4  ║
+║   ↖           ↗   ║
+║     >       <     ║
+║   ↙           ↘   ║
+║  2             3  ║
+╚═══════════════════╝
+```
+
+#### Five Lanes
+* Five lanes top to bottom
+```
+╔═══════════════════╗
+║                   ║
+║   |  |  |  |  |   ║
+║   |  |  |  |  |   ║
+║   ↓  ↓  ↓  ↓  ↓   ║
+║   1  2  3  4  5   ║
+╚═══════════════════╝
+```
+* Five lanes bottom to top
+```
+╔═══════════════════╗
+║   1  2  3  4  x   ║
+║   ↑  ↑  ↑  ↑  |   ║
+║   |  |  |  |  |   ║
+║   |  |  |  |  |   ║
+║                   ║
+╚═══════════════════╝
+```
+* Five lanes left to right
+```
+╔═══════════════════╗
+║           ---→ 1  ║
+║           ---→ 2  ║
+║           ---→ 3  ║
+║           ---→ 4  ║
+║           ---→ 5  ║
+╚═══════════════════╝
+```
+* Five lanes right to left
+```
+╔═══════════════════╗
+║  1 ←---           ║
+║  2 ←---           ║
+║  3 ←---           ║
+║  4 ←---           ║
+║  5 ←---           ║
+╚═══════════════════╝
+```
+* Four corners, middle lane top to bottom
+```
+╔═══════════════════╗
+║  1             4  ║
+║   ↖     |     ↗   ║
+║     >   |   <     ║
+║   ↙     ↓     ↘   ║
+║  2      5      3  ║
+╚═══════════════════╝
+```
+* Four corners, middle lane bottom to top
+```
+╔═══════════════════╗
+║  1      5      4  ║
+║   ↖     ↑     ↗   ║
+║     >   |   <     ║
+║   ↙     |     ↘   ║
+║  2             3  ║
+╚═══════════════════╝
+```
+
+### Note Types
+There are several different note types that can occur in any given Project Radiance song.The user is given free rein on how many notes different note types they would like to incorporate into their beatmap
+#### Tap
+A tap note is the primary, classic note. It is a single note that plays on a specific beat
+
+#### Hold
+A hold note is a tap note followed by a trail. The player should strike the hold note on the beat (like a tap note), but then continue to hold the key down until the end of the tail
+
+#### Lane Change
+This is a single note like the tap note but is visually distinguishable. It changes lane configurations—usually, this involves moving multiple lanes to different positions and/or enabling/disabling lanes.
+
+#### Glitch
+This is a single note like the tap note, but is an obstacle and should be intentionally avoided. If the player strikes this note, they will incur some sort of penalty
+
+#### Heal
+This is a single note like the tap note, but is visually distinguishable. It will heal the player a small amount.
+
 
 ## Contact
 Please report any bugs or address any questions, comments, concerns, or suggestions to `projectradiance@kunehostudios.com` and include `Devtool` in the subject.
