@@ -20,7 +20,7 @@ SHOW_ALL_LANE_SWAPS_ACTION = "Show all lane swaps"
 SHIFT_ALL_NOTES_ACTION = "Shift all notes"
 SHIFT_SOME_NOTES_ACTION = "Shift some notes"
 ADD_NOTE_ACTION = "Add note"
-COPY_SOME_NOTES_ACTION = "Copy some notes to another place"
+COPY_SOME_NOTES_ACTION = "Copy some notes to another beat"
 SET_BEAT_ACTION = "Set beat"
 DELETE_NOTE_ACTION = "Delete note"
 EDIT_NOTE_ACTION = "Edit note"
@@ -71,30 +71,30 @@ def edit_songs_help():
 def edit_beatmap_input_help():
     print("\n ~~~ HELP ~~~")
     print(set_help_name(BACK_ACTION) + "Goes back to the main menu prompts")
-    print(set_help_name(SET_BEAT_ACTION) + "Sets the current beat to the value you supply. All created, edited, "
+    print(set_help_name(SET_BEAT_ACTION) + "Sets the current beat to the value supplied. All created, edited, "
                                            "and deleted notes will be on this beat")
     print(set_help_name(ADD_NOTE_ACTION) + "Add a note to a lane given the current beat's lane configuration")
     print(set_help_name(EDIT_NOTE_ACTION) + "Edit an existing note on the current beat. Can edit the note type or its "
-                                            "lane. Utilize " + bold_text(SHIFT_SOME_NOTES_ACTION) + " or "
-          + bold_text(DELETE_NOTE_ACTION) + " and then " + bold_text(ADD_NOTE_ACTION)
-          + " to move it to a different beat")
+                                            "lane. Utilize " + bold_text(SHIFT_SOME_NOTES_ACTION) + " to directly move "
+                                            "it or " + bold_text(DELETE_NOTE_ACTION) + " and then"
+                                            " " + bold_text(ADD_NOTE_ACTION) + " to recreate it on a different beat")
     print(set_help_name(DELETE_NOTE_ACTION) + "Delete an existing note on the current beat")
-    print(set_help_name(SHIFT_SOME_NOTES_ACTION) + "Starting at the current beat and ending at the beat you specify, "
+    print(set_help_name(SHIFT_SOME_NOTES_ACTION) + "Starting at the current beat and ending at the beat specified, "
                                                    "it will then shift all the notes that fall within that range by "
-                                                   "the amount of beats you specify. The shift amount must begin with "
-                                                   "a " + bold_text("+") + " (to shift to later beats) or a "
-          + bold_text("-") + "(to shift to earlier beats)")
-    print(set_help_name(SHIFT_ALL_NOTES_ACTION) + "Shifts all notes in the song by the amount of beats you specify. "
-                                                  "The shift amount must begin with a " + bold_text("+")
-          + " (to shift to later beats) or a " + bold_text("-")
-          + "(to shift to earlier beats)")
+                                                   "the amount of beats specified. The shift amount must begin with "
+                                                   "a " + bold_text("+") + " (to shift to higher/later beats) or a"
+                                                   " " + bold_text("-") + "(to shift to lower/earlier beats)")
+    print(set_help_name(SHIFT_ALL_NOTES_ACTION) + "Shifts all notes in the song by the amount of beats specified. "
+                                                  "The shift amount must begin with a " + bold_text("+") + " "
+                                                  "(to shift to higher/later beats) or a " + bold_text("-") + " "
+                                                  "(to shift to lower/earlier beats)")
     print(set_help_name(SHOW_ALL_LANE_SWAPS_ACTION) + "Displays all the lane swaps that exist in the beatmap. "
                                                       "Includes the beat where the swap occurs, the name of the lane "
                                                       "configuration, as well as a visual depiction of what that "
                                                       "looks like")
-    print(set_help_name(COPY_SOME_NOTES_ACTION) + "Starting at the current beat and ending at the beat you specify, "
+    print(set_help_name(COPY_SOME_NOTES_ACTION) + "Starting at the current beat and ending at the beat specified, "
                                                   "it will then copy all the notes that fall within that range and "
-                                                  "place them starting at another beat that you will specify.")
-    print(set_help_name(SAVE_ACTION) + "Saves the current beatmap as-is. Saves are automatically performed when you "
-                                       "use the " + bold_text(BACK_ACTION) + " action too")
+                                                  "place them starting at another beat that will be specified.")
+    print(set_help_name(SAVE_ACTION) + "Saves the current beatmap as-is. Saves are automatically performed when the"
+                                       " " + bold_text(BACK_ACTION) + " action is used too")
     print("")
