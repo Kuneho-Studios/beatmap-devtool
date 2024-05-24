@@ -251,7 +251,7 @@ def update_basic_info():
 
     if len(song_list) == 0:
         Util.fancy_print_box(
-            "⚠ There are no songs present to export ⚠")
+            "⚠ There are no songs present to edit ⚠")
         return None
     else:
         song_name = Util.input_stored_songs(song_list)

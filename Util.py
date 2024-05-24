@@ -11,6 +11,9 @@ BEATMAPS_DIRECTORY = 'beatmaps/'
 FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
 FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
 
+BOLD_TEXT = "\033[1m"
+NORMAL_TEXT = "\033[0m"
+
 MAX_LANE_SIZE = 5
 
 note_types_list = [
@@ -77,8 +80,11 @@ def camel_case_to_space_case(string_to_convert):
 # helper method that given a list.
 # creates the prompt menu which displays all elements
 # in the list for the user to pick from
-def dropdown_for_user_input(list_to_print):
-    display_index = 1
+def dropdown_for_user_input(list_to_print, is_help=False):
+    if is_help:
+        display_index = 0
+    else:
+        display_index = 1
 
     for item in list_to_print:
         print(str(display_index) + ") " + str(item))
@@ -118,8 +124,7 @@ def input_stored_songs(song_directories):
     directory_input = input(
         "Enter the number of the song you would like to beatmap: ")
 
-    directory_input = validate_dropdown_input(
-        directory_input, len(song_name_list))
+    directory_input = validate_dropdown_input(directory_input, len(song_name_list))
     if directory_input is None:
         return input_stored_difficulties(song_name_list)
     else:
@@ -161,11 +166,16 @@ def extract_and_sort_difficulties(difficulty_list):
 
 # when a dropdown is presented to the user, verify that they entered a number,
 # and also one that is present in the list
-def validate_dropdown_input(user_input, list_length):
+def validate_dropdown_input(user_input, list_length, is_help=False):
     try:
         user_input = int(user_input)
 
-        if 0 < user_input <= list_length:
+        if is_help:
+            base_index = 0
+        else:
+            base_index = 1
+
+        if base_index <= user_input <= list_length:
             return user_input
         else:
             print("\nPlease enter a number from the dropdown list.")

@@ -6,6 +6,7 @@
 import json
 import copy
 import Util
+from Help import *
 
 lane_configurations = {}
 initial_lane_events = None
@@ -19,17 +20,18 @@ current_difficulty = None
 current_beat = None
 
 available_actions_list = [
-    "Back",
+    HELP_ACTION,
+    BACK_ACTION,
     # Enter any new commands after back
-    "Set Beat",
-    "Add Note",
-    "Edit Note",
-    "Delete Note",
-    "Shift All Notes",
-    "Shift Some Notes",
-    "Show All Lane Swaps",
-    "Copy Some Notes To Another Place",
-    "Save"
+    SET_BEAT_ACTION,
+    ADD_NOTE_ACTION,
+    EDIT_NOTE_ACTION,
+    DELETE_NOTE_ACTION,
+    SHIFT_SOME_NOTES_ACTION,
+    SHIFT_ALL_NOTES_ACTION,
+    SHOW_ALL_LANE_SWAPS_ACTION,
+    COPY_SOME_NOTES_ACTION,
+    SAVE_ACTION
 ]
 
 
@@ -74,33 +76,35 @@ def edit_beatmap_input(notes):
                          Util.get_last_beat(current_beat, notes))
 
         print("\nAvailable Beatmap Actions:")
-        Util.dropdown_for_user_input(available_actions_list)
+        Util.dropdown_for_user_input(available_actions_list, True)
 
         action_input = (
             input("Enter the number of the action you'd like to perform: "))
 
         action_input = (
-            Util.validate_dropdown_input(action_input, len(available_actions_list)))
+            Util.validate_dropdown_input(action_input, len(available_actions_list), True))
 
-        if available_actions_list[action_input - 1] == "Show All Lane Swaps":
+        if available_actions_list[action_input] == HELP_ACTION:
+            edit_beatmap_input_help()
+        elif available_actions_list[action_input] == SHOW_ALL_LANE_SWAPS_ACTION:
             Util.show_lane_swaps(notes, current_song, current_difficulty)
-        elif available_actions_list[action_input - 1] == "Shift All Notes":
+        elif available_actions_list[action_input] == SHIFT_ALL_NOTES_ACTION:
             shift_all_notes(notes)
-        elif available_actions_list[action_input - 1] == "Shift Some Notes":
+        elif available_actions_list[action_input] == SHIFT_SOME_NOTES_ACTION:
             shift_some_notes(notes)
-        elif available_actions_list[action_input - 1] == "Add Note":
+        elif available_actions_list[action_input] == ADD_NOTE_ACTION:
             lane = set_lane(current_beat)
             notes = add_note(notes, current_beat, lane)
-        elif available_actions_list[action_input - 1] == "Copy Some Notes To Another Place":
+        elif available_actions_list[action_input] == COPY_SOME_NOTES_ACTION:
             copy_note_segment(notes)
-        elif available_actions_list[action_input - 1] == "Set Beat":
+        elif available_actions_list[action_input] == SET_BEAT_ACTION:
             current_beat = set_beat()
             update_lane_configuration(current_beat, notes)
-        elif available_actions_list[action_input - 1] == "Delete Note":
+        elif available_actions_list[action_input] == DELETE_NOTE_ACTION:
             notes = delete_note(notes, current_beat)
-        elif available_actions_list[action_input - 1] == "Edit Note":
+        elif available_actions_list[action_input] == EDIT_NOTE_ACTION:
             notes = edit_note(notes, current_beat)
-        elif available_actions_list[action_input - 1] == "Save":
+        elif available_actions_list[action_input] == SAVE_ACTION:
             save_beatmap(notes, current_song, current_difficulty, initial_lane_events)
 
     return notes
@@ -130,8 +134,7 @@ def set_note_data(beat, lane):
     note_type_input = input("Enter the number of beat " + str(beat) + " lane "
                             + str(lane) + "'s note type: ")
 
-    note_type_input = Util.validate_dropdown_input(
-        note_type_input, len(Util.note_types_list))
+    note_type_input = Util.validate_dropdown_input(note_type_input, len(Util.note_types_list))
     if note_type_input is None:
         return set_note_data(beat, lane)
     else:
