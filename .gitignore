@@ -5,3 +5,9 @@ beatmaps/
 __pycache__/
 
 *.zip
+
+build/
+
+dist/
+
+*.spec
