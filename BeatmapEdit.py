@@ -29,7 +29,7 @@ available_actions_list = [
     DELETE_NOTE_ACTION,
     SHIFT_SOME_NOTES_ACTION,
     SHIFT_ALL_NOTES_ACTION,
-    SHOW_ALL_LANE_SWAPS_ACTION,
+    SHOW_ALL_LANE_CHANGES_ACTION,
     COPY_SOME_NOTES_ACTION,
     SAVE_ACTION
 ]
@@ -86,8 +86,8 @@ def edit_beatmap_input(notes):
 
         if available_actions_list[action_input] == HELP_ACTION:
             edit_beatmap_input_help()
-        elif available_actions_list[action_input] == SHOW_ALL_LANE_SWAPS_ACTION:
-            Util.show_lane_swaps(notes, current_song, current_difficulty)
+        elif available_actions_list[action_input] == SHOW_ALL_LANE_CHANGES_ACTION:
+            Util.show_lane_changes(notes, current_song, current_difficulty)
         elif available_actions_list[action_input] == SHIFT_ALL_NOTES_ACTION:
             shift_all_notes(notes)
         elif available_actions_list[action_input] == SHIFT_SOME_NOTES_ACTION:
@@ -138,54 +138,54 @@ def set_note_data(beat, lane):
     if note_type_input is None:
         return set_note_data(beat, lane)
     else:
-        if Util.note_types_list[note_type_input - 1] == "LaneSwap":
-            return {"noteType": "LaneSwap", "laneChanges": set_lane_swap()}
+        if Util.note_types_list[note_type_input - 1] == "LaneChange":
+            return {"noteType": "LaneChange", "laneChanges": set_lane_change()}
 
         return {"noteType": Util.note_types_list[note_type_input - 1]}
 
 
-# given the desire to perform a lane swap
+# given the desire to perform a lane change
 # prompt and gather how many lanes the user would like the swap to have
-def set_lane_swap():
+def set_lane_change():
     print("\nAvailable Lane Sizes:")
-    lane_names = [value[0] for value in Util.lane_swap_types_dict.values()]
+    lane_names = [value[0] for value in Util.lane_change_types_dict.values()]
     Util.dropdown_for_user_input(lane_names)
 
-    lane_swap_lane_count = (
+    lane_change_lane_count = (
         input("Enter the number of lanes in the new lane configuration? "))
 
-    lane_swap_lane_count = (
-        Util.validate_dropdown_input(lane_swap_lane_count, len(lane_names)))
-    if lane_swap_lane_count is None:
-        return set_lane_swap()
+    lane_change_lane_count = (
+        Util.validate_dropdown_input(lane_change_lane_count, len(lane_names)))
+    if lane_change_lane_count is None:
+        return set_lane_change()
     else:
-        return set_lane_style(lane_swap_lane_count)
+        return set_lane_style(lane_change_lane_count)
 
 
-# given the desired lane swap count, display the art for the different styles
+# given the desired lane change count, display the art for the different styles
 # allow the user to select which one
-def set_lane_style(lane_swap_lane_count):
+def set_lane_style(lane_change_lane_count):
     lane_type_keys = (
-        list(Util.lane_swap_types_dict.get(lane_swap_lane_count)[1].keys()))
+        list(Util.lane_change_types_dict.get(lane_change_lane_count)[1].keys()))
 
     print("\nAvailable Lane Styles:")
     Util.dropdown_for_user_input(lane_type_keys)
 
     lane_type_input = (
-        input("Enter the " + str(lane_swap_lane_count) + "-lane style: "))
+        input("Enter the " + str(lane_change_lane_count) + "-lane style: "))
 
     lane_type_input = (
         Util.validate_dropdown_input(lane_type_input, len(lane_type_keys)))
 
     if lane_type_input is None:
-        return set_lane_style(lane_swap_lane_count)
+        return set_lane_style(lane_change_lane_count)
     else:
         global current_lane_configuration, current_lane_count
         current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
-        current_lane_count = lane_swap_lane_count
+        current_lane_count = lane_change_lane_count
 
-        lane_configuration = (Util.lane_swap_types_dict.get(
-            lane_swap_lane_count)[1].get(current_lane_configuration))
+        lane_configuration = (Util.lane_change_types_dict.get(
+            lane_change_lane_count)[1].get(current_lane_configuration))
 
         return set_lane_variation(lane_configuration)
 
@@ -228,7 +228,7 @@ def set_lane_event():
     Util.fancy_print_box(
         "⚠ You do not have the initial lane setup configured! "
         "Let's do that now ⚠")
-    return [{"startBeat": 0, "lanes": set_lane_swap()}]
+    return [{"startBeat": 0, "lanes": set_lane_change()}]
 
 
 # when the song is saved, fetch what was previously stored in the length field
@@ -402,19 +402,20 @@ def set_beat():
 
 # given a beat, update the lane configuration to reflect it
 def update_lane_configuration(beat, notes):
-    global current_song, current_difficulty, current_lane_configuration, current_lane_configuration_art, current_lane_count
-    lane_swaps = Util.get_lane_swaps(notes, current_song, current_difficulty)
+    global current_song, current_difficulty, current_lane_configuration, current_lane_configuration_art, \
+        current_lane_count
+    lane_changes = Util.get_lane_changes(notes, current_song, current_difficulty)
 
-    current_lane_count = lane_swaps[0][0]
-    current_lane_configuration = lane_swaps[0][1]
-    current_lane_configuration_art = lane_swaps[0][2]
+    current_lane_count = lane_changes[0][0]
+    current_lane_configuration = lane_changes[0][1]
+    current_lane_configuration_art = lane_changes[0][2]
 
-    if len(lane_swaps) > 1:
-        for dict_beat, dict_configs in lane_swaps.items():
+    if len(lane_changes) > 1:
+        for dict_beat, dict_configs in lane_changes.items():
             if dict_beat < beat:
-                current_lane_count = lane_swaps[dict_beat][0]
-                current_lane_configuration = lane_swaps[dict_beat][1]
-                current_lane_configuration_art = lane_swaps[dict_beat][2]
+                current_lane_count = lane_changes[dict_beat][0]
+                current_lane_configuration = lane_changes[dict_beat][1]
+                current_lane_configuration_art = lane_changes[dict_beat][2]
             else:
                 break
 

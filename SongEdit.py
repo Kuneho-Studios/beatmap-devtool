@@ -218,7 +218,7 @@ def copy_into_new_beatmap(source_song, source_difficulty):
     })
 
     song_difficulty_list = sorted(song_difficulty_list,
-                                  key=lambda difficulty: (difficulty['tier']))
+                                  key=lambda this_difficulty: (difficulty['tier']))
     song_data["difficulty"] = song_difficulty_list
     with (open(Util.BEATMAPS_DIRECTORY + selected_song + "/" + selected_song + "Data.json", "w")
           as updated_root_data_file):

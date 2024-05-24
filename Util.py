@@ -19,21 +19,21 @@ MAX_LANE_SIZE = 5
 note_types_list = [
     "Tap",
     "Hold",
-    "LaneSwap",
+    "LaneChange",
     "Glitch",
     "Heal"
 ]
 
-one_lane_swap_types_dict = {}
+one_lane_change_types_dict = {}
 
-two_lane_swap_types_dict = {
+two_lane_change_types_dict = {
     "Two Lanes Left to Right": LaneArt.TWO_LANES_LEFT_RIGHT,
     "Two Lanes Right to Left": LaneArt.TWO_LANES_RIGHT_LEFT,
 }
 
-three_lane_swap_types_dict = {}
+three_lane_change_types_dict = {}
 
-four_lane_swap_types_dict = {
+four_lane_change_types_dict = {
     "Four Lanes Top to Bottom": LaneArt.FOUR_LANES_TOP_BOTTOM,
     "Four Lanes Bottom to Top": LaneArt.FOUR_LANES_BOTTOM_TOP,
     "Four Corners": LaneArt.FOUR_LANES_CORNERS,
@@ -41,7 +41,7 @@ four_lane_swap_types_dict = {
     "Four Lanes Right to Left": LaneArt.FOUR_LANES_RIGHT_LEFT
 }
 
-five_lane_swap_types_dict = {
+five_lane_change_types_dict = {
     "Five Lanes Top to Bottom": LaneArt.FIVE_LANES_TOP_BOTTOM,
     "Five Lanes Bottom to Top": LaneArt.FIVE_LANES_BOTTOM_TOP,
     "Five Lanes Right to Left": LaneArt.FIVE_LANES_RIGHT_LEFT,
@@ -50,12 +50,12 @@ five_lane_swap_types_dict = {
     "Four Corners and Middle Bottom to Top": LaneArt.FIVE_LANES_CORNER_MIDDLE_BOTTOM_TOP,
 }
 
-lane_swap_types_dict = {
-    # 1: ("One Lane", one_lane_swap_types_dict),
-    2: ("Two Lanes", two_lane_swap_types_dict),
-    # 3: ("Three Lanes", three_lane_swap_types_dict),
-    4: ("Four Lanes", four_lane_swap_types_dict),
-    5: ("Five Lanes", five_lane_swap_types_dict)
+lane_change_types_dict = {
+    1: ("One Lane", one_lane_change_types_dict),
+    2: ("Two Lanes", two_lane_change_types_dict),
+    3: ("Three Lanes", three_lane_change_types_dict),
+    4: ("Four Lanes", four_lane_change_types_dict),
+    5: ("Five Lanes", five_lane_change_types_dict)
 }
 
 
@@ -279,7 +279,7 @@ def get_initial_lane_configuration(lanes_list):
 
 # reads the noteData for each note. if noteType is swap
 # then determine the art and plaintext name of the swap
-def get_lane_swaps(notes_list, song_name, song_difficulty):
+def get_lane_changes(notes_list, song_name, song_difficulty):
     lane_positions = []
     none_count = 0
 
@@ -290,7 +290,7 @@ def get_lane_swaps(notes_list, song_name, song_difficulty):
     swaps_dict = {0: (original_lane_configuration[0], original_lane_configuration[1], original_lane_configuration[2])}
 
     for note in notes_list:
-        if note["noteData"]["noteType"] == "LaneSwap":
+        if note["noteData"]["noteType"] == "LaneChange":
             lanes_list = note["noteData"]['laneChanges']
             for lane in lanes_list:
                 lane_positions.append(lane["newLanePosition"])
@@ -310,7 +310,7 @@ def get_lane_swaps(notes_list, song_name, song_difficulty):
 # loop through the art to determine which variation is used
 # as well as the plaintext name of the variation
 def get_current_lane_values(lane_count, lane_positions):
-    lane_dictionary = get_lane_swap_dictionary(lane_count)
+    lane_dictionary = get_lane_change_dictionary(lane_count)
 
     current_lane_configuration = None
     current_lane_configuration_art = None
@@ -333,36 +333,36 @@ def get_current_lane_values(lane_count, lane_positions):
 
 
 # helper method to determine which dictionary to loop through
-def get_lane_swap_dictionary(lane_count):
+def get_lane_change_dictionary(lane_count):
     if lane_count == 1:
-        return one_lane_swap_types_dict
+        return one_lane_change_types_dict
     elif lane_count == 2:
-        return two_lane_swap_types_dict
+        return two_lane_change_types_dict
     elif lane_count == 3:
-        return three_lane_swap_types_dict
+        return three_lane_change_types_dict
     elif lane_count == 4:
-        return four_lane_swap_types_dict
+        return four_lane_change_types_dict
     elif lane_count == 5:
-        return five_lane_swap_types_dict
+        return five_lane_change_types_dict
     else:
         print("CURRENT COUNT OF " + str(lane_count)
               + " NOT FOUND. PLEASE REPORT")
 
 
-# method to fancy print and display the gathered lane swap events
-def show_lane_swaps(notes_list, song_name, song_difficulty):
-    # get lane swap events
-    lane_swaps_dict = get_lane_swaps(notes_list, song_name, song_difficulty)
+# method to fancy print and display the gathered lane change events
+def show_lane_changes(notes_list, song_name, song_difficulty):
+    # get lane change events
+    lane_changes_dict = get_lane_changes(notes_list, song_name, song_difficulty)
 
     box_width = 34
     print("\n┌" + ("-" * (box_width - 2)) + "┐")
 
     dict_index = 0
-    for dict_beat, dict_configs in lane_swaps_dict.items():
+    for dict_beat, dict_configs in lane_changes_dict.items():
         print(" Beat\n" + "\t" + str(dict_beat))
         print(" Lane Swap Name\n" + "\t" + dict_configs[1])
         print(" Lane Swap Art\n" + dict_configs[2])
-        if dict_index < len(lane_swaps_dict) - 1:
+        if dict_index < len(lane_changes_dict) - 1:
             print("~" * box_width)
             dict_index += 1
 
@@ -391,7 +391,7 @@ def get_beatmap(song_list):
     return song, difficulty
 
 
-# given a list of json items, replace a specific element in a the json object
+# given a list of json items, replace a specific element in the json object
 def replace_field_in_json_list(json_list, field_name, old_substring, new_substring):
     updated_list = []
     for json_obj in json_list:

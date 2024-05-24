@@ -16,7 +16,7 @@ COPY_BEATMAP_ACTION = "Copy beatmap contents"
 UPDATE_BEATMAP_DIFFICULTY_ACTION = "Update an existing beatmap's difficulty"
 EDIT_SONG_INFO_ACTION = "Edit an existing song's basic information"
 
-SHOW_ALL_LANE_SWAPS_ACTION = "Show all lane swaps"
+SHOW_ALL_LANE_CHANGES_ACTION = "Show all lane changes"
 SHIFT_ALL_NOTES_ACTION = "Shift all notes"
 SHIFT_SOME_NOTES_ACTION = "Shift some notes"
 ADD_NOTE_ACTION = "Add note"
@@ -88,10 +88,10 @@ def edit_beatmap_input_help():
                                                   "The shift amount must begin with a " + bold_text("+") + " "
                                                   "(to shift to higher/later beats) or a " + bold_text("-") + " "
                                                   "(to shift to lower/earlier beats)")
-    print(set_help_name(SHOW_ALL_LANE_SWAPS_ACTION) + "Displays all the lane swaps that exist in the beatmap. "
-                                                      "Includes the beat where the swap occurs, the name of the lane "
-                                                      "configuration, as well as a visual depiction of what that "
-                                                      "looks like")
+    print(set_help_name(SHOW_ALL_LANE_CHANGES_ACTION) + "Displays all the lane changes that exist in the beatmap. "
+                                                        "Includes the beat where the swap occurs, the name of the lane "
+                                                        "configuration, as well as a visual depiction of what that "
+                                                        "looks like")
     print(set_help_name(COPY_SOME_NOTES_ACTION) + "Starting at the current beat and ending at the beat specified, "
                                                   "it will then copy all the notes that fall within that range and "
                                                   "place them starting at another beat that will be specified.")
