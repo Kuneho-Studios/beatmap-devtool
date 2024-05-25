@@ -51,9 +51,9 @@ five_lane_change_types_dict = {
 }
 
 lane_change_types_dict = {
-    1: ("One Lane", one_lane_change_types_dict),
+    # 1: ("One Lane", one_lane_change_types_dict),
     2: ("Two Lanes", two_lane_change_types_dict),
-    3: ("Three Lanes", three_lane_change_types_dict),
+    # 3: ("Three Lanes", three_lane_change_types_dict),
     4: ("Four Lanes", four_lane_change_types_dict),
     5: ("Five Lanes", five_lane_change_types_dict)
 }

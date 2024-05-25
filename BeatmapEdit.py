@@ -159,33 +159,34 @@ def set_lane_change():
     if lane_change_lane_count is None:
         return set_lane_change()
     else:
-        return set_lane_style(lane_change_lane_count)
+        return set_lane_configuration(lane_change_lane_count)
 
 
-# given the desired lane change count, display the art for the different styles
+# given the desired lane change count, display the art for the different configurations
 # allow the user to select which one
-def set_lane_style(lane_change_lane_count):
-    lane_type_keys = (
-        list(Util.lane_change_types_dict.get(lane_change_lane_count)[1].keys()))
+def set_lane_configuration(lane_change_lane_count):
+    lane_change_list_values = list(Util.lane_change_types_dict.values())
+    lane_configuration_size, lane_configuration_options = lane_change_list_values[lane_change_lane_count - 1]
 
-    print("\nAvailable Lane Styles:")
+    lane_type_keys = (
+        list(lane_configuration_options.keys()))
+
+    print("\nAvailable Lane Configurations:")
     Util.dropdown_for_user_input(lane_type_keys)
 
-    lane_type_input = (
-        input("Enter the " + str(lane_change_lane_count) + "-lane style: "))
+    lane_type_input = (input("Enter the " + lane_configuration_size + " configuration: "))
 
     lane_type_input = (
         Util.validate_dropdown_input(lane_type_input, len(lane_type_keys)))
 
     if lane_type_input is None:
-        return set_lane_style(lane_change_lane_count)
+        return set_lane_configuration(lane_change_lane_count)
     else:
         global current_lane_configuration, current_lane_count
         current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
-        current_lane_count = lane_change_lane_count
+        current_lane_count = list(Util.lane_change_types_dict.keys())[lane_change_lane_count - 1]
 
-        lane_configuration = (Util.lane_change_types_dict.get(
-            lane_change_lane_count)[1].get(current_lane_configuration))
+        lane_configuration = lane_configuration_options.get(current_lane_configuration)
 
         return set_lane_variation(lane_configuration)
 
@@ -278,7 +279,6 @@ def shift_all_notes(notes):
 
 # shift notes within the user supplied range a user supplied amount
 def shift_some_notes(notes, beat):
-
     shift_end_input = input("Enter the beat where the shift ends: ").strip()
     try:
         shift_end_input = float(shift_end_input)
