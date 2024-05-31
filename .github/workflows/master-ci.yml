@@ -12,59 +12,59 @@ env:
   RELEASE_VERSION: 0.1.0
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+#  build-linux:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: checkout repository
+#        uses: actions/checkout@v2
+#
+#      - name: setup python
+#        uses: actions/setup-python@v4.1.0
+#        with:
+#          python-version: "3.9.x"
+#
+#      - name: upgrade python pip
+#        run: |
+#          python3 -m pip install --upgrade pip
+#          pip install pyinstaller
+#
+#      - name: build binary
+#        run: |
+#          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
+#
+#      - name: upload artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: bundle-linux
+#          path: ProjectRadianceBeatmapDevtool.exe
 
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-
-      - name: setup python
-        uses: actions/setup-python@v4.1.0
-        with:
-          python-version: "3.9.x"
-
-      - name: upgrade python pip
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install pyinstaller
-
-      - name: build binary
-        run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundle-linux
-          path: ProjectRadianceBeatmapDevtool.exe
-
-  build-mac:
-    runs-on: macos-12
-
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-
-      - name: setup python
-        uses: actions/setup-python@v4.1.0
-        with:
-          python-version: "3.9.x"
-
-      - name: upgrade python pip
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install pyinstaller
-
-      - name: build binary
-        run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundle-mac
-          path: ProjectRadianceBeatmapDevtool.exe
+#  build-mac:
+#    runs-on: macos-12
+#
+#    steps:
+#      - name: checkout repository
+#        uses: actions/checkout@v2
+#
+#      - name: setup python
+#        uses: actions/setup-python@v4.1.0
+#        with:
+#          python-version: "3.9.x"
+#
+#      - name: upgrade python pip
+#        run: |
+#          python3 -m pip install --upgrade pip
+#          pip install pyinstaller
+#
+#      - name: build binary
+#        run: |
+#          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
+#
+#      - name: upload artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: bundle-mac
+#          path: ProjectRadianceBeatmapDevtool.exe
 
   build-windows:
     runs-on: windows-2019
@@ -76,7 +76,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v4.1.0
         with:
-          python-version: "3.9.x"
+          python-version: "3.9.0"
 
       - name: upgrade python pip
         run: |
@@ -85,13 +85,13 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.spec
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: bundle-windows
-          path: ProjectRadianceBeatmapDevtool.zip
+          path: dist/ProjectRadianceBeatmapDevtool.exe
 
   publish:
     runs-on: ubuntu-latest
@@ -111,5 +111,6 @@ jobs:
       - name: publish artifacts
         uses: ncipollo/release-action@v1
         with:
-          artifacts: bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe, bundle-windows/ProjectRadianceBeatmapDevtool.exe
+          artifacts: bundle-windows/ProjectRadianceBeatmapDevtool.exe
           tag: '${{env.RELEASE_VERSION}}'
+# bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
