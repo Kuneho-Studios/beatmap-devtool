@@ -113,4 +113,5 @@ jobs:
         with:
           artifacts: bundle-windows/ProjectRadianceBeatmapDevtool.exe
           tag: '${{env.RELEASE_VERSION}}'
+          token: ${{ secrets.GITHUB_TOKEN }}
 # bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
