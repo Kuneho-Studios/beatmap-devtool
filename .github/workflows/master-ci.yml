@@ -36,7 +36,7 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: bundle-osx
+          name: bundle-linux
           path: project-radiance-beatmap-devtool-linux-${{env.RELEASE_VERSION}}.zip
 
   build-mac:
@@ -63,7 +63,7 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: bundle-osx
+          name: bundle-mac
           path: project-radiance-beatmap-devtool-mac-${{env.RELEASE_VERSION}}.zip
 
   build-windows:
@@ -90,7 +90,7 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: bundle-osx
+          name: bundle-windows
           path: project-radiance-beatmap-devtool-windows-${{env.RELEASE_VERSION}}.zip
 
   publish:
@@ -111,5 +111,5 @@ jobs:
       - name: publish artifacts
         uses: ncipollo/release-action@v1
         with:
-          artifacts: bundle-linux/project-radiance-beatmap-devtool-linux-${{env.RELEASE_VERSION}}.tar, bundle-osx/project-radiance-beatmap-devtool-osx-${{env.RELEASE_VERSION}}.zip, bundle-windows/project-radiance-beatmap-devtool-win-${{env.RELEASE_VERSION}}.zip
+          artifacts: bundle-linux/project-radiance-beatmap-devtool-linux-${{env.RELEASE_VERSION}}.zip, bundle-mac/project-radiance-beatmap-devtool-mac-${{env.RELEASE_VERSION}}.zip, bundle-windows/project-radiance-beatmap-devtool-windows-${{env.RELEASE_VERSION}}.zip
           tag: '${{env.RELEASE_VERSION}}'
