@@ -24,19 +24,14 @@ jobs:
         with:
           python-version: "3.9.x"
 
-      - name: setup python virtual env
-        run: python3 -m venv .venv
-
       - name: upgrade python pip
         run: |
-          .venv\Scripts\activate
           python3 -m pip install --upgrade pip
           pip install pyinstaller
 
       - name: build binary
         run: |
-          source .venv/bin/activate
-          pyinstaller beatmap-devtool.spec --distpath ./project-radiance
+          python -m PyInstaller Main.py --onefile --distpath ./project-radiance
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
@@ -56,19 +51,14 @@ jobs:
         with:
           python-version: "3.9.x"
 
-      - name: setup python virtual env
-        run: python3 -m venv .venv
-
       - name: upgrade python pip
         run: |
-          source .venv/bin/activate
           python3 -m pip install --upgrade pip
           pip install pyinstaller
 
       - name: build binary
         run: |
-          source .venv/bin/activate
-          pyinstaller beatmap-devtool.spec --distpath ./project-radiance
+          python -m PyInstaller Main.py --onefile --distpath ./project-radiance
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
@@ -88,19 +78,14 @@ jobs:
         with:
           python-version: "3.9.x"
 
-      - name: setup python virtual env
-        run: python3 -m venv .venv
-
       - name: upgrade python pip
         run: |
-          .venv\Scripts\activate
           python3 -m pip install --upgrade pip
           pip install pyinstaller
 
       - name: build binary
         run: |
-          source .venv/bin/activate
-          pyinstaller beatmap-devtool.spec --distpath ./project-radiance
+          python -m PyInstaller Main.py --onefile --distpath ./project-radiance
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
