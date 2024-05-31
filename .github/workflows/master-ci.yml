@@ -31,13 +31,13 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller Main.py --onefile --distpath ./project-radiance
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: bundle-linux
-          path: project-radiance-beatmap-devtool-linux-${{env.RELEASE_VERSION}}.zip
+          path: ProjectRadianceBeatmapDevtool.exe
 
   build-mac:
     runs-on: macos-12
@@ -58,13 +58,13 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller Main.py --onefile --distpath ./project-radiance
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: bundle-mac
-          path: project-radiance-beatmap-devtool-mac-${{env.RELEASE_VERSION}}.zip
+          path: ProjectRadianceBeatmapDevtool.exe
 
   build-windows:
     runs-on: windows-2019
@@ -85,13 +85,13 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller Main.py --onefile --distpath ./project-radiance
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: bundle-windows
-          path: project-radiance-beatmap-devtool-windows-${{env.RELEASE_VERSION}}.zip
+          path: ProjectRadianceBeatmapDevtool.zip
 
   publish:
     runs-on: ubuntu-latest
@@ -111,5 +111,5 @@ jobs:
       - name: publish artifacts
         uses: ncipollo/release-action@v1
         with:
-          artifacts: bundle-linux/project-radiance-beatmap-devtool-linux-${{env.RELEASE_VERSION}}.zip, bundle-mac/project-radiance-beatmap-devtool-mac-${{env.RELEASE_VERSION}}.zip, bundle-windows/project-radiance-beatmap-devtool-windows-${{env.RELEASE_VERSION}}.zip
+          artifacts: bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe, bundle-windows/ProjectRadianceBeatmapDevtool.exe
           tag: '${{env.RELEASE_VERSION}}'
