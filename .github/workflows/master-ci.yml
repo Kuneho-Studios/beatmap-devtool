@@ -39,32 +39,32 @@ jobs:
 #          name: bundle-linux
 #          path: ProjectRadianceBeatmapDevtool.exe
 
-#  build-mac:
-#    runs-on: macos-12
-#
-#    steps:
-#      - name: checkout repository
-#        uses: actions/checkout@v2
-#
-#      - name: setup python
-#        uses: actions/setup-python@v4.1.0
-#        with:
-#          python-version: "3.9.x"
-#
-#      - name: upgrade python pip
-#        run: |
-#          python3 -m pip install --upgrade pip
-#          pip install pyinstaller
-#
-#      - name: build binary
-#        run: |
-#          python -m PyInstaller ProjectRadianceBeatmapDevtool.py --onefile --distpath ./project-radiance
-#
-#      - name: upload artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: bundle-mac
-#          path: ProjectRadianceBeatmapDevtool.exe
+  build-mac:
+    runs-on: macos-12
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: "3.9.0"
+
+      - name: upgrade python pip
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: build binary
+        run: |
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.spec
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle-mac
+          path: dist/ProjectRadianceBeatmapDevtool.exe
 
   build-windows:
     runs-on: windows-2019
@@ -98,7 +98,7 @@ jobs:
 
     needs:
 #      - build-linux
-#      - build-mac
+      - build-mac
       - build-windows
 
     steps:
@@ -111,11 +111,10 @@ jobs:
       - name: upload windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ProjectRadianceBeatmapDevtool.exe
+          name: ProjectRadianceBeatmapDevtool
           path: |
-            bundle-windows/
+            bundle-mac
+#            bundle-linux
             bundle-windows
-            ./bundle-windows
-            ./bundle-windows/
 
 # bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
