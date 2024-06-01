@@ -31,7 +31,7 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.spec
+          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.spec -n project-radiance-beatmap-devtool-linux
 
       - name: list files
         run: ls -R
@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bundle-linux
-          path: dist/ProjectRadianceBeatmapDevtool
+          path: dist/project-radiance-beatmap-devtool-linux
 
 
   build-mac:
@@ -62,7 +62,7 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.spec
+          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.spec -n project-radiance-beatmap-devtool-mac
 
       - name: list files
         run: ls -R
@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bundle-mac
-          path: dist/ProjectRadianceBeatmapDevtool
+          path: dist/project-radiance-beatmap-devtool-mac
 
   build-windows:
     runs-on: windows-2019
@@ -92,7 +92,7 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.spec
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.spec -n project-radiance-beatmap-devtool-windows
 
       - name: list files
         run: dir
@@ -101,7 +101,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bundle-windows
-          path: dist/ProjectRadianceBeatmapDevtool.exe
+          path: dist/project-radiance-beatmap-devtool-windows.exe
 
   publish:
     runs-on: ubuntu-latest
