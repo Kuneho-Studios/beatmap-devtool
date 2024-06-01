@@ -108,33 +108,12 @@ jobs:
       - name: list files
         run: ls -R
 
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
-#          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
       - name: upload windows artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bundle-windows/ProjectRadianceBeatmapDevtool.exe
-          asset_name: ProjectRadianceBeatmapDevtool.exe
-#          asset_content_type: application/zip
-
-#      - name: publish artifacts
-#        uses: ncipollo/release-action@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          artifacts: bundle-windows/ProjectRadianceBeatmapDevtool.exe
+          name: ProjectRadianceBeatmapDevtool.exe
+          path: |
+            dist/
+            dist
 
 # bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
