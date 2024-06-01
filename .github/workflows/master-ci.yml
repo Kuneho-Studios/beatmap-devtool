@@ -108,13 +108,12 @@ jobs:
       - name: list files
         run: ls -R
 
-      - name: upload windows artifact
+      - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ProjectRadianceBeatmapDevtool
           path: |
             bundle-mac
-#            bundle-linux
             bundle-windows
 
 # bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
