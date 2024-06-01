@@ -31,7 +31,7 @@ jobs:
 
       - name: build binary
         run: |
-          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-linux
+          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-linux --onefile
 
       - name: list files
         run: ls -R
@@ -62,7 +62,7 @@ jobs:
 
       - name: build binary
         run: |
-          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-mac
+          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-mac --onefile
 
       - name: list files
         run: ls -R
@@ -92,10 +92,13 @@ jobs:
 
       - name: build binary
         run: |
-          python -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-windows
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-windows --onefile
 
       - name: list files
-        run: dir
+        run: |
+          dir
+          cd dist
+          dir     
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
