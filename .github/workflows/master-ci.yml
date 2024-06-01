@@ -113,7 +113,9 @@ jobs:
         with:
           name: ProjectRadianceBeatmapDevtool.exe
           path: |
-            dist/
-            dist
+            bundle-windows/
+            bundle-windows
+            ./bundle-windows
+            ./bundle-windows/
 
 # bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
