@@ -30,8 +30,8 @@ def update_beatmap_difficulty():
                 print("\nPlease enter a difficulty greater than 0\n")
                 updated_difficulty = input(
                     "Enter the desired updated difficulty: ")
-            elif updated_difficulty > 10:
-                print("\nPlease enter a difficulty less than 11\n")
+            elif updated_difficulty > 9:
+                print("\nPlease enter a difficulty less than 10\n")
                 updated_difficulty = input(
                     "Enter the desired updated difficulty: ")
         except ValueError:
