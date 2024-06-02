@@ -45,7 +45,7 @@ def get_difficulty_count_input():
 def get_difficulties_input(difficulty_count):
     difficulties = []
     count = 0
-    print("Difficulty is a rating between 1 and 10 (inclusive)")
+    print("Difficulty is a rating between 1 and 9 (inclusive)")
     # todo add a cli command to explain how the rating system works -
     #  help the user accurately set the difficulty rating
     while count < difficulty_count:
@@ -55,11 +55,11 @@ def get_difficulties_input(difficulty_count):
         try:
             new_difficultly = int(new_difficultly)
 
-            if 0 < new_difficultly < 11:
+            if 0 < new_difficultly < 9:
                 difficulties.append(new_difficultly)
                 count += 1
             else:
-                print("\nDifficulty must be a whole number between 1 and 10 "
+                print("\nDifficulty must be a whole number between 1 and 9 "
                       "(inclusive). Please enter again.\n")
         except ValueError:
             print("\nDifficulty must be a whole number. "
