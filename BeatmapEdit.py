@@ -51,6 +51,8 @@ def edit_beatmap(song_name, song_difficulty):
         lane_events = set_lane_event()
         Util.fancy_print_box("✨ Initial lane configuration set!"
                              " You can proceed to beatmapping now! ✨")
+        save_beatmap(notes, song_name, song_difficulty, lane_events)
+
     else:
         global lane_configurations, current_lane_count, current_lane_configuration, \
             current_lane_configuration_art
@@ -183,10 +185,8 @@ def set_lane_configuration(lane_change_lane_count):
         return set_lane_configuration(lane_change_lane_count)
     else:
         global current_lane_configuration, current_lane_count
-        current_lane_configuration = list(lane_type_keys)[lane_type_input - 1]
-        current_lane_count = list(Util.lane_change_types_dict.keys())[lane_change_lane_count - 1]
 
-        lane_configuration = lane_configuration_options.get(current_lane_configuration)
+        lane_configuration = lane_configuration_options.get(list(lane_type_keys)[lane_type_input - 1])
 
         return set_lane_variation(lane_configuration)
 
@@ -216,10 +216,6 @@ def set_lane_variation(lane_configuration_list):
         for i in range(5):
             lane_changes_list.append(
                 {"lane": i, "newLanePosition": selected_lane_list[i]})
-
-        global current_lane_configuration_art
-        current_lane_configuration_art = (
-            lane_configuration_list)[lane_configuration_input - 1][0]
 
         return lane_changes_list
 

@@ -30,8 +30,8 @@ def update_beatmap_difficulty():
                 print("\nPlease enter a difficulty greater than 0\n")
                 updated_difficulty = input(
                     "Enter the desired updated difficulty: ")
-            elif updated_difficulty > 10:
-                print("\nPlease enter a difficulty less than 11\n")
+            elif updated_difficulty > 9:
+                print("\nPlease enter a difficulty less than 10\n")
                 updated_difficulty = input(
                     "Enter the desired updated difficulty: ")
         except ValueError:
@@ -176,8 +176,8 @@ def copy_into_new_beatmap(source_song, source_difficulty):
             try:
                 difficulty = int(difficulty)
 
-                if difficulty < 1 or difficulty > 10:
-                    print("\nDifficulty must be a whole number between 1 and 10 "
+                if difficulty < 1 or difficulty > 9:
+                    print("\nDifficulty must be a whole number between 1 and 9 "
                           "(inclusive). Please enter again.\n")
                     difficulty = input("Enter the new difficulty: ")
             except ValueError:
