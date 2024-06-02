@@ -51,6 +51,8 @@ def edit_beatmap(song_name, song_difficulty):
         lane_events = set_lane_event()
         Util.fancy_print_box("✨ Initial lane configuration set!"
                              " You can proceed to beatmapping now! ✨")
+        save_beatmap(notes, song_name, song_difficulty, lane_events)
+
     else:
         global lane_configurations, current_lane_count, current_lane_configuration, \
             current_lane_configuration_art
