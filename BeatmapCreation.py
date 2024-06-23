@@ -79,6 +79,7 @@ def create_root_data_file(song_name, album_name, artist_name, bpm, genre, diffic
         "album": album_name,
         "artist": artist_name,
         "fileLocation": Util.FILE_LOCATION_ROOT + song_name_pascal,
+        "testFileLocation": Util.TEST_FILE_LOCATION_ROOT + song_name_pascal,
         "bpm": bpm,
         "length": 0,
         "genre": genre,
