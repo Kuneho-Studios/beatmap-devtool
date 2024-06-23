@@ -282,7 +282,14 @@ This is a single note like the tap note, but is visually distinguishable. It wil
 Please report any bugs or address any questions, comments, concerns, or suggestions to `projectradiance@kunehostudios.com` and include `Devtool` in the subject.
 
 ## Change Log
-### Version 0.1.0 (Latest)
+### Version 0.1.1 (Latest)
+[Other]
+<br>
+&plus; Added a line to the <songName>Data.json which contains the path of the test audio file for the song
+- This is to work better with the Project Radiance test scene
+- No new user action is required
+
+### Version 0.1.0
 
 ##### [Note Types]
 &plus; Tap
