@@ -9,6 +9,7 @@ import LaneArt
 BEATMAPS_DIRECTORY = 'beatmaps/'
 
 FILE_LOCATION_ROOT = "/Game/WwiseAudio/Events/Beatmaps/Music/mx_"
+TEST_FILE_LOCATION_ROOT = "/Game/ProjectRadiance/Data/sfx_"
 FILE_PATH_ROOT = "Content/ProjectRadiance/Data/"
 
 BOLD_TEXT = "\033[1m"
