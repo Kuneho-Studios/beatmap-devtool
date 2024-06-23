@@ -265,7 +265,7 @@ def update_basic_info():
     print("For each key, enter the new desired value (or press \"ENTER\" to keep it)")
     is_name_updated = False
     for key, value in song_data.items():
-        if key != "difficulty" and key != "fileLocation" and key != "length":
+        if key != "difficulty" and key != "fileLocation" and key != "length" and key != "testFileLocation":
             space_case_key = Util.camel_case_to_space_case(key)
             updated_value = input(f"{space_case_key} (currently {value}): ")
             if updated_value != "":
@@ -282,6 +282,8 @@ def update_basic_info():
                     old_song_name_pascal = Util.string_to_pascal_case(value)
                     new_song_name_pascal = Util.string_to_pascal_case(updated_value)
                     song_data["fileLocation"] = song_data["fileLocation"].replace(
+                        old_song_name_pascal, new_song_name_pascal)
+                    song_data["testFileLocation"] = song_data["testFileLocation"].replace(
                         old_song_name_pascal, new_song_name_pascal)
                     song_data["difficulty"] = Util.replace_field_in_json_list(
                         song_data["difficulty"],
