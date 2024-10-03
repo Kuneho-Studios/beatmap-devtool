@@ -329,7 +329,6 @@ def add_note(notes, beat, lane):
 
 # handle which lanes get chained with the original supplied beat
 def chain_notes_note_data(lane):
-    global current_lane_count
     chained_lanes_input = ""
     chained_lanes = []
     vacant_lanes = []
