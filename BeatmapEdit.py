@@ -312,38 +312,74 @@ def shift_some_notes(notes, beat):
 # add a note to the beatmap
 def add_note(notes, beat, lane):
     note_data = set_note_data(beat, lane)
+
+    if note_data["noteType"] == "Chain":
+        note_data = chain_notes_note_data(lane)
+
     note_json_object = {"startBeat": beat,
                         "lane": lane,
                         "noteData": note_data}
     notes.append(note_json_object)
 
     if note_data["noteType"] == "Hold":
-        hold_note_duration = input(
-            "Enter the duration of the hold note in beats: ")
-
-        while isinstance(hold_note_duration, str) or float(hold_note_duration) <= 1.0:
-            try:
-                hold_note_duration = float(hold_note_duration)
-                if hold_note_duration <= 1:
-                    print("\nPlease enter a length greater than 1\n")
-                    hold_note_duration = input(
-                        "Enter the duration of the hold note in beats: ")
-            except ValueError:
-                print("\nPlease enter a number.\n")
-                hold_note_duration = input(
-                    "Enter the duration of the hold note in beats: ")
-
-        # subtract 1 since the note they selected is the first one
-        hold_note_duration = hold_note_duration - 1
-        while hold_note_duration > 0:
-            hold_beat = beat + hold_note_duration
-            note_json_object = {"startBeat": hold_beat,
-                                "lane": lane,
-                                "noteData": note_data}
-            notes.append(note_json_object)
-            hold_note_duration -= 1
+        notes = hold_notes_note_data(beat, lane, note_data, notes)
 
     return sorted(notes, key=lambda note: (note['startBeat'], note['lane']))
+
+
+# handle which lanes get chained with the original supplied beat
+def chain_notes_note_data(lane):
+    chained_lanes_input = ""
+    chained_lanes = []
+    vacant_lanes = []
+    for i in range(1, current_lane_count + 1):
+        if i != lane:
+            vacant_lanes.append(i)
+    while chained_lanes_input != 0 and vacant_lanes:
+        print("0) Done")
+        for j, lane_number in enumerate(vacant_lanes):
+            print(str(j + 1) + ") Lane " + str(lane_number))
+        chained_lanes_input = (
+            input("Enter the number of the lane you'd like to chain: "))
+        chained_lanes_input = (
+            Util.validate_dropdown_input(chained_lanes_input, len(vacant_lanes), True))
+        if chained_lanes_input is not None and chained_lanes_input != 0:
+            chained_lanes.append(vacant_lanes[chained_lanes_input - 1])
+            vacant_lanes.pop(chained_lanes_input - 1)
+
+    chained_lanes_data = []
+    for k in chained_lanes:
+        chained_lanes_data.append({"lane": k})
+    return {"noteType": "Chain", "chainedLanes": chained_lanes_data}
+
+
+# handle how long the hold note gets held for
+def hold_notes_note_data(beat, lane, note_data, notes):
+    hold_note_duration = input(
+        "Enter the duration of the hold note in beats: ")
+
+    while isinstance(hold_note_duration, str) or float(hold_note_duration) <= 1.0:
+        try:
+            hold_note_duration = float(hold_note_duration)
+            if hold_note_duration <= 1:
+                print("\nPlease enter a length greater than 1\n")
+                hold_note_duration = input(
+                    "Enter the duration of the hold note in beats: ")
+        except ValueError:
+            print("\nPlease enter a number.\n")
+            hold_note_duration = input(
+                "Enter the duration of the hold note in beats: ")
+
+    # subtract 1 since the note they selected is the first one
+    hold_note_duration = hold_note_duration - 1
+    while hold_note_duration > 0:
+        hold_beat = beat + hold_note_duration
+        note_json_object = {"startBeat": hold_beat,
+                            "lane": lane,
+                            "noteData": note_data}
+        notes.append(note_json_object)
+        hold_note_duration -= 1
+    return notes
 
 
 # copy a subset of notes and place them at a different beat
