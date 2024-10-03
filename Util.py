@@ -22,7 +22,8 @@ note_types_list = [
     "Hold",
     "LaneChange",
     "Glitch",
-    "Heal"
+    "Heal",
+    "Chain"
 ]
 
 one_lane_change_types_dict = {}
