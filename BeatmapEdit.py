@@ -124,7 +124,7 @@ def set_lane(beat):
     if lane_input is None:
         return set_lane(beat)
     else:
-        return lane_input
+        return lane_input - 1
 
 
 # set the note type.
@@ -315,14 +315,13 @@ def add_note(notes, beat, lane):
 
     if note_data["noteType"] == "Chain":
         note_data = chain_notes_note_data(lane)
+    if note_data["noteType"] == "Hold":
+        note_data = hold_notes_note_data(beat, lane, note_data, notes)
 
     note_json_object = {"startBeat": beat,
                         "lane": lane,
                         "noteData": note_data}
     notes.append(note_json_object)
-
-    if note_data["noteType"] == "Hold":
-        notes = hold_notes_note_data(beat, lane, note_data, notes)
 
     return sorted(notes, key=lambda note: (note['startBeat'], note['lane']))
 
@@ -370,17 +369,8 @@ def hold_notes_note_data(beat, lane, note_data, notes):
             hold_note_duration = input(
                 "Enter the duration of the hold note in beats: ")
 
-    # subtract 1 since the note they selected is the first one
-    hold_note_duration = hold_note_duration - 1
-    while hold_note_duration > 0:
-        hold_beat = beat + hold_note_duration
-        note_json_object = {"startBeat": hold_beat,
-                            "lane": lane,
-                            "noteData": note_data}
-        notes.append(note_json_object)
-        hold_note_duration -= 1
-    return notes
-
+    note_data = {"noteType": "Hold", "endBeat": beat + (hold_note_duration - 1)}
+    return note_data
 
 # copy a subset of notes and place them at a different beat
 def copy_note_segment(notes):
