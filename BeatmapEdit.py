@@ -124,7 +124,7 @@ def set_lane(beat):
     if lane_input is None:
         return set_lane(beat)
     else:
-        return lane_input - 1
+        return lane_input
 
 
 # set the note type.
