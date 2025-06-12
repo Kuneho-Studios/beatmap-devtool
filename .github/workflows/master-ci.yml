@@ -1,0 +1,133 @@
+name: Project Radiance Beatmap Devtool
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  RELEASE_VERSION: 0.1.0
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: "3.9"
+
+      - name: upgrade python pip
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: build binary
+        run: |
+          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-linux --onefile
+
+      - name: list files
+        run: ls -R
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-linux
+          path: dist/project-radiance-beatmap-devtool-linux
+
+
+  build-mac:
+    runs-on: macos-13
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: "3.9"
+
+      - name: upgrade python pip
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: build binary
+        run: |
+          python3 -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-mac --onefile
+
+      - name: list files
+        run: ls -R
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-mac
+          path: dist/project-radiance-beatmap-devtool-mac
+
+  build-windows:
+    runs-on: windows-2019
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: "3.9"
+
+      - name: upgrade python pip
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: build binary
+        run: |
+          python -m PyInstaller ProjectRadianceBeatmapDevtool.py -n project-radiance-beatmap-devtool-windows --onefile
+
+      - name: list files
+        run: |
+          dir
+          cd dist
+          dir     
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-windows
+          path: dist/project-radiance-beatmap-devtool-windows.exe
+
+  publish:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build-linux
+      - build-mac
+      - build-windows
+
+    steps:
+      - name: download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: list files
+        run: ls -R
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ProjectRadianceBeatmapDevtool
+          path: |
+            bundle-linux
+            bundle-mac
+            bundle-windows
+
+# bundle-linux/ProjectRadianceBeatmapDevtool.exe, bundle-mac/ProjectRadianceBeatmapDevtool.exe,
