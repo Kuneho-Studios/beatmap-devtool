@@ -33,7 +33,12 @@ two_lane_change_types_dict = {
     "Two Lanes Right to Left": LaneArt.TWO_LANES_RIGHT_LEFT,
 }
 
-three_lane_change_types_dict = {}
+three_lane_change_types_dict = {
+    "Three Lanes Top to Bottom": LaneArt.THREE_LANES_TOP_BOTTOM,
+    "Three Lanes Bottom to Top": LaneArt.THREE_LANES_BOTTOM_TOP,
+    "Three Lanes Left to Right": LaneArt.THREE_LANES_LEFT_RIGHT,
+    "Three Lanes Right to Left": LaneArt.THREE_LANES_RIGHT_LEFT
+}
 
 four_lane_change_types_dict = {
     "Four Lanes Top to Bottom": LaneArt.FOUR_LANES_TOP_BOTTOM,
@@ -55,7 +60,7 @@ five_lane_change_types_dict = {
 lane_change_types_dict = {
     # 1: ("One Lane", one_lane_change_types_dict),
     2: ("Two Lanes", two_lane_change_types_dict),
-    # 3: ("Three Lanes", three_lane_change_types_dict),
+    3: ("Three Lanes", three_lane_change_types_dict),
     4: ("Four Lanes", four_lane_change_types_dict),
     5: ("Five Lanes", five_lane_change_types_dict)
 }

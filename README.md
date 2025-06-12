@@ -146,6 +146,48 @@ The names "left to right" or "top to bottom" indicate the direction in which the
 ╚═══════════════════╝
 ```
 
+#### Three Lanes
+* Three lanes left to right
+```
+╔═══════════════════╗
+║           ---→ 1  ║
+║           ---→ 2  ║
+║           ---→ 3  ║
+║           ---- x  ║
+║           ---- x  ║
+╚═══════════════════╝
+```
+* Three lanes right to left
+```
+╔═══════════════════╗
+║  1 ←---           ║
+║  2 ←---           ║
+║  3 ←---           ║
+║  x ----           ║
+║  x ----           ║
+╚═══════════════════╝
+```
+* Three lanes top to bottom
+```
+╔═══════════════════╗
+║                   ║
+║   |  |  |  |  |   ║
+║   |  |  |  |  |   ║
+║   |  ↓  ↓  ↓  |   ║
+║   x  1  2  3  x   ║
+╚═══════════════════╝
+```
+* Three lanes bottom to top
+```
+╔═══════════════════╗
+║   x  1  2  3  x   ║
+║   |  ↑  ↑  ↑  |   ║
+║   |  |  |  |  |   ║
+║   |  |  |  |  |   ║
+║                   ║
+╚═══════════════════╝
+```
+
 #### Four Lanes
 * Four lanes top to bottom
 ```
@@ -282,7 +324,17 @@ This is a single note like the tap note, but is visually distinguishable. It wil
 Please report any bugs or address any questions, comments, concerns, or suggestions to `projectradiance@kunehostudios.com` and include `Devtool` in the subject.
 
 ## Change Log
-### Version 0.1.1 (Latest)
+
+### Version 0.1.2 (Latest)
+##### [Lane Configurations and Variations]
+<p>&plus; Three Lanes</p>
+
+* Three lanes left to right
+* Three lanes right to left
+* Three lanes top to bottom
+* Three lanes bottom to top
+
+### Version 0.1.1 
 [Other]
 <br>
 &plus; Added a line to the <songName>Data.json which contains the path of the test audio file for the song

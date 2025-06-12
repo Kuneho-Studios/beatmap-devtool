@@ -77,6 +77,123 @@ TWO_LANES_LEFT_RIGHT = [
     ["None", "None", "None", "TwoLaneLR_0", "TwoLaneLR_1"])
 ]
 
+THREE_LANES_RIGHT_LEFT = [
+  ("\t╔═══════════════════╗\n" +
+   "\t║  1 ←---           ║\n" +
+   "\t║  2 ←---           ║\n" +
+   "\t║  3 ←---           ║\n" +
+   "\t║  x ----           ║\n" +
+   "\t║  x ----           ║\n" +
+   "\t╚═══════════════════╝",
+   ["ThreeLaneRL_0", "ThreeLaneRL_1", "ThreeLaneRL_2", "None", "None"]),
+  ("\t╔═══════════════════╗\n" +
+   "\t║  x ----           ║\n" +
+   "\t║  1 ←---           ║\n" +
+   "\t║  2 ←---           ║\n" +
+   "\t║  3 ←---           ║\n" +
+   "\t║  x ----           ║\n" +
+   "\t╚═══════════════════╝",
+   ["None", "ThreeLaneRL_0", "ThreeLaneRL_1", "ThreeLaneRL_2", "None"]),
+  ("\t╔═══════════════════╗\n" +
+   "\t║  x ----           ║\n" +
+   "\t║  x ----           ║\n" +
+   "\t║  1 ←---           ║\n" +
+   "\t║  2 ←---           ║\n" +
+   "\t║  3 ←---           ║\n" +
+   "\t╚═══════════════════╝",
+   ["None", "None", "ThreeLaneRL_0", "ThreeLaneRL_1", "ThreeLaneRL_2"])
+]
+
+THREE_LANES_LEFT_RIGHT = [
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║           ---→ 1  ║\n" +
+    "\t║           ---→ 2  ║\n" +
+    "\t║           ---→ 3  ║\n" +
+    "\t║           ---- x  ║\n" +
+    "\t║           ---- x  ║\n" +
+    "\t╚═══════════════════╝",
+    ["ThreeLaneLR_0", "ThreeLaneLR_1", "ThreeLaneLR_2", "None", "None"]),
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║           ---- x  ║\n" +
+    "\t║           ---→ 1  ║\n" +
+    "\t║           ---→ 2  ║\n" +
+    "\t║           ---→ 3  ║\n" +
+    "\t║           ---- x  ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "ThreeLaneLR_0", "ThreeLaneLR_1", "ThreeLaneLR_2", "None"]),
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║           ---- x  ║\n" +
+    "\t║           ---- x  ║\n" +
+    "\t║           ---→ 1  ║\n" +
+    "\t║           ---→ 2  ║\n" +
+    "\t║           ---→ 3  ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "None", "ThreeLaneLR_0", "ThreeLaneLR_1", "ThreeLaneLR_2"])
+]
+
+THREE_LANES_TOP_BOTTOM = [
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║                   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   ↓  ↓  ↓  |  |   ║\n" +
+    "\t║   1  2  3  x  x   ║\n" +
+    "\t╚═══════════════════╝",
+    ["ThreeLaneTB_0", "ThreeLaneTB_1", "ThreeLaneTB_2", "None", "None"]),
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║                   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  ↓  ↓  ↓  |   ║\n" +
+    "\t║   x  1  2  3  x   ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "ThreeLaneTB_0", "ThreeLaneTB_1", "ThreeLaneTB_2", "None"]),
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║                   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  ↓  ↓  ↓   ║\n" +
+    "\t║   x  x  1  2  3   ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "None", "ThreeLaneTB_0", "ThreeLaneTB_1", "ThreeLaneTB_2"])
+]
+
+THREE_LANES_BOTTOM_TOP = [
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║   1  2  3  x  x   ║\n" +
+    "\t║   ↑  ↑  ↑  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║                   ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "ThreeLaneBT_0", "ThreeLaneBT_1", "ThreeLaneBT_2", "None"]),
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║   x  1  2  3  x   ║\n" +
+    "\t║   |  ↑  ↑  ↑  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║                   ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "ThreeLaneBT_0", "ThreeLaneBT_1", "ThreeLaneBT_2", "None"]),
+  (
+    "\t╔═══════════════════╗\n" +
+    "\t║   x  x  1  2  3   ║\n" +
+    "\t║   |  |  ↑  ↑  ↑   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║   |  |  |  |  |   ║\n" +
+    "\t║                   ║\n" +
+    "\t╚═══════════════════╝",
+    ["None", "None", "ThreeLaneBT_0", "ThreeLaneBT_1", "ThreeLaneBT_2"])
+]
+
 FOUR_LANES_TOP_BOTTOM = [
   (
     "\t╔═══════════════════╗\n" +
