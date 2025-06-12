@@ -37,7 +37,7 @@ jobs:
         run: ls -R
 
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bundle-linux
           path: dist/project-radiance-beatmap-devtool-linux
@@ -68,7 +68,7 @@ jobs:
         run: ls -R
 
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bundle-mac
           path: dist/project-radiance-beatmap-devtool-mac
@@ -101,7 +101,7 @@ jobs:
           dir     
 
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bundle-windows
           path: dist/project-radiance-beatmap-devtool-windows.exe
